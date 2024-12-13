@@ -1,0 +1,206 @@
+import dex.plugins.outlet.v2.util.ReleaseType
+
+plugins {
+	id 'fabric-loom' version '1.9-SNAPSHOT'
+	id 'io.github.dexman545.outlet' version '1.6.1'
+	id 'com.modrinth.minotaur' version '2.+'
+	id 'maven-publish'
+}
+
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+archivesBaseName = "loot-table-modifier"
+group = "top.offsetmonkey538.loottablemodifier"
+version = "${project.mod_version}+${project.minecraft_version}"
+if (System.getenv("IS_DEBUG") == "true") version = "${version}-${System.currentTimeMillis()}"
+
+outlet {
+	maintainPropertiesFile = System.getenv("DISABLE_PROPERTIES_UPDATE") == null
+	mcVersionRange = project.supported_minecraft_versions
+	allowedReleaseTypes = Set.of(ReleaseType.RELEASE)
+	propertiesData = [
+			'fapi_version': outlet.fapiVersion(project.minecraft_version),
+			'yarn_version': outlet.yarnVersion(project.minecraft_version),
+			'loader_version': outlet.loaderVersion()
+	]
+}
+
+
+loom {
+	splitEnvironmentSourceSets()
+
+	mods {
+		modid {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+	}
+
+	accessWidenerPath = file("src/main/resources/loot-table-modifier.accesswidener")
+
+	runs {
+		server {
+			runDir "run/server"
+		}
+		client {
+			runDir "run/client"
+		}
+		datagenClient {
+			inherit client
+			name "Data Generation"
+			vmArg "-Dfabric-api.datagen"
+			vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
+			vmArg "-Dfabric-api.datagen.modid=loot-table-modifier"
+
+			runDir "build/datagen"
+		}
+	}
+}
+
+// https://gist.github.com/maityyy/3dbcd558d58a6412c3a2a38c72706e8e
+afterEvaluate {
+	loom.runs.configureEach {
+		vmArg "-javaagent:${configurations.compileClasspath.find{ it.name.contains("sponge-mixin") }}"
+		if (System.getenv("DISABLE_PROPERTIES_UPDATE") == null) vmArg "-Ddevauth.enabled=true"
+	}
+}
+sourceSets {
+	main {
+		resources {
+			srcDirs += [
+			        "src/main/generated"
+			]
+		}
+	}
+}
+
+configurations {
+	includeModImplementation
+
+	include.extendsFrom           includeModImplementation
+	modImplementation.extendsFrom includeModImplementation
+
+
+	includeImplementation
+
+	include.extendsFrom        includeImplementation
+	implementation.extendsFrom includeImplementation
+
+
+	includeApi
+
+	include.extendsFrom includeApi
+	api.extendsFrom     includeApi
+}
+
+repositories {
+	mavenCentral()
+	mavenLocal()
+	maven {
+		name = "DevAuth"
+		url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1"
+		content {
+			includeGroup "me.djtheredstoner"
+		}
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_version}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	// DevAuth
+	modLocalRuntime "me.djtheredstoner:DevAuth-fabric:${devauth_version}"
+	// Fabric API
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fapi_version}"
+
+	// Uncomment for including a module of fabric api
+	// includeModImplementation fabricApi.module("fabric-api-base", project.fapi_version)
+}
+
+processResources {
+	final Map properties = Map<String, String>.of(
+			"modVersion",                 project.mod_version,
+			"supportedMinecraftVersions", project.supported_minecraft_versions
+	)
+
+	inputs.properties(properties)
+
+	filesMatching("fabric.mod.json") {
+		expand(properties)
+	}
+
+	exclude ".cache/**"
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 17
+}
+
+java {
+	withSourcesJar()
+	withJavadocJar()
+}
+tasks.named("javadoc", Javadoc) {
+	options.addFileOption('--add-stylesheet', project.file("javadoc-stylesheet.css"))
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.archivesBaseName}" }
+	}
+}
+
+modrinth {
+	token = System.getenv("MODRINTH_TOKEN")
+	projectId = "loot-table-modifier"
+	def customVersionName = System.getenv("VERSION_NAME")
+	if (customVersionName != null) versionName = customVersionName
+	versionNumber = "${project.version}"
+	versionType = "alpha"
+	def isPreRelease = System.getenv("VERSION_IS_PRERELEASE")
+	versionType = !"false".equals(isPreRelease) ? "beta" : "release"
+	uploadFile = remapJar.archiveFile
+	//additionalFiles = [sourcesJar.archiveFile, javadocJar.archiveFile]
+	additionalFiles = [sourcesJar.archiveFile]
+	gameVersions = outlet.mcVersions()
+	syncBodyFrom = rootProject.file("README.md").text
+	def changelogEnv = System.getenv("VERSION_CHANGELOG")
+	if (changelogEnv != null) changelog = changelogEnv
+
+	dependencies {
+		required.project "fabric-api"
+	}
+}
+
+tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
+publishing {
+	repositories {
+		maven {
+			name = "OffsetMonkey538"
+			url = "https://maven.offsetmonkey538.top/releases"
+			credentials {
+				username = providers.gradleProperty("OffsetMonkey538Username").getOrElse(System.getenv("MAVEN_USERNAME"))
+				password = providers.gradleProperty("OffsetMonkey538Password").getOrElse(System.getenv("MAVEN_PASSWORD"))
+			}
+			authentication {
+				basic(BasicAuthentication)
+			}
+		}
+	}
+	publications {
+		maven(MavenPublication) {
+			artifactId = "loot-table-modifier"
+
+			from(components["java"])
+		}
+	}
+	tasks.publishMavenPublicationToMavenLocal.doLast {
+		if (System.getenv("IS_DEBUG") == "true") System.out.println("Version: " + version)
+	}
+	tasks.publishMavenPublicationToOffsetMonkey538Repository.doLast {
+		if (System.getenv("IS_DEBUG") == "true") System.out.println("Version: " + version)
+	}
+}
