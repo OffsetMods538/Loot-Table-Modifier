@@ -8,35 +8,35 @@ An example json file:
 ```json5
 // example_pack/data/example/loot-table-modifier/loot_modifier/drop_tnt.json
 {
-	// Can also be a single identifier without an array
-	// "modifies": "minecraft:entities/creeper",
-	"modifies": [
-		"minecraft:entities/creeper",
-		"minecraft:entities/zombie"
-	],
-	"loot_pools": [
-		{
-			"bonus_rolls": 0.0,
-			"entries": [
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 1.0,
-								"min": 0.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:tnt"
-				}
-			],
-			"rolls": 1.0
-		}
-	]
+    // Can also be a single identifier without an array
+    // "modifies": "minecraft:entities/creeper",
+    "modifies": [
+        "minecraft:entities/creeper",
+        "minecraft:entities/zombie"
+    ],
+    "loot_pools": [
+        {
+            "bonus_rolls": 0.0,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "type": "minecraft:uniform",
+                                "max": 1.0,
+                                "min": 0.0
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "minecraft:tnt"
+                }
+            ],
+            "rolls": 1.0
+        }
+    ]
 }
 ```
 
