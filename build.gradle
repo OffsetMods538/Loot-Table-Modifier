@@ -146,12 +146,13 @@ java {
 tasks.named("javadoc", Javadoc) {
 	options.addFileOption('-add-stylesheet', project.file("javadoc-stylesheet.css"))
 
-	options {
-		links(
-				"https://maven.fabricmc.net/docs/fabric-api-${project.fapi_version}/",
-				"https://maven.fabricmc.net/docs/yarn-${project.yarn_version}/"
-		)
-	}
+	// Temporarily
+	//options {
+	//	links(
+	//			"https://maven.fabricmc.net/docs/fabric-api-${project.fapi_version}/",
+	//			"https://maven.fabricmc.net/docs/yarn-${project.yarn_version}/"
+	//	)
+	//}
 }
 
 jar {
