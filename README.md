@@ -1,12 +1,12 @@
 # Loot Table Modifier
 
-Allows datapacks (and thus mods as well) to modify loot tables.  
-Kind of like a json wrapper around the Fabric API loot table modification api.
+Allows datapacks (and thus mods as well) to add to loot tables, instead of just overwriting them.
 
 Also provides a datagen provider for creating loot table modifiers in mods.
 
 An example json file:
 ```json5
+// example_pack/data/example/loot-table-modifier/loot_modifier/drop_tnt.json
 {
 	// Can also be a single identifier without an array
 	// "modifies": "minecraft:entities/creeper",
@@ -37,5 +37,25 @@ An example json file:
 			"rolls": 1.0
 		}
 	]
+}
+```
+
+Depend on inside mod:
+```groovy
+repositories {
+    // ...
+    maven {
+        name = "OffsetMods538"
+        url = "https://maven.offsetmonkey538.top/releases"
+        content {
+            includeGroup "top.offsetmonkey538.loottablemodifier"
+        }
+    }
+}
+
+
+dependencies {
+    // ...
+    modImplementation "top.offsetmonkey538.loottablemodifier:loot-table-modifier:1.0.0+1.21.1"
 }
 ```
