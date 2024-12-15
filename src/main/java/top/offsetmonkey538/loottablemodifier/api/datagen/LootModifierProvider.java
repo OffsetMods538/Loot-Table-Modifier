@@ -17,14 +17,28 @@ import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
 import static top.offsetmonkey538.loottablemodifier.LootTableModifier.MOD_ID;
-// FIXME: use loot pools instead of loot tables (need to make it a list of pools)
+
 /**
  * A datagen provider for creating loot modifiers.
- * Override {@link #generate(RegistryWrapper.WrapperLookup) generate()} and use the {@code addModifier()} methods to add modifiers.
- *
- * @see #addModifier(Identifier, LootPool.Builder, EntityType, EntityType...)
- * @see #addModifier(Identifier, LootPool.Builder, RegistryKey, RegistryKey...)
- * @see #addModifier(Identifier, LootPool.Builder, Identifier, Identifier...)
+ * <br>
+ * Override {@link #generate(RegistryWrapper.WrapperLookup) generate()} and use the {@code addModifier(...)} methods to add modifiers.
+ * <br>
+ * <pre>{@code
+ * @Override
+ * protected void generate(RegistryWrapper.WrapperLookup lookup) {
+ *     addModifier(
+ *             Identifier.of("testmod", "drop_tnt"),
+ *             LootPool.builder()
+ *                     .rolls(ConstantLootNumberProvider.create(1))
+ *                     .with(
+ *                             ItemEntry.builder(Items.TNT)
+ *                                     .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 1)))
+ *                     ),
+ *             EntityType.CREEPER,
+ *             EntityType.ZOMBIE
+ *     );
+ * }
+ * }</pre>
  */
 public abstract class LootModifierProvider extends FabricCodecDataProvider<LootModifier> {
     private BiConsumer<Identifier, LootModifier> provider;
@@ -48,9 +62,6 @@ public abstract class LootModifierProvider extends FabricCodecDataProvider<LootM
      * Override and use {@code addModifier()} methods to add modifiers.
      *
      * @param lookup A lookup for registries.
-     * @see #addModifier(Identifier, LootPool.Builder, EntityType, EntityType...)
-     * @see #addModifier(Identifier, LootPool.Builder, RegistryKey, RegistryKey...)
-     * @see #addModifier(Identifier, LootPool.Builder, Identifier, Identifier...)
      */
     protected abstract void generate(RegistryWrapper.WrapperLookup lookup);
 
@@ -58,16 +69,31 @@ public abstract class LootModifierProvider extends FabricCodecDataProvider<LootM
      * Adds a new loot table modifier for the given {@link EntityType}s.
      *
      * @param name Name of this modifier
-     * @param builder The loot table to add
+     * @param builder The loot pool to add
      * @param modifies The {@link EntityType} to add the modifier to
      * @param modifiesAdditional Additional {@link EntityType}s to add the modifier to
-     * @see #addModifier(Identifier, LootPool.Builder, RegistryKey, RegistryKey...)
-     * @see #addModifier(Identifier, LootPool.Builder, Identifier, Identifier...)
      */
     protected void addModifier(Identifier name, LootPool.Builder builder, EntityType<?> modifies, EntityType<?>... modifiesAdditional) {
         addModifier(
                 name,
-                builder,
+                List.of(builder),
+                modifies,
+                modifiesAdditional
+        );
+    }
+
+    /**
+     * Adds a new loot table modifier for the given {@link EntityType}s.
+     *
+     * @param name Name of this modifier
+     * @param builders The loot pools to add
+     * @param modifies The {@link EntityType} to add the modifier to
+     * @param modifiesAdditional Additional {@link EntityType}s to add the modifier to
+     */
+    protected void addModifier(Identifier name, List<LootPool.Builder> builders, EntityType<?> modifies, EntityType<?>... modifiesAdditional) {
+        addModifier(
+                name,
+                builders,
                 Stream.concat(Stream.of(modifies), Stream.of(modifiesAdditional)).map(EntityType::getLootTableId).map(RegistryKey::getValue).toList()
         );
     }
@@ -76,16 +102,31 @@ public abstract class LootModifierProvider extends FabricCodecDataProvider<LootM
      * Adds a new loot table modifier for the given {@link RegistryKey}s.
      *
      * @param name Name of this modifier
-     * @param builder The loot table to add
+     * @param builder The loot pool to add
      * @param modifies The {@link RegistryKey} to add the modifier to
      * @param modifiesAdditional Additional {@link RegistryKey}s to add the modifier to
-     * @see #addModifier(Identifier, LootPool.Builder, EntityType, EntityType...)
-     * @see #addModifier(Identifier, LootPool.Builder, Identifier, Identifier...)
      */
     protected void addModifier(Identifier name, LootPool.Builder builder, RegistryKey<?> modifies, RegistryKey<?>... modifiesAdditional) {
         addModifier(
                 name,
-                builder,
+                List.of(builder),
+                modifies,
+                modifiesAdditional
+        );
+    }
+
+    /**
+     * Adds a new loot table modifier for the given {@link RegistryKey}s.
+     *
+     * @param name Name of this modifier
+     * @param builders The loot pools to add
+     * @param modifies The {@link RegistryKey} to add the modifier to
+     * @param modifiesAdditional Additional {@link RegistryKey}s to add the modifier to
+     */
+    protected void addModifier(Identifier name, List<LootPool.Builder> builders, RegistryKey<?> modifies, RegistryKey<?>... modifiesAdditional) {
+        addModifier(
+                name,
+                builders,
                 Stream.concat(Stream.of(modifies), Stream.of(modifiesAdditional)).map(RegistryKey::getValue).toList()
         );
     }
@@ -94,24 +135,39 @@ public abstract class LootModifierProvider extends FabricCodecDataProvider<LootM
      * Adds a new loot table modifier for the given {@link Identifier}s.
      *
      * @param name Name of this modifier
-     * @param builder The loot table to add
+     * @param builder The loot pool to add
      * @param modifies The {@link Identifier} to add the modifier to
      * @param modifiesAdditional Additional {@link Identifier}s to add the modifier to
-     * @see #addModifier(Identifier, LootPool.Builder, EntityType, EntityType...)
-     * @see #addModifier(Identifier, LootPool.Builder, RegistryKey, RegistryKey...)
      */
     protected void addModifier(Identifier name, LootPool.Builder builder, Identifier modifies, Identifier... modifiesAdditional) {
         addModifier(
                 name,
-                builder,
+                List.of(builder),
+                modifies,
+                modifiesAdditional
+        );
+    }
+
+    /**
+     * Adds a new loot table modifier for the given {@link Identifier}s.
+     *
+     * @param name Name of this modifier
+     * @param builders The loot pools to add
+     * @param modifies The {@link Identifier} to add the modifier to
+     * @param modifiesAdditional Additional {@link Identifier}s to add the modifier to
+     */
+    protected void addModifier(Identifier name, List<LootPool.Builder> builders, Identifier modifies, Identifier... modifiesAdditional) {
+        addModifier(
+                name,
+                builders,
                 Stream.concat(Stream.of(modifies), Stream.of(modifiesAdditional)).toList()
         );
     }
 
-    private void addModifier(Identifier name, LootPool.Builder builder, List<Identifier> modifies) {
+    private void addModifier(Identifier name, List<LootPool.Builder> builders, List<Identifier> modifies) {
         provider.accept(name, new LootModifier(
                 new ArrayList<>(modifies),
-                List.of(builder.build())
+                builders.stream().map(LootPool.Builder::build).toList()
         ));
     }
 }
