@@ -6,7 +6,6 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTable;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.SetCountLootFunction;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
@@ -37,14 +36,12 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
             addModifier(
                     id("drop_tnt"),
 
-                    LootTable.builder()
-                            .pool(
-                                    LootPool.builder()
-                                            .rolls(ConstantLootNumberProvider.create(1))
-                                            .with(
-                                                    ItemEntry.builder(Items.TNT)
-                                                            .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(0, 1)))
-                                            )
+
+                    LootPool.builder()
+                            .rolls(ConstantLootNumberProvider.create(1))
+                            .with(
+                                    ItemEntry.builder(Items.TNT)
+                                            .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 1)))
                             ),
 
                     EntityType.CREEPER,
