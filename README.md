@@ -59,6 +59,6 @@ repositories {
 
 dependencies {
     // ...
-    modImplementation "top.offsetmonkey538.loottablemodifier:loot-table-modifier:1.0.0+1.21.1"
+    modImplementation "top.offsetmonkey538.loottablemodifier:loot-table-modifier:1.0.1+1.21.1"
 }
 ```
