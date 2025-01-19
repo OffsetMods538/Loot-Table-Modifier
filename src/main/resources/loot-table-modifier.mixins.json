@@ -3,7 +3,8 @@
 	"package": "top.offsetmonkey538.loottablemodifier.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"LootTableAccessor"
+		"LootTableAccessor",
+		"ReloadableRegistriesMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

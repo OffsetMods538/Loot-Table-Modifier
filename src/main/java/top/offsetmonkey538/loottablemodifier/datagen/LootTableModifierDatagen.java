@@ -6,7 +6,9 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTables;
 import net.minecraft.loot.entry.ItemEntry;
+import net.minecraft.loot.function.EnchantWithLevelsLootFunction;
 import net.minecraft.loot.function.SetCountLootFunction;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.loot.provider.number.UniformLootNumberProvider;
@@ -46,6 +48,21 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
 
                     EntityType.CREEPER,
                     EntityType.ZOMBIE
+            );
+
+            //todo: temp
+            addModifier(
+                    id("test"),
+
+                    LootPool.builder()
+                            .with(
+                                    ItemEntry.builder(Items.DIRT).apply(
+                                            EnchantWithLevelsLootFunction
+                                                    .builder(lookup, UniformLootNumberProvider.create(20, 39))
+                                    )
+                            ),
+
+                    LootTables.END_CITY_TREASURE_CHEST
             );
         }
     }

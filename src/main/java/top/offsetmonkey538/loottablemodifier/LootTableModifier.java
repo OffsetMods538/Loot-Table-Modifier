@@ -1,16 +1,17 @@
 package top.offsetmonkey538.loottablemodifier;
 
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.mojang.serialization.JsonOps;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
+import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
@@ -33,23 +34,23 @@ public class LootTableModifier implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		if(FabricLoader.getInstance().isDevelopmentEnvironment()) ResourceManagerHelper.registerBuiltinResourcePack(id("example_pack"), FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow(), Text.of("Example Pack"), ResourcePackActivationType.NORMAL);
-
-		LootTableEvents.ALL_LOADED.register((resourceManager, lootRegistry) -> {
-			final Map<Identifier, LootModifier> modifiers = loadModifiers(resourceManager);
-
-			int amountModified = 0;
-			LOGGER.info("Applying loot table modifiers...");
-			for (RegistryEntry.Reference<LootTable> tableReference : lootRegistry.streamEntries().toList()) {
-				final RegistryKey<LootTable> tableKey = tableReference.registryKey();
-
-				amountModified += applyModifiers(lootRegistry.get(tableKey), tableKey, modifiers);
-			}
-
-			modifiersApplied(amountModified, modifiers);
-		});
 	}
 
-	private static Map<Identifier, LootModifier> loadModifiers(ResourceManager resourceManager) {
+	public static void runModification(ResourceManager resourceManager, Registry<LootTable> lootRegistry, RegistryOps<JsonElement> registryOps) {
+		final Map<Identifier, LootModifier> modifiers = loadModifiers(resourceManager, registryOps);
+
+		int amountModified = 0;
+		LOGGER.info("Applying loot table modifiers...");
+		for (RegistryEntry.Reference<LootTable> tableReference : lootRegistry.streamEntries().toList()) {
+			final RegistryKey<LootTable> tableKey = tableReference.registryKey();
+
+			amountModified += applyModifiers(lootRegistry.get(tableKey), tableKey, modifiers);
+		}
+
+		modifiersApplied(amountModified, modifiers);
+	}
+
+	private static Map<Identifier, LootModifier> loadModifiers(ResourceManager resourceManager, RegistryOps<JsonElement> registryOps) {
 		LOGGER.info("Loading loot table modifiers...");
 
 		final Map<Identifier, LootModifier> result = new HashMap<>();
@@ -60,7 +61,7 @@ public class LootTableModifier implements ModInitializer {
 			try {
 				result.put(
 						id,
-						LootModifier.CODEC.decode(JsonOps.INSTANCE, JsonParser.parseReader(entry.getValue().getReader())).getOrThrow().getFirst()
+						LootModifier.CODEC.decode(registryOps, JsonParser.parseReader(entry.getValue().getReader())).getOrThrow().getFirst()
 				);
 			} catch (IOException e) {
 				//noinspection StringConcatenationArgumentToLogCall
