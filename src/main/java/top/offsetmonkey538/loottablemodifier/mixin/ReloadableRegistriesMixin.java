@@ -16,11 +16,26 @@ import top.offsetmonkey538.loottablemodifier.LootTableModifier;
 
 @Mixin(
         value = ReloadableRegistries.class,
-        priority = 900
+        priority = 900,
+        remap = false
 )
 public abstract class ReloadableRegistriesMixin {
     @Inject(
-            method = "method_58279",
+            method = {
+                    // 1.21.2 and up: intermediary
+                    "method_61240(Lnet/minecraft/class_8490;Lnet/minecraft/class_3300;Lnet/minecraft/class_6903;)Lnet/minecraft/class_2385;",
+                    // 1.21.2 and up: yarn
+                    "method_61240(Lnet/minecraft/loot/LootDataType;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/registry/RegistryOps;)Lnet/minecraft/registry/MutableRegistry;",
+                    // 1.21.2 and up: mojmap
+                    "lambda$scheduleRegistryLoad$3(Lnet/minecraft/world/level/storage/loot/LootDataType;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/resources/RegistryOps;)Lnet/minecraft/core/WritableRegistry;",
+
+                    // 1.20.5 to 1.21.1: intermediary
+                    "method_58279(Lnet/minecraft/class_8490;Lnet/minecraft/class_3300;Lnet/minecraft/class_6903;)Lnet/minecraft/class_2385;",
+                    // 1.20.5 to 1.21.1: yarn
+                    "method_58279(Lnet/minecraft/loot/LootDataType;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/registry/RegistryOps;)Lnet/minecraft/registry/MutableRegistry;",
+                    // 1.20.5 to 1.21.1: mojmap
+                    "lambda$scheduleElementParse$4(Lnet/minecraft/world/level/storage/loot/LootDataType;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/resources/RegistryOps;)Lnet/minecraft/core/WritableRegistry;"
+            },
             at = @At("RETURN")
     )
     private static <T> void loottablemodifier$modifyLootTables(LootDataType<T> lootDataType, ResourceManager resourceManager, RegistryOps<JsonElement> registryOps, CallbackInfoReturnable<MutableRegistry<?>> cir) {

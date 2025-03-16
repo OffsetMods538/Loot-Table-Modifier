@@ -12,17 +12,20 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryOps;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.offsetmonkey538.loottablemodifier.mixin.LootTableAccessor;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +44,7 @@ public class LootTableModifier implements ModInitializer {
 
 		int amountModified = 0;
 		LOGGER.info("Applying loot table modifiers...");
-		for (RegistryEntry.Reference<LootTable> tableReference : lootRegistry.streamEntries().toList()) {
+		for (RegistryEntry.Reference<LootTable> tableReference : getRegistryAsWrapper(lootRegistry).streamEntries().toList()) {
 			final RegistryKey<LootTable> tableKey = tableReference.registryKey();
 
 			amountModified += applyModifiers(lootRegistry.get(tableKey), tableKey, modifiers);
@@ -118,6 +121,28 @@ public class LootTableModifier implements ModInitializer {
 			}
 		}
 	}
+
+	/*
+	In 1.21.4, the 'Registry' class extends 'RegistryWrapper' and inherits the 'streamEntries' method from *it*.
+	In 1.20.5, the 'Registry' class *doesn't* extend the 'RegistryWrapper' and implements its own 'streamEntries' method.
+	Compiling on both versions works, because the names of the methods are the same, but they compile to different intermediary names, thus a jar compiled for 1.20.5 doesn't work on 1.21.4 and vice versa.
+	Solution: Turn the 'Registry' into a 'RegistryWrapper' as its 'streamEntries' retains the same intermediary on both versions.
+	If 'Registry' implements 'RegistryWrapper': cast it
+	Else: call 'getReadOnlyWrapper' on the registry (doesn't exist on 1.21.4, otherwise would've used 'registry.getReadOnlyWrapper().streamEntries()')
+	 */
+    private static <T> RegistryWrapper<T> getRegistryAsWrapper(@NotNull Registry<T> registry) {
+        //noinspection ConstantValue,RedundantSuppression: On lower versions, Registry doesn't extend RegistryWrapper and thus the 'isAssignableFrom' check can be false. The redundant supression is for the unchecked cast below.
+        if (RegistryWrapper.class.isAssignableFrom(registry.getClass()))
+			//noinspection unchecked,RedundantCast: I swear it casts 🤞
+            return (RegistryWrapper<T>) registry;
+
+        try {
+            //noinspection unchecked: Seriously I swear 🤞🤞
+            return (RegistryWrapper<T>) registry.getClass().getDeclaredMethod(FabricLoader.getInstance().getMappingResolver().mapMethodName("intermediary", "net.minecraft.class_2378", "method_46771", "()Lnet/minecraft/registry/RegistryWrapper$Impl;")).invoke(registry);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 	public static Identifier id(String path) {
 		return Identifier.of(MOD_ID, path);
