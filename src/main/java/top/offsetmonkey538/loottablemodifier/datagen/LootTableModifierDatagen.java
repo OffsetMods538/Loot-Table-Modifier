@@ -59,6 +59,7 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                                     ItemEntry.builder(Items.NETHERITE_SWORD).apply(
                                             EnchantWithLevelsLootFunction
                                                     .builder(lookup, UniformLootNumberProvider.create(20, 39))
+                                                    //.builder(UniformLootNumberProvider.create(20, 39))
                                     )
                             ),
 
