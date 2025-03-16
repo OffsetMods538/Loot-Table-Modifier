@@ -56,13 +56,13 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
 
                     LootPool.builder()
                             .with(
-                                    ItemEntry.builder(Items.DIRT).apply(
+                                    ItemEntry.builder(Items.NETHERITE_SWORD).apply(
                                             EnchantWithLevelsLootFunction
                                                     .builder(lookup, UniformLootNumberProvider.create(20, 39))
                                     )
                             ),
 
-                    LootTables.END_CITY_TREASURE_CHEST
+                    LootTables.ABANDONED_MINESHAFT_CHEST
             );
         }
     }

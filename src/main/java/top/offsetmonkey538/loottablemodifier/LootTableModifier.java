@@ -86,7 +86,7 @@ public class LootTableModifier implements ModInitializer {
 				.addAll(
 						usable.stream()
 								.map(modifiers::get)
-								.map(LootModifier::lootPools)
+								.map(LootModifier::pools)
 								.flatMap(List::stream)
 								.toList()
 				)

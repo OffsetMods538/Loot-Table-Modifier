@@ -7,6 +7,9 @@ Allows datapacks (and thus mods as well) to add to loot tables, instead of just 
 
 Also provides a datagen provider for creating loot table modifiers in mods.
 
+A modifier json file includes two components:
+1. `"modifies"` - string or array, which defines the loot tables to modify. For example `"minecraft:entities/creeper"` or `"minecraft:chests/abandoned_mineshaft"`
+2. `"pools"` - array of loot pools. This works exactly the same as the `"pools"` in a vanilla loot table, thus you can generate a loot table online with a tool like [misode.github.io](https://misode.github.io/loot-table/) and copy over the `"pools"` from the generated json. (I may fork it and add a generator for specifically this mod in the future™)  
 An example json file:
 ```json5
 // example_pack/data/example/loot-table-modifier/loot_modifier/drop_tnt.json
@@ -17,7 +20,7 @@ An example json file:
         "minecraft:entities/creeper",
         "minecraft:entities/zombie"
     ],
-    "loot_pools": [
+    "pools": [
         {
             "bonus_rolls": 0.0,
             "entries": [
