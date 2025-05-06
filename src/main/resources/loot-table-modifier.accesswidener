@@ -1,4 +1,6 @@
 accessWidener    v1    named
 
 accessible field net/minecraft/loot/LootTable pools Ljava/util/List;
+accessible field net/minecraft/loot/LootTable functions Ljava/util/List;
+
 accessible field net/minecraft/loot/context/LootContextTypes MAP Lcom/google/common/collect/BiMap;

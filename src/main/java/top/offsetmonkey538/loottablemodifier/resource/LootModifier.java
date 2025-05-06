@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 import top.offsetmonkey538.loottablemodifier.resource.action.AddPoolAction;
 import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierAction;
+import top.offsetmonkey538.loottablemodifier.resource.predicate.LootTablePredicate;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;

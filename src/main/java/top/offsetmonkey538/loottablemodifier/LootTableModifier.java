@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.offsetmonkey538.loottablemodifier.api.LootModifierActionTypes;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
-import top.offsetmonkey538.loottablemodifier.resource.LootTablePredicate;
+import top.offsetmonkey538.loottablemodifier.resource.predicate.LootTablePredicate;
 
 import java.util.HashMap;
 import java.util.Map;

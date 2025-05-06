@@ -11,7 +11,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
-import top.offsetmonkey538.loottablemodifier.resource.LootTablePredicate;
+import top.offsetmonkey538.loottablemodifier.resource.predicate.LootTablePredicate;
 import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierAction;
 
 import java.lang.reflect.InvocationTargetException;
