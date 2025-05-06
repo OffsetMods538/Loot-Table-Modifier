@@ -1,36 +1,24 @@
 package top.offsetmonkey538.loottablemodifier;
 
-import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryOps;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.offsetmonkey538.loottablemodifier.api.LootModifierActionTypes;
-import top.offsetmonkey538.loottablemodifier.mixin.LootTableAccessor;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class LootTableModifier implements ModInitializer {

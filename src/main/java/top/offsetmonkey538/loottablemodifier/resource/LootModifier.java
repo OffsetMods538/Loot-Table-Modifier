@@ -1,30 +1,17 @@
 package top.offsetmonkey538.loottablemodifier.resource;
 
-import com.google.common.collect.ImmutableList;
-import com.ibm.icu.impl.EmojiProps;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.fabricmc.fabric.api.loot.v3.FabricLootPoolBuilder;
-import net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.condition.LootCondition;
-import net.minecraft.loot.condition.LootConditionConsumingBuilder;
-import net.minecraft.loot.entry.LootPoolEntry;
-import net.minecraft.loot.function.LootFunction;
-import net.minecraft.loot.function.LootFunctionConsumingBuilder;
-import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
-import net.minecraft.loot.provider.number.LootNumberProvider;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
-import top.offsetmonkey538.loottablemodifier.mixin.LootTableAccessor;
 import top.offsetmonkey538.loottablemodifier.resource.action.AddPoolAction;
 import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierAction;
 
