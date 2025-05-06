@@ -11,6 +11,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
+import top.offsetmonkey538.loottablemodifier.resource.LootTablePredicate;
 import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierAction;
 
 import java.lang.reflect.InvocationTargetException;
@@ -19,6 +20,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static top.offsetmonkey538.loottablemodifier.LootTableModifier.MOD_ID;
@@ -172,7 +174,7 @@ public abstract class NewLootModifierProvider extends FabricCodecDataProvider<Lo
 
     private void addModifier(Identifier name, List<LootModifierAction.Builder> builders, List<Identifier> modifies) {
         provider.accept(name, new LootModifier(
-                new ArrayList<>(modifies),
+                modifies.stream().map(identifier -> new LootTablePredicate(Pattern.compile(identifier.toString()))).toList(),
                 builders.stream()
                         .map(LootModifierAction.Builder::build)
                         .toList()

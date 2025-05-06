@@ -1,5 +1,6 @@
 package top.offsetmonkey538.loottablemodifier;
 
+import com.google.common.base.Stopwatch;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import net.fabricmc.api.ModInitializer;
@@ -17,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.offsetmonkey538.loottablemodifier.api.LootModifierActionTypes;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
+import top.offsetmonkey538.loottablemodifier.resource.LootTablePredicate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,20 +39,24 @@ public class LootTableModifier implements ModInitializer {
 		final Map<Identifier, LootModifier> failedModifiers = new HashMap<>(0);
 
 		int amountModified = 0;
-		LOGGER.info("Applying loot table modifiers...");
+		LOGGER.info("Modifying loot tables...");
+		final Stopwatch stopwatch = Stopwatch.createStarted();
 		for (Map.Entry<Identifier, LootModifier> modifierEntry : modifiers.entrySet()) {
 			final LootModifier modifier = modifierEntry.getValue();
 
 			amountModified += modifier.apply(lootRegistry);
 
-			if (!modifier.modifies().isEmpty()) failedModifiers.put(modifierEntry.getKey(), modifier);
+			// TODO: try to figure smt out abt this: if (!modifier.modifies().isEmpty()) failedModifiers.put(modifierEntry.getKey(), modifier);
 		}
 
-		modifiersApplied(amountModified, failedModifiers);
+
+		LOGGER.info("Modified {} loot tables in {}!", amountModified, stopwatch);
+		modifiersApplied(failedModifiers);
 	}
 
 	private static Map<Identifier, LootModifier> loadModifiers(ResourceManager resourceManager, RegistryOps<JsonElement> registryOps) {
 		LOGGER.info("Loading loot table modifiers...");
+		final Stopwatch stopwatch = Stopwatch.createStarted();
 
 		final Map<Identifier, LootModifier> result = new HashMap<>();
 
@@ -69,21 +75,19 @@ public class LootTableModifier implements ModInitializer {
 			}
 		}
 
-		LOGGER.info("Loaded {} loot modifiers!", result.size());
+		LOGGER.info("Loaded {} loot modifiers in {}!", result.size(), stopwatch);
 
 		return result;
 	}
 
-	private static void modifiersApplied(int amountModified, Map<Identifier, LootModifier> failedModifiers) {
-		LOGGER.info("Modified {} loot tables!", amountModified);
-
+	private static void modifiersApplied(Map<Identifier, LootModifier> failedModifiers) {
 		if (failedModifiers.isEmpty()) return;
 
 		LOGGER.warn("There were unused modifiers:");
 		for (Map.Entry<Identifier, LootModifier> entry : failedModifiers.entrySet()) {
-			LOGGER.warn("\tModifier '{}' failed to modify loot table for entities: ", entry.getKey());
-			for (Identifier id : entry.getValue().modifies()) {
-				LOGGER.warn("\t\t- {}", id);
+			LOGGER.warn("\tModifier '{}' failed to modify loot table for predicates: ", entry.getKey());
+			for (LootTablePredicate predicate : entry.getValue().modifies()) {
+				LOGGER.warn("\t\t- {}", predicate);
 			}
 		}
 	}
