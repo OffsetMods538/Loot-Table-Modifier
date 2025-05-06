@@ -12,7 +12,6 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
-import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
 import top.offsetmonkey538.loottablemodifier.resource.NewLootModifier;
 import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierAction;
 

@@ -7,6 +7,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.fabricmc.fabric.api.loot.v3.FabricLootPoolBuilder;
 import net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.LootCondition;
@@ -16,14 +17,21 @@ import net.minecraft.loot.function.LootFunction;
 import net.minecraft.loot.function.LootFunctionConsumingBuilder;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.loot.provider.number.LootNumberProvider;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
+import top.offsetmonkey538.loottablemodifier.mixin.LootTableAccessor;
 import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierAction;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-public record NewLootModifier(List<Identifier> modifies, List<LootModifierAction> actions) {
+// Using ArrayList as I want it to be modifiable because I empty it when applying, so I can check for things that weren't applied
+public record NewLootModifier(@NotNull ArrayList<Identifier> modifies, @NotNull List<LootModifierAction> actions) {
     public static final Codec<NewLootModifier> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.either(Identifier.CODEC, Identifier.CODEC.listOf()).fieldOf("modifies").forGetter(NewLootModifier::modifiesEither),
             Codec.either(LootModifierAction.CODEC, LootModifierAction.CODEC.listOf()).fieldOf("actions").forGetter(NewLootModifier::actionsEither)
@@ -31,10 +39,16 @@ public record NewLootModifier(List<Identifier> modifies, List<LootModifierAction
             //Codec.mapEither(LootPool.CODEC.listOf().fieldOf("pools"), LootPool.CODEC.listOf().fieldOf("loot_pools")).forGetter(NewLootModifier::poolsEither)
     ).apply(instance, NewLootModifier::new));
 
-    private NewLootModifier(Either<Identifier, List<Identifier>> modifiesEither, Either<LootModifierAction, List<LootModifierAction>> actionsEither) {
+    private NewLootModifier(@NotNull Either<Identifier, List<Identifier>> modifiesEither, @NotNull Either<LootModifierAction, List<LootModifierAction>> actionsEither) {
         this(
-                new ArrayList<>(modifiesEither.right().orElseGet(() -> List.of(modifiesEither.left().orElseThrow()))),
-                new ArrayList<>(actionsEither.right().orElseGet(() -> List.of(actionsEither.left().orElseThrow())))
+                modifiesEither.right().orElseGet(() -> List.of(modifiesEither.left().orElseThrow())),
+                actionsEither.right().orElseGet(() -> List.of(actionsEither.left().orElseThrow()))
+        );
+    }
+    public NewLootModifier(@NotNull List<Identifier> modifies, @NotNull List<LootModifierAction> actions) {
+        this(
+                new ArrayList<>(modifies),
+                actions
         );
     }
 
@@ -46,6 +60,63 @@ public record NewLootModifier(List<Identifier> modifies, List<LootModifierAction
     private Either<LootModifierAction, List<LootModifierAction>> actionsEither() {
         if (actions.size() == 1) return Either.left(actions.get(0));
         return Either.right(actions);
+    }
+
+    /**
+     * @param tableRegistry registry of loot tables to modify
+     * @return amount of loot tables modified
+     */
+    public int apply(final @NotNull Registry<LootTable> tableRegistry) {
+        final List<RegistryKey<LootTable>> tableKeys = getRegistryAsWrapper(tableRegistry).streamEntries().map(RegistryEntry.Reference::registryKey).filter(key -> modifies.contains(key.getValue())).toList();
+        if (tableKeys.isEmpty()) return 0;
+        // At this point only ones in 'modifies' remain
+
+        int modified = 0;
+
+        for (RegistryKey<LootTable> key : tableKeys) {
+            final LootTable table = tableRegistry.get(key);
+
+            if (table == null) throw new IllegalStateException("Loot table with id '%s' is null!".formatted(key));
+
+            modified += apply(table) ? 1 : 0;
+            modifies.remove(key.getValue());
+        }
+
+        return modified;
+    }
+
+    /**
+     * @param table table to modify
+     * @return true when any of the 'actions' could be applied, false otherwise
+     */
+    private boolean apply(final @NotNull LootTable table) {
+        boolean result = false;
+        for (LootModifierAction action : actions) {
+            if (action.apply(table)) result = true;
+        }
+        return result;
+    }
+
+    /*
+	In 1.21.4, the 'Registry' class extends 'RegistryWrapper' and inherits the 'streamEntries' method from *it*.
+	In 1.20.5, the 'Registry' class *doesn't* extend the 'RegistryWrapper' and implements its own 'streamEntries' method.
+	Compiling on both versions works, because the names of the methods are the same, but they compile to different intermediary names, thus a jar compiled for 1.20.5 doesn't work on 1.21.4 and vice versa.
+	Solution: Turn the 'Registry' into a 'RegistryWrapper' as its 'streamEntries' retains the same intermediary on both versions.
+	If 'Registry' implements 'RegistryWrapper': cast it
+	Else: call 'getReadOnlyWrapper' on the registry (doesn't exist on 1.21.4, otherwise would've used 'registry.getReadOnlyWrapper().streamEntries()')
+	 */
+    private static <T> RegistryWrapper<T> getRegistryAsWrapper(@NotNull Registry<T> registry) {
+        //noinspection ConstantValue,RedundantSuppression: On lower versions, Registry doesn't extend RegistryWrapper and thus the 'isAssignableFrom' check can be false. The redundant supression is for the unchecked cast below.
+        if (RegistryWrapper.class.isAssignableFrom(registry.getClass()))
+            //noinspection unchecked,RedundantCast: I swear it casts 🤞
+            return (RegistryWrapper<T>) registry;
+
+        try {
+            //noinspection unchecked: Seriously I swear 🤞🤞
+            return (RegistryWrapper<T>) registry.getClass().getDeclaredMethod(FabricLoader.getInstance().getMappingResolver().mapMethodName("intermediary", "net.minecraft.class_2378", "method_46771", "()Lnet/minecraft/class_7225$class_7226;")).invoke(registry);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // Don't think this is needed? public static NewLootModifier.Builder builder() {

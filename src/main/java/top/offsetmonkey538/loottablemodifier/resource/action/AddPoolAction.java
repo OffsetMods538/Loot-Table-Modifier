@@ -5,8 +5,11 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTable;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.api.LootModifierActionTypes;
+import top.offsetmonkey538.loottablemodifier.mixin.LootTableAccessor;
 
 import java.util.List;
 
@@ -18,6 +21,18 @@ public record AddPoolAction(List<LootPool> pools) implements LootModifierAction 
     @Override
     public LootModifierActionType getType() {
         return LootModifierActionTypes.ADD_ENTRY;
+    }
+
+    @Override
+    public boolean apply(@NotNull LootTable table) {
+        final List<LootPool> newPools = ImmutableList.<LootPool>builder()
+                .addAll(table.pools)
+                .addAll(this.pools)
+                .build();
+
+        ((LootTableAccessor) table).setPools(newPools);
+
+        return true;
     }
 
     public static AddPoolAction.Builder builder(@NotNull LootPool.Builder poolBuilder) {

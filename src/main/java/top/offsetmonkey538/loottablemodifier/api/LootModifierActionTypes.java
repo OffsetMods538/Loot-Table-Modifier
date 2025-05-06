@@ -25,4 +25,8 @@ public final class LootModifierActionTypes {
     private static LootModifierActionType register(final @NotNull Identifier id, final @NotNull MapCodec<? extends LootModifierAction> codec) {
         return Registry.register(LootModifierActionType.REGISTRY, id, new LootModifierActionType(codec));
     }
+
+    public static void register() {
+        // Registers action types by loading the class
+    }
 }

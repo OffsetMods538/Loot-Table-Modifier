@@ -19,11 +19,13 @@ import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.offsetmonkey538.loottablemodifier.api.LootModifierActionTypes;
 import top.offsetmonkey538.loottablemodifier.mixin.LootTableAccessor;
-import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
+import top.offsetmonkey538.loottablemodifier.resource.NewLootModifier;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -37,27 +39,32 @@ public class LootTableModifier implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		LootModifierActionTypes.register();
+
 		if(FabricLoader.getInstance().isDevelopmentEnvironment()) ResourceManagerHelper.registerBuiltinResourcePack(id("example_pack"), FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow(), Text.of("Example Pack"), ResourcePackActivationType.NORMAL);
 	}
 
 	public static void runModification(ResourceManager resourceManager, Registry<LootTable> lootRegistry, RegistryOps<JsonElement> registryOps) {
-		final Map<Identifier, LootModifier> modifiers = loadModifiers(resourceManager, registryOps);
+		final Map<Identifier, NewLootModifier> modifiers = loadModifiers(resourceManager, registryOps);
+		final Map<Identifier, NewLootModifier> failedModifiers = new HashMap<>(0);
 
 		int amountModified = 0;
 		LOGGER.info("Applying loot table modifiers...");
-		for (RegistryEntry.Reference<LootTable> tableReference : getRegistryAsWrapper(lootRegistry).streamEntries().toList()) {
-			final RegistryKey<LootTable> tableKey = tableReference.registryKey();
+		for (Map.Entry<Identifier, NewLootModifier> modifierEntry : modifiers.entrySet()) {
+			final NewLootModifier modifier = modifierEntry.getValue();
 
-			amountModified += applyModifiers(lootRegistry.get(tableKey), tableKey, modifiers);
+			amountModified += modifier.apply(lootRegistry);
+
+			if (!modifier.modifies().isEmpty()) failedModifiers.put(modifierEntry.getKey(), modifier);
 		}
 
-		modifiersApplied(amountModified, modifiers);
+		modifiersApplied(amountModified, failedModifiers);
 	}
 
-	private static Map<Identifier, LootModifier> loadModifiers(ResourceManager resourceManager, RegistryOps<JsonElement> registryOps) {
+	private static Map<Identifier, NewLootModifier> loadModifiers(ResourceManager resourceManager, RegistryOps<JsonElement> registryOps) {
 		LOGGER.info("Loading loot table modifiers...");
 
-		final Map<Identifier, LootModifier> result = new HashMap<>();
+		final Map<Identifier, NewLootModifier> result = new HashMap<>();
 
 		for (Map.Entry<Identifier, Resource> entry : resourceManager.findResources(MOD_ID + "/loot_modifier", path -> path.toString().endsWith(".json")).entrySet()) {
 			final Identifier id = entry.getKey();
@@ -65,7 +72,7 @@ public class LootTableModifier implements ModInitializer {
 			try {
 				result.put(
 						id,
-						LootModifier.CODEC.decode(registryOps, JsonParser.parseReader(entry.getValue().getReader())).getOrThrow().getFirst()
+						NewLootModifier.CODEC.decode(registryOps, JsonParser.parseReader(entry.getValue().getReader())).getOrThrow().getFirst()
 				);
 			} catch (IOException e) {
 				//noinspection StringConcatenationArgumentToLogCall
@@ -78,72 +85,19 @@ public class LootTableModifier implements ModInitializer {
 		return result;
 	}
 
-	// Returns: amount of loot tables modified
-	private static int applyModifiers(LootTable table, RegistryKey<LootTable> tableKey, Map<Identifier, LootModifier> modifiers) {
-		final Identifier currentId = tableKey.getValue();
-		final List<Identifier> usable = modifiers.keySet().stream().filter(entry -> modifiers.get(entry).modifies().contains(currentId)).toList();
-
-		if (usable.isEmpty()) return 0;
-
-		final List<LootPool> newPools = ImmutableList.<LootPool>builder()
-				.addAll(table.pools)
-				.addAll(
-						usable.stream()
-								.map(modifiers::get)
-								.map(LootModifier::pools)
-								.flatMap(List::stream)
-								.toList()
-				)
-				.build();
-
-		((LootTableAccessor) table).setPools(newPools);
-
-		for (Identifier modifierId : usable) {
-			final LootModifier modifier = modifiers.get(modifierId);
-
-			modifier.modifies().remove(currentId);
-
-			if (modifier.modifies().isEmpty()) modifiers.remove(modifierId);
-		}
-
-		return usable.size();
-	}
-
-	private static void modifiersApplied(int amountModified, Map<Identifier, LootModifier> modifiers) {
+	private static void modifiersApplied(int amountModified, Map<Identifier, NewLootModifier> failedModifiers) {
 		LOGGER.info("Modified {} loot tables!", amountModified);
 
-		if (modifiers.isEmpty()) return;
+		if (failedModifiers.isEmpty()) return;
 
 		LOGGER.warn("There were unused modifiers:");
-		for (Map.Entry<Identifier, LootModifier> entry : modifiers.entrySet()) {
+		for (Map.Entry<Identifier, NewLootModifier> entry : failedModifiers.entrySet()) {
 			LOGGER.warn("\tModifier '{}' failed to modify loot table for entities: ", entry.getKey());
 			for (Identifier id : entry.getValue().modifies()) {
 				LOGGER.warn("\t\t- {}", id);
 			}
 		}
 	}
-
-	/*
-	In 1.21.4, the 'Registry' class extends 'RegistryWrapper' and inherits the 'streamEntries' method from *it*.
-	In 1.20.5, the 'Registry' class *doesn't* extend the 'RegistryWrapper' and implements its own 'streamEntries' method.
-	Compiling on both versions works, because the names of the methods are the same, but they compile to different intermediary names, thus a jar compiled for 1.20.5 doesn't work on 1.21.4 and vice versa.
-	Solution: Turn the 'Registry' into a 'RegistryWrapper' as its 'streamEntries' retains the same intermediary on both versions.
-	If 'Registry' implements 'RegistryWrapper': cast it
-	Else: call 'getReadOnlyWrapper' on the registry (doesn't exist on 1.21.4, otherwise would've used 'registry.getReadOnlyWrapper().streamEntries()')
-	 */
-    private static <T> RegistryWrapper<T> getRegistryAsWrapper(@NotNull Registry<T> registry) {
-        //noinspection ConstantValue,RedundantSuppression: On lower versions, Registry doesn't extend RegistryWrapper and thus the 'isAssignableFrom' check can be false. The redundant supression is for the unchecked cast below.
-        if (RegistryWrapper.class.isAssignableFrom(registry.getClass()))
-			//noinspection unchecked,RedundantCast: I swear it casts 🤞
-            return (RegistryWrapper<T>) registry;
-
-        try {
-            //noinspection unchecked: Seriously I swear 🤞🤞
-            return (RegistryWrapper<T>) registry.getClass().getDeclaredMethod(FabricLoader.getInstance().getMappingResolver().mapMethodName("intermediary", "net.minecraft.class_2378", "method_46771", "()Lnet/minecraft/class_7225$class_7226;")).invoke(registry);
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
 	public static Identifier id(String path) {
 		return Identifier.of(MOD_ID, path);
