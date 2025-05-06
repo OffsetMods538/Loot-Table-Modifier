@@ -70,17 +70,18 @@ public class LootTableModifier implements ModInitializer {
 			final Identifier id = entry.getKey();
 
 			try {
+				LOGGER.debug("Loading load loot table modifier from '%s'".formatted(id));
 				result.put(
 						id,
 						NewLootModifier.CODEC.decode(registryOps, JsonParser.parseReader(entry.getValue().getReader())).getOrThrow().getFirst()
 				);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				//noinspection StringConcatenationArgumentToLogCall
-				LOGGER.error("Failed to load loot table modifier from '" + id + "'!", e);
+				LOGGER.error("Failed to load loot table modifier from '%s'!".formatted(id), e);
 			}
 		}
 
-		LOGGER.info("Loaded {} loot modifiers", result.size());
+		LOGGER.info("Loaded {} loot modifiers!", result.size());
 
 		return result;
 	}

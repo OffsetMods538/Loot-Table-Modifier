@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.ibm.icu.impl.EmojiProps;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.fabricmc.fabric.api.loot.v3.FabricLootPoolBuilder;
 import net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder;
@@ -24,32 +25,54 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.mixin.LootTableAccessor;
+import top.offsetmonkey538.loottablemodifier.resource.action.AddPoolAction;
 import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierAction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 // Using ArrayList as I want it to be modifiable because I empty it when applying, so I can check for things that weren't applied
 public record NewLootModifier(@NotNull ArrayList<Identifier> modifies, @NotNull List<LootModifierAction> actions) {
     public static final Codec<NewLootModifier> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.either(Identifier.CODEC, Identifier.CODEC.listOf()).fieldOf("modifies").forGetter(NewLootModifier::modifiesEither),
-            Codec.either(LootModifierAction.CODEC, LootModifierAction.CODEC.listOf()).fieldOf("actions").forGetter(NewLootModifier::actionsEither)
-            //LootModifierAction.CODEC.listOf().fieldOf("")
-            //Codec.mapEither(LootPool.CODEC.listOf().fieldOf("pools"), LootPool.CODEC.listOf().fieldOf("loot_pools")).forGetter(NewLootModifier::poolsEither)
+            Codec.either(LootModifierAction.CODEC, LootModifierAction.CODEC.listOf()).optionalFieldOf("actions").forGetter(NewLootModifier::actionsOptionalEither),
+            LootPool.CODEC.listOf().optionalFieldOf("pools").forGetter(lootModifier -> Optional.empty()),
+            LootPool.CODEC.listOf().optionalFieldOf("loot_pools").forGetter(lootModifier -> Optional.empty())
     ).apply(instance, NewLootModifier::new));
 
-    private NewLootModifier(@NotNull Either<Identifier, List<Identifier>> modifiesEither, @NotNull Either<LootModifierAction, List<LootModifierAction>> actionsEither) {
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // From codec soo yeah
+    private NewLootModifier(@NotNull Either<Identifier, List<Identifier>> modifiesEither, @NotNull Optional<Either<LootModifierAction, List<LootModifierAction>>> actions, @NotNull Optional<List<LootPool>> pools, @NotNull Optional<List<LootPool>> lootPools) {
         this(
                 modifiesEither.right().orElseGet(() -> List.of(modifiesEither.left().orElseThrow())),
-                actionsEither.right().orElseGet(() -> List.of(actionsEither.left().orElseThrow()))
+                getActions(actions, pools, lootPools)
         );
     }
     public NewLootModifier(@NotNull List<Identifier> modifies, @NotNull List<LootModifierAction> actions) {
         this(
                 new ArrayList<>(modifies),
-                actions
+                Collections.unmodifiableList(actions)
         );
+    }
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // From codec soo yeah
+    private static List<LootModifierAction> getActions(@NotNull Optional<Either<LootModifierAction, List<LootModifierAction>>> actions, @NotNull Optional<List<LootPool>> pools, @NotNull Optional<List<LootPool>> lootPools) {
+        List<LootModifierAction> result = null;
+
+        if (actions.isPresent()) result = actions.get().right().orElseGet(() -> actions.get().left().isEmpty() ? null : List.of(actions.get().left().orElseThrow()));
+
+        if (result != null && pools.isPresent()) throw new IllegalStateException("Both \"actions\" and \"pools\" present in loot modifier!");
+        if (result != null && lootPools.isPresent()) throw new IllegalStateException("Both \"actions\" and \"loot_pools\" present in loot modifier!");
+        if (pools.isPresent() && lootPools.isPresent()) throw new IllegalStateException("Both \"pools\" and \"loot_pools\" present in loot modifier!");
+
+        if (result == null && pools.isPresent()) result = List.of(new AddPoolAction(pools.get()));
+        if (result == null && lootPools.isPresent()) result = List.of(new AddPoolAction(lootPools.get()));
+
+        if (result == null) throw new IllegalStateException("Neither \"actions\" nor \"pools\" present in loot modifier!");
+
+        return result;
     }
 
     private Either<Identifier, List<Identifier>> modifiesEither() {
@@ -57,9 +80,9 @@ public record NewLootModifier(@NotNull ArrayList<Identifier> modifies, @NotNull 
         return Either.right(modifies);
     }
 
-    private Either<LootModifierAction, List<LootModifierAction>> actionsEither() {
-        if (actions.size() == 1) return Either.left(actions.get(0));
-        return Either.right(actions);
+    private Optional<Either<LootModifierAction, List<LootModifierAction>>> actionsOptionalEither() {
+        if (actions.size() == 1) return Optional.of(Either.left(actions.get(0)));
+        return Optional.of(Either.right(actions));
     }
 
     /**
