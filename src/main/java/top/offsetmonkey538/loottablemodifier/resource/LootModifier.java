@@ -35,22 +35,22 @@ import java.util.List;
 import java.util.Optional;
 
 // Using ArrayList as I want it to be modifiable because I empty it when applying, so I can check for things that weren't applied
-public record NewLootModifier(@NotNull ArrayList<Identifier> modifies, @NotNull List<LootModifierAction> actions) {
-    public static final Codec<NewLootModifier> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.either(Identifier.CODEC, Identifier.CODEC.listOf()).fieldOf("modifies").forGetter(NewLootModifier::modifiesEither),
-            Codec.either(LootModifierAction.CODEC, LootModifierAction.CODEC.listOf()).optionalFieldOf("actions").forGetter(NewLootModifier::actionsOptionalEither),
+public record LootModifier(@NotNull ArrayList<Identifier> modifies, @NotNull List<LootModifierAction> actions) {
+    public static final Codec<LootModifier> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.either(Identifier.CODEC, Identifier.CODEC.listOf()).fieldOf("modifies").forGetter(LootModifier::modifiesEither),
+            Codec.either(LootModifierAction.CODEC, LootModifierAction.CODEC.listOf()).optionalFieldOf("actions").forGetter(LootModifier::actionsOptionalEither),
             LootPool.CODEC.listOf().optionalFieldOf("pools").forGetter(lootModifier -> Optional.empty()),
             LootPool.CODEC.listOf().optionalFieldOf("loot_pools").forGetter(lootModifier -> Optional.empty())
-    ).apply(instance, NewLootModifier::new));
+    ).apply(instance, LootModifier::new));
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // From codec soo yeah
-    private NewLootModifier(@NotNull Either<Identifier, List<Identifier>> modifiesEither, @NotNull Optional<Either<LootModifierAction, List<LootModifierAction>>> actions, @NotNull Optional<List<LootPool>> pools, @NotNull Optional<List<LootPool>> lootPools) {
+    private LootModifier(@NotNull Either<Identifier, List<Identifier>> modifiesEither, @NotNull Optional<Either<LootModifierAction, List<LootModifierAction>>> actions, @NotNull Optional<List<LootPool>> pools, @NotNull Optional<List<LootPool>> lootPools) {
         this(
                 modifiesEither.right().orElseGet(() -> List.of(modifiesEither.left().orElseThrow())),
                 getActions(actions, pools, lootPools)
         );
     }
-    public NewLootModifier(@NotNull List<Identifier> modifies, @NotNull List<LootModifierAction> actions) {
+    public LootModifier(@NotNull List<Identifier> modifies, @NotNull List<LootModifierAction> actions) {
         this(
                 new ArrayList<>(modifies),
                 Collections.unmodifiableList(actions)

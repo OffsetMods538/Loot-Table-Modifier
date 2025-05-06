@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.offsetmonkey538.loottablemodifier.api.LootModifierActionTypes;
 import top.offsetmonkey538.loottablemodifier.mixin.LootTableAccessor;
-import top.offsetmonkey538.loottablemodifier.resource.NewLootModifier;
+import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -45,13 +45,13 @@ public class LootTableModifier implements ModInitializer {
 	}
 
 	public static void runModification(ResourceManager resourceManager, Registry<LootTable> lootRegistry, RegistryOps<JsonElement> registryOps) {
-		final Map<Identifier, NewLootModifier> modifiers = loadModifiers(resourceManager, registryOps);
-		final Map<Identifier, NewLootModifier> failedModifiers = new HashMap<>(0);
+		final Map<Identifier, LootModifier> modifiers = loadModifiers(resourceManager, registryOps);
+		final Map<Identifier, LootModifier> failedModifiers = new HashMap<>(0);
 
 		int amountModified = 0;
 		LOGGER.info("Applying loot table modifiers...");
-		for (Map.Entry<Identifier, NewLootModifier> modifierEntry : modifiers.entrySet()) {
-			final NewLootModifier modifier = modifierEntry.getValue();
+		for (Map.Entry<Identifier, LootModifier> modifierEntry : modifiers.entrySet()) {
+			final LootModifier modifier = modifierEntry.getValue();
 
 			amountModified += modifier.apply(lootRegistry);
 
@@ -61,10 +61,10 @@ public class LootTableModifier implements ModInitializer {
 		modifiersApplied(amountModified, failedModifiers);
 	}
 
-	private static Map<Identifier, NewLootModifier> loadModifiers(ResourceManager resourceManager, RegistryOps<JsonElement> registryOps) {
+	private static Map<Identifier, LootModifier> loadModifiers(ResourceManager resourceManager, RegistryOps<JsonElement> registryOps) {
 		LOGGER.info("Loading loot table modifiers...");
 
-		final Map<Identifier, NewLootModifier> result = new HashMap<>();
+		final Map<Identifier, LootModifier> result = new HashMap<>();
 
 		for (Map.Entry<Identifier, Resource> entry : resourceManager.findResources(MOD_ID + "/loot_modifier", path -> path.toString().endsWith(".json")).entrySet()) {
 			final Identifier id = entry.getKey();
@@ -73,7 +73,7 @@ public class LootTableModifier implements ModInitializer {
 				LOGGER.debug("Loading load loot table modifier from '%s'".formatted(id));
 				result.put(
 						id,
-						NewLootModifier.CODEC.decode(registryOps, JsonParser.parseReader(entry.getValue().getReader())).getOrThrow().getFirst()
+						LootModifier.CODEC.decode(registryOps, JsonParser.parseReader(entry.getValue().getReader())).getOrThrow().getFirst()
 				);
 			} catch (Exception e) {
 				//noinspection StringConcatenationArgumentToLogCall
@@ -86,13 +86,13 @@ public class LootTableModifier implements ModInitializer {
 		return result;
 	}
 
-	private static void modifiersApplied(int amountModified, Map<Identifier, NewLootModifier> failedModifiers) {
+	private static void modifiersApplied(int amountModified, Map<Identifier, LootModifier> failedModifiers) {
 		LOGGER.info("Modified {} loot tables!", amountModified);
 
 		if (failedModifiers.isEmpty()) return;
 
 		LOGGER.warn("There were unused modifiers:");
-		for (Map.Entry<Identifier, NewLootModifier> entry : failedModifiers.entrySet()) {
+		for (Map.Entry<Identifier, LootModifier> entry : failedModifiers.entrySet()) {
 			LOGGER.warn("\tModifier '{}' failed to modify loot table for entities: ", entry.getKey());
 			for (Identifier id : entry.getValue().modifies()) {
 				LOGGER.warn("\t\t- {}", id);

@@ -12,7 +12,7 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
-import top.offsetmonkey538.loottablemodifier.resource.NewLootModifier;
+import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
 import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierAction;
 
 import java.lang.reflect.InvocationTargetException;
@@ -48,15 +48,15 @@ import static top.offsetmonkey538.loottablemodifier.LootTableModifier.MOD_ID;
  * }
  * }</pre>
  */
-public abstract class NewLootModifierProvider extends FabricCodecDataProvider<NewLootModifier> {
-    private BiConsumer<Identifier, NewLootModifier> provider;
+public abstract class NewLootModifierProvider extends FabricCodecDataProvider<LootModifier> {
+    private BiConsumer<Identifier, LootModifier> provider;
 
     public NewLootModifierProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-        super(dataOutput, registriesFuture, DataOutput.OutputType.DATA_PACK, MOD_ID + "/loot_modifier", NewLootModifier.CODEC);
+        super(dataOutput, registriesFuture, DataOutput.OutputType.DATA_PACK, MOD_ID + "/loot_modifier", LootModifier.CODEC);
     }
 
     @Override
-    protected void configure(BiConsumer<Identifier, NewLootModifier> provider, RegistryWrapper.WrapperLookup lookup) {
+    protected void configure(BiConsumer<Identifier, LootModifier> provider, RegistryWrapper.WrapperLookup lookup) {
         this.provider = provider;
         generate(lookup);
     }
@@ -173,7 +173,7 @@ public abstract class NewLootModifierProvider extends FabricCodecDataProvider<Ne
     }
 
     private void addModifier(Identifier name, List<LootModifierAction.Builder> builders, List<Identifier> modifies) {
-        provider.accept(name, new NewLootModifier(
+        provider.accept(name, new LootModifier(
                 new ArrayList<>(modifies),
                 builders.stream()
                         .map(LootModifierAction.Builder::build)
