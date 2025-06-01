@@ -6,26 +6,27 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.MappingResolver;
 import net.minecraft.data.DataOutput;
 import net.minecraft.entity.EntityType;
-import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
+import top.offsetmonkey538.loottablemodifier.resource.predicate.LootTablePredicate;
+import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierAction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static top.offsetmonkey538.loottablemodifier.LootTableModifier.MOD_ID;
 
 /**
+ * FIXME: wrong
  * A datagen provider for creating loot modifiers.
  * <br>
  * Override {@link #generate(RegistryWrapper.WrapperLookup) generate()} and use the {@code addModifier(...)} methods to add modifiers.
@@ -47,10 +48,10 @@ import static top.offsetmonkey538.loottablemodifier.LootTableModifier.MOD_ID;
  * }
  * }</pre>
  */
-public abstract class LootModifierProvider extends FabricCodecDataProvider<LootModifier> {
+public abstract class NewLootModifierProvider extends FabricCodecDataProvider<LootModifier> {
     private BiConsumer<Identifier, LootModifier> provider;
 
-    public LootModifierProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    public NewLootModifierProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         super(dataOutput, registriesFuture, DataOutput.OutputType.DATA_PACK, MOD_ID + "/loot_modifier", LootModifier.CODEC);
     }
 
@@ -62,7 +63,7 @@ public abstract class LootModifierProvider extends FabricCodecDataProvider<LootM
 
     @Override
     public String getName() {
-        return "Loot Table Modifiers";
+        return "New Loot Table Modifiers";
     }
 
     /**
@@ -80,7 +81,7 @@ public abstract class LootModifierProvider extends FabricCodecDataProvider<LootM
      * @param modifies The {@link EntityType} to add the modifier to
      * @param modifiesAdditional Additional {@link EntityType}s to add the modifier to
      */
-    protected void addModifier(Identifier name, LootPool.Builder builder, EntityType<?> modifies, EntityType<?>... modifiesAdditional) {
+    protected void addModifier(Identifier name, LootModifierAction.Builder builder, EntityType<?> modifies, EntityType<?>... modifiesAdditional) {
         addModifier(
                 name,
                 List.of(builder),
@@ -97,7 +98,7 @@ public abstract class LootModifierProvider extends FabricCodecDataProvider<LootM
      * @param modifies The {@link EntityType} to add the modifier to
      * @param modifiesAdditional Additional {@link EntityType}s to add the modifier to
      */
-    protected void addModifier(Identifier name, List<LootPool.Builder> builders, EntityType<?> modifies, EntityType<?>... modifiesAdditional) {
+    protected void addModifier(Identifier name, List<LootModifierAction.Builder> builders, EntityType<?> modifies, EntityType<?>... modifiesAdditional) {
         addModifier(
                 name,
                 builders,
@@ -113,7 +114,7 @@ public abstract class LootModifierProvider extends FabricCodecDataProvider<LootM
      * @param modifies The {@link RegistryKey} to add the modifier to
      * @param modifiesAdditional Additional {@link RegistryKey}s to add the modifier to
      */
-    protected void addModifier(Identifier name, LootPool.Builder builder, RegistryKey<?> modifies, RegistryKey<?>... modifiesAdditional) {
+    protected void addModifier(Identifier name, LootModifierAction.Builder builder, RegistryKey<?> modifies, RegistryKey<?>... modifiesAdditional) {
         addModifier(
                 name,
                 List.of(builder),
@@ -130,7 +131,7 @@ public abstract class LootModifierProvider extends FabricCodecDataProvider<LootM
      * @param modifies The {@link RegistryKey} to add the modifier to
      * @param modifiesAdditional Additional {@link RegistryKey}s to add the modifier to
      */
-    protected void addModifier(Identifier name, List<LootPool.Builder> builders, RegistryKey<?> modifies, RegistryKey<?>... modifiesAdditional) {
+    protected void addModifier(Identifier name, List<LootModifierAction.Builder> builders, RegistryKey<?> modifies, RegistryKey<?>... modifiesAdditional) {
         addModifier(
                 name,
                 builders,
@@ -146,7 +147,7 @@ public abstract class LootModifierProvider extends FabricCodecDataProvider<LootM
      * @param modifies The {@link Identifier} to add the modifier to
      * @param modifiesAdditional Additional {@link Identifier}s to add the modifier to
      */
-    protected void addModifier(Identifier name, LootPool.Builder builder, Identifier modifies, Identifier... modifiesAdditional) {
+    protected void addModifier(Identifier name, LootModifierAction.Builder builder, Identifier modifies, Identifier... modifiesAdditional) {
         addModifier(
                 name,
                 List.of(builder),
@@ -163,7 +164,7 @@ public abstract class LootModifierProvider extends FabricCodecDataProvider<LootM
      * @param modifies The {@link Identifier} to add the modifier to
      * @param modifiesAdditional Additional {@link Identifier}s to add the modifier to
      */
-    protected void addModifier(Identifier name, List<LootPool.Builder> builders, Identifier modifies, Identifier... modifiesAdditional) {
+    protected void addModifier(Identifier name, List<LootModifierAction.Builder> builders, Identifier modifies, Identifier... modifiesAdditional) {
         addModifier(
                 name,
                 builders,
@@ -171,10 +172,12 @@ public abstract class LootModifierProvider extends FabricCodecDataProvider<LootM
         );
     }
 
-    private void addModifier(Identifier name, List<LootPool.Builder> builders, List<Identifier> modifies) {
+    private void addModifier(Identifier name, List<LootModifierAction.Builder> builders, List<Identifier> modifies) {
         provider.accept(name, new LootModifier(
-                new ArrayList<>(modifies),
-                builders.stream().map(LootPool.Builder::build).toList()
+                modifies.stream().map(identifier -> new LootTablePredicate(Pattern.compile(identifier.toString()))).toList(),
+                builders.stream()
+                        .map(LootModifierAction.Builder::build)
+                        .toList()
         ));
     }
 

@@ -13,7 +13,8 @@ import net.minecraft.loot.function.SetCountLootFunction;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.loot.provider.number.UniformLootNumberProvider;
 import net.minecraft.registry.RegistryWrapper;
-import top.offsetmonkey538.loottablemodifier.api.datagen.LootModifierProvider;
+import top.offsetmonkey538.loottablemodifier.api.datagen.NewLootModifierProvider;
+import top.offsetmonkey538.loottablemodifier.resource.action.AddPoolAction;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -25,11 +26,11 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
     public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
         final FabricDataGenerator.Pack pack = fabricDataGenerator.createBuiltinResourcePack(id("example_pack"));
 
-        pack.addProvider(ModLootModifierProvider::new);
+        pack.addProvider(NewModLootModifierProvider::new);
     }
 
-    private static class ModLootModifierProvider extends LootModifierProvider {
-        public ModLootModifierProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    private static class NewModLootModifierProvider extends NewLootModifierProvider {
+        public NewModLootModifierProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
             super(dataOutput, registriesFuture);
         }
 
@@ -39,12 +40,14 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     id("drop_tnt"),
 
 
-                    LootPool.builder()
-                            .rolls(ConstantLootNumberProvider.create(1))
-                            .with(
-                                    ItemEntry.builder(Items.TNT)
-                                            .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 1)))
-                            ),
+                    AddPoolAction.builder(
+                            LootPool.builder()
+                                    .rolls(ConstantLootNumberProvider.create(1))
+                                    .with(
+                                            ItemEntry.builder(Items.TNT)
+                                                    .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 1)))
+                                    )
+                    ),
 
                     EntityType.CREEPER,
                     EntityType.ZOMBIE
@@ -54,14 +57,16 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
             addModifier(
                     id("test"),
 
-                    LootPool.builder()
-                            .with(
-                                    ItemEntry.builder(Items.NETHERITE_SWORD).apply(
-                                            EnchantWithLevelsLootFunction
-                                                    .builder(lookup, UniformLootNumberProvider.create(20, 39))
+                    AddPoolAction.builder(
+                            LootPool.builder()
+                                    .with(
+                                            ItemEntry.builder(Items.NETHERITE_SWORD).apply(
+                                                    EnchantWithLevelsLootFunction
+                                                            .builder(lookup, UniformLootNumberProvider.create(20, 39))
                                                     //.builder(UniformLootNumberProvider.create(20, 39))
+                                            )
                                     )
-                            ),
+                    ),
 
                     LootTables.ABANDONED_MINESHAFT_CHEST
             );
