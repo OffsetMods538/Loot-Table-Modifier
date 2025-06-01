@@ -72,14 +72,14 @@ Badges are meant for developers to put on their project pages, so users can see 
 They're based on [Devin's Badges](https://github.com/intergrav/devins-badges).
 
 The `uses` badge is meant for mods or modpacks which want to display that Loot Table Modifier is included.  
-It can be used in Markdown like this: `[![This project includes Loot Table Modifier](https://raw.githubusercontent.com/OffsetMods538/Loot-Table-Modifier/master/images/uses_badge.png)](https://modrinth.com/mod/loot-table-modifier)`  
+It can be used in Markdown like this: `[![This project includes Loot Table Modifier](https://raw.githubusercontent.com/OffsetMods538/Loot-Table-Modifier/master/images/uses_badge.svg)](https://modrinth.com/mod/loot-table-modifier)`  
 And will look like this:  
-[![This project includes Loot Table Modifier](https://raw.githubusercontent.com/OffsetMods538/Loot-Table-Modifier/master/images/uses_badge.png)](https://modrinth.com/mod/loot-table-modifier)  
+[![This project includes Loot Table Modifier](https://raw.githubusercontent.com/OffsetMods538/Loot-Table-Modifier/master/images/uses_badge.svg)](https://modrinth.com/mod/loot-table-modifier)  
 Clicking it will bring the user to the Modrinth page for Loot Table Modifier
 
 
 The `requires` badge is meant for datapacks which want to display that Loot Table Modifier is required for the pack to function.  
-It can be used in Markdown like this: `[![This project requires Loot Table Modifier to be installed](https://raw.githubusercontent.com/OffsetMods538/Loot-Table-Modifier/master/images/requires_badge.png)](https://modrinth.com/mod/loot-table-modifier)`  
+It can be used in Markdown like this: `[![This project requires Loot Table Modifier to be installed](https://raw.githubusercontent.com/OffsetMods538/Loot-Table-Modifier/master/images/requires_badge.svg)](https://modrinth.com/mod/loot-table-modifier)`  
 And will look like this:  
-[![This project requires Loot Table Modifier to be installed](https://raw.githubusercontent.com/OffsetMods538/Loot-Table-Modifier/master/images/requires_badge.png)](https://modrinth.com/mod/loot-table-modifier)  
+[![This project requires Loot Table Modifier to be installed](https://raw.githubusercontent.com/OffsetMods538/Loot-Table-Modifier/master/images/requires_badge.svg)](https://modrinth.com/mod/loot-table-modifier)  
 Clicking it will bring the user to the Modrinth page for Loot Table Modifier
