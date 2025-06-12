@@ -14,28 +14,29 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 import top.offsetmonkey538.loottablemodifier.resource.action.AddPoolAction;
 import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierAction;
-import top.offsetmonkey538.loottablemodifier.resource.predicate.LootTablePredicate;
+import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicate;
+import top.offsetmonkey538.loottablemodifier.resource.predicate.table.LootTablePredicate;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 // Using ArrayList as I want it to be modifiable because I empty it when applying, so I can check for things that weren't applied
-public record LootModifier(@NotNull ArrayList<LootTablePredicate> modifies, @NotNull @UnmodifiableView List<LootModifierAction> actions) {
+public record LootModifier(@NotNull ArrayList<LootModifierPredicate> modifies, @NotNull @UnmodifiableView List<LootModifierAction> actions) {
     public static final Codec<LootModifier> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.either(LootTablePredicate.CODEC, LootTablePredicate.CODEC.listOf()).fieldOf("modifies").forGetter(LootModifier::modifiesEither),
+            Codec.either(LootModifierPredicate.CODEC, LootModifierPredicate.CODEC.listOf()).fieldOf("modifies").forGetter(LootModifier::modifiesEither),
             Codec.either(LootModifierAction.CODEC, LootModifierAction.CODEC.listOf()).optionalFieldOf("actions").forGetter(LootModifier::actionsOptionalEither),
             LootPool.CODEC.listOf().optionalFieldOf("pools").forGetter(lootModifier -> Optional.empty()),
             LootPool.CODEC.listOf().optionalFieldOf("loot_pools").forGetter(lootModifier -> Optional.empty())
     ).apply(instance, LootModifier::new));
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // From codec soo yeah
-    private LootModifier(@NotNull Either<LootTablePredicate, List<LootTablePredicate>> modifiesEither, @NotNull Optional<Either<LootModifierAction, List<LootModifierAction>>> actions, @NotNull Optional<List<LootPool>> pools, @NotNull Optional<List<LootPool>> lootPools) {
+    private LootModifier(@NotNull Either<LootModifierPredicate, List<LootModifierPredicate>> modifiesEither, @NotNull Optional<Either<LootModifierAction, List<LootModifierAction>>> actions, @NotNull Optional<List<LootPool>> pools, @NotNull Optional<List<LootPool>> lootPools) {
         this(
                 modifiesEither.right().orElseGet(() -> List.of(modifiesEither.left().orElseThrow())),
                 getActions(actions, pools, lootPools)
         );
     }
-    public LootModifier(@NotNull List<LootTablePredicate> modifies, @NotNull List<LootModifierAction> actions) {
+    public LootModifier(@NotNull List<LootModifierPredicate> modifies, @NotNull List<LootModifierAction> actions) {
         this(
                 new ArrayList<>(modifies),
                 Collections.unmodifiableList(actions)
@@ -60,7 +61,7 @@ public record LootModifier(@NotNull ArrayList<LootTablePredicate> modifies, @Not
         return result;
     }
 
-    private Either<LootTablePredicate, List<LootTablePredicate>> modifiesEither() {
+    private Either<LootModifierPredicate, List<LootModifierPredicate>> modifiesEither() {
         if (modifies.size() == 1) return Either.left(modifies.get(0));
         return Either.right(modifies);
     }
@@ -70,39 +71,46 @@ public record LootModifier(@NotNull ArrayList<LootTablePredicate> modifies, @Not
         return Optional.of(Either.right(actions));
     }
 
+    ///**
+    // * @param tableRegistry registry of loot tables to modify
+    // * @return amount of loot tables modified
+    // */
+    //public int apply(final @NotNull Registry<LootTable> tableRegistry) {
+    //    int modified = 0;
+
+    //    for (Iterator<RegistryEntry.Reference<LootTable>> it = getRegistryAsWrapper(tableRegistry).streamEntries().iterator(); it.hasNext(); ) {
+    //        final RegistryEntry.Reference<LootTable> entry = it.next();
+
+    //        final RegistryKey<LootTable> key = entry.registryKey();
+    //        final LootTable table = tableRegistry.get(key);
+
+    //        if (table == null) throw new IllegalStateException("Loot table with id '%s' is null!".formatted(key));
+
+    //        if (modifies.stream().noneMatch(predicate -> predicate.matches(table, key.getValue()))) continue;
+
+    //        modified += apply(table) ? 1 : 0;
+    //    }
+
+    //    return modified;
+    //}
+
     /**
-     * @param tableRegistry registry of loot tables to modify
-     * @return amount of loot tables modified
-     */
-    public int apply(final @NotNull Registry<LootTable> tableRegistry) {
-        int modified = 0;
-
-        for (Iterator<RegistryEntry.Reference<LootTable>> it = getRegistryAsWrapper(tableRegistry).streamEntries().iterator(); it.hasNext(); ) {
-            final RegistryEntry.Reference<LootTable> entry = it.next();
-
-            final RegistryKey<LootTable> key = entry.registryKey();
-            final LootTable table = tableRegistry.get(key);
-
-            if (table == null) throw new IllegalStateException("Loot table with id '%s' is null!".formatted(key));
-
-            if (modifies.stream().noneMatch(predicate -> predicate.matches(table, key.getValue()))) continue;
-
-            modified += apply(table) ? 1 : 0;
-        }
-
-        return modified;
-    }
-
-    /**
-     * @param table table to modify
+     * @param context context to modify
      * @return true when any of the 'actions' could be applied, false otherwise
      */
-    private boolean apply(final @NotNull LootTable table) {
+    public boolean apply(final @NotNull LootModifierContext context) {
         boolean result = false;
         for (LootModifierAction action : actions) {
-            if (action.apply(table)) result = true;
+            if (action.apply(context)) result = true;
         }
         return result;
+    }
+
+    public boolean testModifies(final @NotNull LootModifierContext context) {
+        for (LootModifierPredicate modifiesPredicate : modifies) {
+            if (!modifiesPredicate.test(context)) return false;
+        }
+        return true;
     }
 
     /*

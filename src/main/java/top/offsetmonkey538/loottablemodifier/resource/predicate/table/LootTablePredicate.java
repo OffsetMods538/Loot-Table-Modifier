@@ -1,19 +1,24 @@
-package top.offsetmonkey538.loottablemodifier.resource.predicate;
+package top.offsetmonkey538.loottablemodifier.resource.predicate.table;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicate;
+import top.offsetmonkey538.loottablemodifier.resource.predicate.Util;
+import top.offsetmonkey538.loottablemodifier.resource.predicate.function.LootFunctionPredicate;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-public record LootTablePredicate(@Nullable Pattern identifier, @Nullable Pattern type, @Nullable List<LootFunctionPredicate> functions) {
+// TODO: add entries predicate too
+public record LootTablePredicate(@Nullable Pattern identifier, @Nullable Pattern type, @Nullable List<LootFunctionPredicate> functions /* TODO: no need to use list cause anyOf and allOf are a thing */) implements LootModifierPredicate {
     private static final Codec<LootTablePredicate> INLINE_CODEC = Util.PATTERN_CODEC.xmap(LootTablePredicate::new, LootTablePredicate::identifier);
     private static final Codec<LootTablePredicate> FULL_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Util.PATTERN_CODEC.optionalFieldOf("id").forGetter(LootTablePredicate::optionalIdentifier),
@@ -49,8 +54,9 @@ public record LootTablePredicate(@Nullable Pattern identifier, @Nullable Pattern
         return Optional.of(Either.right(functions));
     }
 
-
-    public boolean matches(final @NotNull LootTable table, final @NotNull Identifier tableId) {
+    // TODO: also loops over pools and checks that
+    @Override
+    public boolean test(final @NotNull LootTable table, final @NotNull Identifier tableId) {
         boolean result = true;
 
         if (identifier != null) {

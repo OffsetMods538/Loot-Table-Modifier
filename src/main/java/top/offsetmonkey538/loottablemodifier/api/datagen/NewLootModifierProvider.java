@@ -11,7 +11,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
-import top.offsetmonkey538.loottablemodifier.resource.predicate.LootTablePredicate;
+import top.offsetmonkey538.loottablemodifier.resource.predicate.table.LootTablePredicate;
 import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierAction;
 
 import java.lang.reflect.InvocationTargetException;
@@ -94,7 +94,7 @@ public abstract class NewLootModifierProvider extends FabricCodecDataProvider<Lo
      * Adds a new loot table modifier for the given {@link EntityType}s.
      *
      * @param name Name of this modifier
-     * @param builders The loot pools to add
+     * @param builders The loot poolPredicates to add
      * @param modifies The {@link EntityType} to add the modifier to
      * @param modifiesAdditional Additional {@link EntityType}s to add the modifier to
      */
@@ -127,7 +127,7 @@ public abstract class NewLootModifierProvider extends FabricCodecDataProvider<Lo
      * Adds a new loot table modifier for the given {@link RegistryKey}s.
      *
      * @param name Name of this modifier
-     * @param builders The loot pools to add
+     * @param builders The loot poolPredicates to add
      * @param modifies The {@link RegistryKey} to add the modifier to
      * @param modifiesAdditional Additional {@link RegistryKey}s to add the modifier to
      */
@@ -160,7 +160,7 @@ public abstract class NewLootModifierProvider extends FabricCodecDataProvider<Lo
      * Adds a new loot table modifier for the given {@link Identifier}s.
      *
      * @param name Name of this modifier
-     * @param builders The loot pools to add
+     * @param builders The loot poolPredicates to add
      * @param modifies The {@link Identifier} to add the modifier to
      * @param modifiesAdditional Additional {@link Identifier}s to add the modifier to
      */
