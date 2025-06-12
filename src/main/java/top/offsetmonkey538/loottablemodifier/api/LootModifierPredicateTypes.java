@@ -16,6 +16,7 @@ import top.offsetmonkey538.loottablemodifier.resource.predicate.entry.ItemEntryP
 import top.offsetmonkey538.loottablemodifier.resource.predicate.op.AllOfLootPredicate;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.op.AnyOfLootPredicate;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.op.InvertedLootPredicate;
+import top.offsetmonkey538.loottablemodifier.resource.predicate.table.LootTablePredicate;
 
 import static top.offsetmonkey538.loottablemodifier.LootTableModifier.id;
 
@@ -29,6 +30,8 @@ public final class LootModifierPredicateTypes {
     public static final LootModifierPredicateType ALL_OF = register(id("all_of"), AllOfLootPredicate.CODEC);
 
     public static final LootModifierPredicateType ITEM_ENTRY = register(id("item_entry"), ItemEntryPredicate.CODEC);
+
+    public static final LootModifierPredicateType LOOT_TABLE = register(id("loot_table"), LootTablePredicate.CODEC);
 
     //public static final LootModifierPredicateType LOOT_POOL = register(id("loot_pool"), LootPoolPredicate.CODEC);
 

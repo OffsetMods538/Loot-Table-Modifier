@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
+import top.offsetmonkey538.loottablemodifier.LootTableModifier;
 import top.offsetmonkey538.loottablemodifier.api.LootModifierActionTypes;
 import top.offsetmonkey538.loottablemodifier.mixin.LootTableAccessor;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifierContext;
@@ -24,6 +25,8 @@ public record AddPoolAction(List<LootPool> pools) implements LootModifierAction 
 
     @Override
     public int apply(@NotNull LootModifierContext context) {
+        if (context.tableAlreadyModified()) return LootModifierContext.MODIFIED_NONE;
+
         final List<LootPool> newPools = ImmutableList.<LootPool>builder()
                 .addAll(context.table().pools)
                 .addAll(this.pools)

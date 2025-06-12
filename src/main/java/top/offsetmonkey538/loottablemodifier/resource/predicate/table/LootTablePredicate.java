@@ -1,79 +1,206 @@
 package top.offsetmonkey538.loottablemodifier.resource.predicate.table;
 
-//import com.mojang.datafixers.util.Either;
-//import com.mojang.serialization.Codec;
-//import com.mojang.serialization.codecs.RecordCodecBuilder;
-//import net.minecraft.loot.LootPool;
-//import net.minecraft.loot.LootTable;
-//import net.minecraft.loot.context.LootContextTypes;
-//import net.minecraft.util.Identifier;
-//import org.jetbrains.annotations.NotNull;
-//import org.jetbrains.annotations.Nullable;
-//import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicate;
-//import top.offsetmonkey538.loottablemodifier.resource.predicate.Util;
-//import top.offsetmonkey538.loottablemodifier.resource.predicate.function.LootFunctionPredicate;
-//
-//import java.util.List;
-//import java.util.Optional;
-//import java.util.regex.Pattern;
-//
-//// TODO: add entries predicate too
-//public record LootTablePredicate(@Nullable Pattern identifier, @Nullable Pattern type, @Nullable List<LootFunctionPredicate> functions /* TODO: no need to use list cause anyOf and allOf are a thing */) implements LootModifierPredicate {
-//    private static final Codec<LootTablePredicate> INLINE_CODEC = Util.PATTERN_CODEC.xmap(LootTablePredicate::new, LootTablePredicate::identifier);
-//    private static final Codec<LootTablePredicate> FULL_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-//            Util.PATTERN_CODEC.optionalFieldOf("id").forGetter(LootTablePredicate::optionalIdentifier),
-//            Util.PATTERN_CODEC.optionalFieldOf("type").forGetter(LootTablePredicate::optionalType),
-//            Codec.either(LootFunctionPredicate.CODEC, LootFunctionPredicate.CODEC.listOf()).optionalFieldOf("functions").forGetter(LootTablePredicate::optionalFunctions)
-//    ).apply(instance, LootTablePredicate::new));
-//    public static final Codec<LootTablePredicate> CODEC = Codec.either(LootTablePredicate.INLINE_CODEC, LootTablePredicate.FULL_CODEC).xmap(lootTablePredicateLootTablePredicateEither -> lootTablePredicateLootTablePredicateEither.left().orElseGet(() -> lootTablePredicateLootTablePredicateEither.right().orElseThrow()),
-//            lootTablePredicate -> {
-//        if (lootTablePredicate.identifier != null && lootTablePredicate.type == null && (lootTablePredicate.functions == null || lootTablePredicate.functions.isEmpty())) {
-//            return Either.left(lootTablePredicate);
-//        }
-//        return Either.right(lootTablePredicate);
-//    });
-//
-//    @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // Codec gib it to me
-//    private LootTablePredicate(@NotNull Optional<Pattern> optionalIdentifier, @NotNull Optional<Pattern> optionalType, @NotNull Optional<Either<LootFunctionPredicate, List<LootFunctionPredicate>>> optionalFunctions) {
-//        this(optionalIdentifier.orElse(null), optionalType.orElse(null), optionalFunctions.map(functionsEither -> functionsEither.map(List::of, patterns -> patterns)).orElse(null));
-//    }
-//
-//    public LootTablePredicate(@NotNull Pattern pattern) {
-//        this(pattern, null, null);
-//    }
-//
-//    private Optional<Pattern> optionalIdentifier() {
-//        return Optional.ofNullable(identifier);
-//    }
-//    private Optional<Pattern> optionalType() {
-//        return Optional.ofNullable(type);
-//    }
-//    private Optional<Either<LootFunctionPredicate, List<LootFunctionPredicate>>> optionalFunctions() {
-//        if (functions == null) return Optional.empty();
-//        if (functions.size() == 1) return Optional.of(Either.left(functions.get(0)));
-//        return Optional.of(Either.right(functions));
-//    }
-//
-//    // TODO: also loops over pools and checks that
-//    @Override
-//    public boolean test(final @NotNull LootTable table, final @NotNull Identifier tableId) {
-//        boolean result = true;
-//
-//        if (identifier != null) {
-//            result = identifier.matcher(tableId.toString()).matches();
-//        }
-//
-//        if (type != null) {
-//            result = result && type.matcher(LootContextTypes.MAP.inverse().get(table.getType()).toString()).matches();
-//        }
-//
-//        if (functions != null) {
-//            for (LootFunctionPredicate functionPredicate : functions) {
-//                result = result && table.functions.stream().anyMatch(functionPredicate::matches);
-//            }
-//        }
-//
-//        return result;
-//    }
-//}
-//
+import com.google.common.collect.BiMap;
+import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.MappingResolver;
+import net.minecraft.entity.EntityType;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.context.LootContextTypes;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.context.ContextType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import top.offsetmonkey538.loottablemodifier.api.LootModifierPredicateTypes;
+import top.offsetmonkey538.loottablemodifier.resource.LootModifierContext;
+import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicate;
+import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicateType;
+import top.offsetmonkey538.loottablemodifier.resource.predicate.Util;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.regex.Pattern;
+
+import static top.offsetmonkey538.loottablemodifier.LootTableModifier.LOGGER;
+
+
+public record LootTablePredicate(@Nullable List<Pattern> identifiers, @Nullable List<Pattern> types) implements LootModifierPredicate {
+    public static final MapCodec<LootTablePredicate> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.either(Util.PATTERN_CODEC, Util.PATTERN_CODEC.listOf()).optionalFieldOf("identifiers").forGetter(LootTablePredicate::optionalEitherIdentifier),
+            Codec.either(Util.PATTERN_CODEC, Util.PATTERN_CODEC.listOf()).optionalFieldOf("types").forGetter(LootTablePredicate::optionalEitherType)
+    ).apply(instance, LootTablePredicate::new));
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // Codec gib it to me
+    private LootTablePredicate(@NotNull Optional<Either<Pattern, List<Pattern>>> optionalIdentifier, @NotNull Optional<Either<Pattern, List<Pattern>>> optionalType) {
+        this(
+                optionalIdentifier.map(it -> it.map(List::of, it2 -> it2)).orElse(null),
+                optionalType.map(it -> it.map(List::of, it2 -> it2)).orElse(null)
+        );
+    }
+
+    private Optional<Either<Pattern, List<Pattern>>> optionalEitherIdentifier() {
+        if (identifiers == null || identifiers.isEmpty()) return Optional.empty();
+
+        if (identifiers.size() == 1) return Optional.of(Either.left(identifiers.get(0)));
+        return Optional.of(Either.right(identifiers));
+    }
+    private Optional<Either<Pattern, List<Pattern>>> optionalEitherType() {
+        if (types == null || types.isEmpty()) return Optional.empty();
+
+        if (types.size() == 1) return Optional.of(Either.left(types.get(0)));
+        return Optional.of(Either.right(types));
+    }
+
+    @Override
+    public LootModifierPredicateType getType() {
+        return LootModifierPredicateTypes.LOOT_TABLE;
+    }
+
+    @Override
+    public boolean test(@NotNull LootModifierContext context) {
+        boolean result = true;
+
+        if (identifiers != null) {
+            boolean idResult = false;
+            final String tableIdString = context.tableId().toString();
+            for (Pattern pattern : identifiers) idResult = idResult || pattern.matcher(tableIdString).matches();
+            result = idResult;
+        }
+
+        if (types != null) {
+            boolean typeResult = false;
+            final String tableTypeString = LootContextTypes.MAP.inverse().get(context.table().getType()).toString();
+            for (Pattern pattern : types) typeResult = typeResult || pattern.matcher(tableTypeString).matches();
+            result = result && typeResult;
+        }
+
+        return result;
+    }
+
+    public static LootTablePredicate.Builder builder() {
+        return new LootTablePredicate.Builder();
+    }
+
+    public static class Builder implements LootModifierPredicate.Builder {
+        private final ImmutableList.Builder<Pattern> names = ImmutableList.builder();
+        private final ImmutableList.Builder<Pattern> types = ImmutableList.builder();
+
+
+        public LootTablePredicate.Builder name(@NotNull EntityType<?>... names) {
+            for (EntityType<?> name : names) name(EntityLootTableIdGetter.get.apply(name));
+            return this;
+        }
+        public LootTablePredicate.Builder name(@NotNull RegistryKey<?>... names) {
+            for (RegistryKey<?> name : names) name(name.getValue());
+            return this;
+        }
+        public LootTablePredicate.Builder name(@NotNull Identifier... names) {
+            for (Identifier name : names) name(name.toString());
+            return this;
+        }
+        public LootTablePredicate.Builder name(@NotNull String... names) {
+            for (String name : names) this.names.add(Pattern.compile(Pattern.quote(name)));
+            return this;
+        }
+        public LootTablePredicate.Builder name(@NotNull Pattern... names) {
+            this.names.add(names);
+            return this;
+        }
+
+        public LootTablePredicate.Builder type(@NotNull ContextType... types) {
+            final BiMap<ContextType, Identifier> inverse = LootContextTypes.MAP.inverse();
+            for (ContextType type : types) type(inverse.get(type));
+            return this;
+        }
+        public LootTablePredicate.Builder type(@NotNull Identifier... types) {
+            for (Identifier type : types) type(type.toString());
+            return this;
+        }
+        public LootTablePredicate.Builder type(@NotNull String... types) {
+            for (String type : types) type(Pattern.compile(Pattern.quote(type)));
+            return this;
+        }
+        public LootTablePredicate.Builder type(@NotNull Pattern... types) {
+            this.types.add(types);
+            return this;
+        }
+
+        public LootTablePredicate build() {
+            return new LootTablePredicate(names.build(), types.build());
+        }
+
+        private static class EntityLootTableIdGetter {
+            // Resolver returns the provided name (like 'method_16351') when it fails to map it
+            private static final MappingResolver RESOLVER = FabricLoader.getInstance().getMappingResolver();
+
+            private static final String V1d21d2 = RESOLVER.mapMethodName("intermediary", "net.minecraft.class_1299", "method_16351", "()Ljava/util/Optional;");
+            private static final String V1d20d5 = RESOLVER.mapMethodName("intermediary", "net.minecraft.class_1299", "method_16351", "()Lnet/minecraft/class_5321;");
+
+            // mod only supports down to 1.20.5 soo: private static final String V1d14d0 = RESOLVER.mapMethodName("intermediary", "net.minecraft.class_1299", "method_16351", "()Lnet/minecraft/util/Identifier;");
+
+            public static final Function<EntityType<?>, Identifier> get;
+
+            // Should be executed when class is first loaded/accessed
+            static {
+                try {
+                    //final Class<?> entityType = EntityType.class;
+                    final Class<?> entityType = Class.forName(RESOLVER.mapClassName("intermediary", "net.minecraft.class_1299"));
+                    final Method method;
+
+                    // 1.21.2 to future:tm:
+                    if (isMethod(entityType, V1d21d2)) {
+                        method = entityType.getDeclaredMethod(V1d21d2);
+                        method.setAccessible(true);
+                        get = entity -> {
+                            try {
+                                @SuppressWarnings("unchecked")
+                                final Optional<RegistryKey<LootTable>> optional = (Optional<RegistryKey<LootTable>>) method.invoke(entity);
+                                if (optional.isPresent()) return optional.get().getValue();
+                                throw new IllegalStateException("Entity '" + entity + "' has no loot table! (It is created with 'builder.dropsNothing()')");
+                            } catch (IllegalAccessException | InvocationTargetException e) {
+                                throw new RuntimeException(e);
+                            }
+                        };
+                    }
+
+                    // 1.20.5 to 1.21.1
+                    else if (isMethod(entityType, V1d20d5)) {
+                        method = entityType.getDeclaredMethod(V1d20d5);
+                        method.setAccessible(true);
+                        get = entity -> {
+                            try {
+                                return ((RegistryKey<?>) method.invoke(entity)).getValue();
+                            } catch (IllegalAccessException | InvocationTargetException e) {
+                                throw new RuntimeException(e);
+                            }
+                        };
+                    }
+
+                    else {
+                        throw new IllegalStateException("No valid way to get entity loot table id found!");
+                    }
+                } catch (NoSuchMethodException | ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            private static boolean isMethod(Class<?> clazz, String method) {
+                try {
+                    clazz.getDeclaredMethod(method);
+                    return true;
+                } catch (NoSuchMethodException e) {
+                    LOGGER.warn("", e);
+                    return false;
+                }
+            }
+        }
+    }
+}

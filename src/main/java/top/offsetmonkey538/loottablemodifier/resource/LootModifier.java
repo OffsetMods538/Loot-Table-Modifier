@@ -2,27 +2,20 @@ package top.offsetmonkey538.loottablemodifier.resource;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Either;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTable;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.entry.RegistryEntry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 import top.offsetmonkey538.loottablemodifier.resource.action.AddPoolAction;
 import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicate;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.function.Predicate;
 
 // Using ArrayList as I want it to be modifiable because I empty it when applying, so I can check for things that weren't applied TODO: I don't think I do this anymore? TODO: make sure that changing it to a normal List is fine
-public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> actions, @NotNull @UnmodifiableView List<LootModifierPredicate> predicates) {
+public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> actions, @NotNull @UnmodifiableView List<LootModifierPredicate> predicates) implements Predicate<LootModifierContext> {
 //public record LootModifier(@NotNull @UnmodifiableView ArrayList<LootModifierAction> actions) {
     private static final Codec<LootModifier> LEGACY_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             // TODO: this should use the table predicate, once that exists
@@ -131,7 +124,7 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
         return result;
     }
 
-    public boolean testModifies(final @NotNull LootModifierContext context) {
+    public boolean test(final @NotNull LootModifierContext context) {
         for (LootModifierPredicate predicate : predicates) {
             if (!predicate.test(context)) return false;
         }

@@ -1,25 +1,30 @@
 package top.offsetmonkey538.loottablemodifier;
 
 import com.google.common.base.Stopwatch;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.JsonOps;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.entry.LootPoolEntry;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryOps;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.*;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.profiler.Profiler;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.file.PathUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +33,10 @@ import top.offsetmonkey538.loottablemodifier.api.LootModifierPredicateTypes;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifierContext;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 import static top.offsetmonkey538.loottablemodifier.resource.LootModifierContext.*;
@@ -76,8 +84,10 @@ public class LootTableModifier implements ModInitializer {
 			final Identifier tableId = key.getValue();
 			if (table == null) throw new IllegalStateException("Loot table with id '%s' is null!".formatted(key));
 
+			// fixme: should create a copy of list because it will be modified and that'll lead to bad stuff during iteration
 			for (LootPool pool : table.pools) {
 				tableModified = false;
+				// fixme: should create a copy of list because it will be modified and that'll lead to bad stuff during iteration
 				for (LootPoolEntry entry : pool.entries) {
 					poolModified = false;
 					for (Map.Entry<Identifier, LootModifier> modifierEntry : modifiers.entrySet()) {
@@ -85,7 +95,7 @@ public class LootTableModifier implements ModInitializer {
 						final LootModifierContext context = new LootModifierContext(table, tableId, pool, entry, tableModified, poolModified);
 
 						final LootModifier modifier = modifierEntry.getValue();
-						if (!modifier.testModifies(context)) continue;
+						if (!modifier.test(context)) continue;
 
 						if (IS_DEV) LOGGER.warn("Modifier {} can modify table {}", modifierEntry.getKey(), tableId);
 
@@ -142,8 +152,11 @@ public class LootTableModifier implements ModInitializer {
 
 
 		LOGGER.info("Applied {} modifiers and modified {} entries, {} pools and {} loot tables in {}!", modifiers.size(), entriesModified, poolsModified, modifiedTableIds.size(), stopwatch);
-		modifiersApplied(failedModifiers);
-	}
+
+		if (!IS_DEV) return;
+		LOGGER.warn("Dev mode enabled, modified loot tables will be exported once server starts and registries are fully available.");
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> exportModifiedTables(modifiedTableIds, server));
+    }
 
 	private static Map<Identifier, LootModifier> loadModifiers(ResourceManager resourceManager, RegistryOps<JsonElement> registryOps) {
 		LOGGER.info("Loading loot table modifiers...");
@@ -171,16 +184,33 @@ public class LootTableModifier implements ModInitializer {
 		return result;
 	}
 
-	private static void modifiersApplied(Map<Identifier, LootModifier> failedModifiers) {
-		if (failedModifiers.isEmpty()) return;
+	private static void exportModifiedTables(List<Identifier> tableIDs, MinecraftServer server) {
+		final DynamicOps<JsonElement> ops = RegistryOps.of(JsonOps.INSTANCE, server.getRegistryManager());
+		try {
+			final Path exportDir = FabricLoader.getInstance().getGameDir().resolve(".loot-table-modifier_export");
+			PathUtils.deleteDirectory(exportDir);
+			LOGGER.warn("Exporting modified tables to {}", exportDir);
 
-		LOGGER.warn("There were unused modifiers:");
-		//for (Map.Entry<Identifier, LootModifier> entry : failedModifiers.entrySet()) {
-		//	LOGGER.warn("\tModifier '{}' failed to modify loot table for predicates: ", entry.getKey());
-		//	for (LootTablePredicate predicate : entry.getValue().modifies()) {
-		//		LOGGER.warn("\t\t- {}", predicate);
-		//	}
-		//}
+			final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+			for (Identifier id : tableIDs) {
+				final LootTable table = server.getReloadableRegistries().getLootTable(RegistryKey.of(RegistryKeys.LOOT_TABLE, id));
+				final Path file = exportDir.resolve(id.getNamespace()).resolve(id.getPath() + ".json");
+				Files.createDirectories(file.getParent());
+
+				LOGGER.warn("Exporting loot table to {}", file);
+				DataResult<JsonElement> dataResult = LootTable.CODEC.encodeStart(ops, table);
+				final Optional<JsonElement> optionalResult = dataResult.resultOrPartial(LOGGER::error);
+				final JsonElement result = optionalResult.orElseThrow();
+
+
+				LOGGER.warn("Writing loot table to {}", file);
+				Files.writeString(file, gson.toJson(result));
+			}
+
+		} catch (IOException e) {
+			throw new RuntimeException("Failed to export modified tables!", e);
+		}
 	}
 
 	public static Identifier id(String path) {
