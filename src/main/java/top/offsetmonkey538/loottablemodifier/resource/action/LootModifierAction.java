@@ -14,7 +14,7 @@ public interface LootModifierAction {
      * @param context the context to apply to
      * @return true when table was modified, false otherwise
      */
-    boolean apply(final @NotNull LootModifierContext context);
+    int apply(final @NotNull LootModifierContext context);
 
     @FunctionalInterface
     interface Builder {

@@ -73,8 +73,8 @@ public abstract class NewNewLootModifierProvider extends FabricCodecDataProvider
      */
     protected abstract void generate(RegistryWrapper.WrapperLookup lookup);
 
-    protected void addModifier(@NotNull Identifier name, @NotNull LootModifier modifier) {
-        provider.accept(name, modifier);
+    protected void addModifier(@NotNull Identifier name, @NotNull LootModifier.Builder builder) {
+        provider.accept(name, builder.build());
     }
 
     private static class EntityLootTableIdGetter {

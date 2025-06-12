@@ -115,14 +115,18 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
     //    return modified;
     //}
 
+    // TODO: count each time an action is applied? Maybe use the mask to reserve like a few bits to store how many times each was like done or idk
     /**
      * @param context context to modify
      * @return true when any of the 'actions' could be applied, false otherwise
+     * @see LootModifierContext#MODIFIED_TABLE
+     * @see LootModifierContext#MODIFIED_POOL
+     * @see LootModifierContext#MODIFIED_ENTRY
      */
-    public boolean apply(final @NotNull LootModifierContext context) {
-        boolean result = false;
+    public int apply(final @NotNull LootModifierContext context) {
+        int result = 0x0;
         for (LootModifierAction action : actions) {
-            if (action.apply(context)) result = true;
+            result = result | action.apply(context);
         }
         return result;
     }

@@ -22,6 +22,9 @@ import top.offsetmonkey538.loottablemodifier.resource.LootModifierContext;
 
 import java.util.List;
 
+import static top.offsetmonkey538.loottablemodifier.resource.LootModifierContext.MODIFIED_ENTRY;
+import static top.offsetmonkey538.loottablemodifier.resource.LootModifierContext.MODIFIED_NONE;
+
 public record SetItemAction(RegistryEntry<Item> item, boolean canReplaceEntry) implements LootModifierAction {
     public static final MapCodec<SetItemAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Item.ENTRY_CODEC.fieldOf("name").forGetter(SetItemAction::item),
@@ -34,29 +37,27 @@ public record SetItemAction(RegistryEntry<Item> item, boolean canReplaceEntry) i
     }
 
     @Override
-    public boolean apply(@NotNull LootModifierContext context) {
+    public int apply(@NotNull LootModifierContext context) {
         final LootPoolEntry entry = context.entry();
-        if (entry == null) return false;
 
         if (entry instanceof ItemEntry itemEntry) {
             ((ItemEntryAccessor) itemEntry).setItem(item);
-            return true;
+            return MODIFIED_ENTRY;
         }
         // Matched entry is not an ItemEntry, check if entry replacing is on
-        if (!canReplaceEntry) return false;
+        if (!canReplaceEntry) return MODIFIED_NONE;
 
         final LootPool pool = context.pool();
-        if (pool == null) return false;
 
         final ImmutableList.Builder<LootPoolEntry> newEntriesBuilder = ImmutableList.builder();
 
         for (LootPoolEntry originalEntry : pool.entries) {
-            if (originalEntry == entry) continue; // I think we do want '==' here as the references should be the same?
+            if (originalEntry == entry) continue; // I think we do want '==' here as the references should be the same? TODO: test
             newEntriesBuilder.add(originalEntry);
         }
         ((LootPoolAccessor) context.pool()).setEntries(newEntriesBuilder.build());
 
-        return true;
+        return MODIFIED_ENTRY;
     }
 
     public static SetItemAction.Builder builder(@NotNull ItemConvertible item) {

@@ -23,7 +23,7 @@ public record AddPoolAction(List<LootPool> pools) implements LootModifierAction 
     }
 
     @Override
-    public boolean apply(@NotNull LootModifierContext context) {
+    public int apply(@NotNull LootModifierContext context) {
         final List<LootPool> newPools = ImmutableList.<LootPool>builder()
                 .addAll(context.table().pools)
                 .addAll(this.pools)
@@ -31,7 +31,7 @@ public record AddPoolAction(List<LootPool> pools) implements LootModifierAction 
 
         ((LootTableAccessor) context.table()).setPools(newPools);
 
-        return true;
+        return LootModifierContext.MODIFIED_TABLE;
     }
 
     public static AddPoolAction.Builder builder(@NotNull LootPool.Builder poolBuilder) {

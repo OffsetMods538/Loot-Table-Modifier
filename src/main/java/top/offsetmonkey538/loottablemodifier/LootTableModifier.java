@@ -19,6 +19,7 @@ import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.profiler.Profiler;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +29,9 @@ import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifierContext;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
+
+import static top.offsetmonkey538.loottablemodifier.resource.LootModifierContext.*;
 
 public class LootTableModifier implements ModInitializer {
 	public static final String MOD_ID = "loot-table-modifier";
@@ -57,34 +58,49 @@ public class LootTableModifier implements ModInitializer {
 		final Map<Identifier, LootModifier> modifiers = loadModifiers(resourceManager, registryOps);
 		final Map<Identifier, LootModifier> failedModifiers = new HashMap<>(0);
 
-		int amountModified = 0;
+		final List<Identifier> modifiedTableIds = new ArrayList<>(); // todo: will be used for exporting modified ones
+		int poolsModified = 0, entriesModified = 0;
+		boolean tableModified, poolModified;
 		LOGGER.info("Modifying loot tables...");
 		final Stopwatch stopwatch = Stopwatch.createStarted();
 		// TODO: Would looping through all tables here be faster than doing that for each modifier? To test I guess
 
 
 		// TODO: so about that never-nesting............
-		// fixme: don't think modifying for example tables without any pools or entries would work with this.....
-		// TODO: increment "amountModified" somewhere...
-		// todo. just fucking rewrite this when your brain actually works and can think
+		// fixme: don't think modifying for example tables without any pools or entries would work with this..... Maybe try a do-while instead of for loop? Then I'd have to
 		for (Iterator<RegistryEntry.Reference<LootTable>> it = getRegistryAsWrapper(lootRegistry).streamEntries().iterator(); it.hasNext(); ) {
 			final RegistryEntry.Reference<LootTable> registryEntry = it.next();
 			final RegistryKey<LootTable> key = registryEntry.registryKey();
 
 			final LootTable table = lootRegistry.get(key);
+			final Identifier tableId = key.getValue();
 			if (table == null) throw new IllegalStateException("Loot table with id '%s' is null!".formatted(key));
 
-
 			for (LootPool pool : table.pools) {
+				tableModified = false;
 				for (LootPoolEntry entry : pool.entries) {
-					final LootModifierContext context = new LootModifierContext(table, key.getValue(), pool, entry);
+					poolModified = false;
 					for (Map.Entry<Identifier, LootModifier> modifierEntry : modifiers.entrySet()) {
+						// todo: I'm creating a lot of these... Could it make more sense to not use a record so it's modifiable and then keep passing the same instance but modify the values? Think making the values in there protected would mean that only things in the same package could access it? So move it into this package (doesn't really make sense in 'resource' anyway) and that way I can make sure only this modifies stuff
+						final LootModifierContext context = new LootModifierContext(table, tableId, pool, entry, tableModified, poolModified);
+
 						final LootModifier modifier = modifierEntry.getValue();
 						if (!modifier.testModifies(context)) continue;
-						if (IS_DEV) LOGGER.error("Modifier {} can modify table {}", modifierEntry.getKey(), key.getValue());
-						modifier.apply(context); // FIXME: stuff modifying table or pool may apply multiple times
+
+						if (IS_DEV) LOGGER.warn("Modifier {} can modify table {}", modifierEntry.getKey(), tableId);
+
+
+						int result = modifier.apply(context);
+
+						if (IS_DEV && result != MODIFIED_NONE) LOGGER.warn("Modifier {} modified table {} with modified mask {}", modifierEntry.getKey(), tableId, Integer.toUnsignedString(result, 2));
+
+						if ((result & MODIFIED_TABLE) == MODIFIED_TABLE) tableModified = true;
+						if ((result & MODIFIED_POOL) == MODIFIED_POOL) poolModified = true;
+						if ((result & MODIFIED_ENTRY) == MODIFIED_ENTRY) entriesModified++;
 					}
+					poolsModified += poolModified ? 1 : 0;
 				}
+				if (tableModified) modifiedTableIds.add(tableId);
 			}
 
 			//for (Map.Entry<Identifier, LootModifier> modifierEntry : modifiers.entrySet()) {
@@ -125,7 +141,7 @@ public class LootTableModifier implements ModInitializer {
 		//}
 
 
-		LOGGER.info("Applied {} modifiers and modified {} loot tables in {}!", modifiers.size(), amountModified, stopwatch);
+		LOGGER.info("Applied {} modifiers and modified {} entries, {} pools and {} loot tables in {}!", modifiers.size(), entriesModified, poolsModified, modifiedTableIds.size(), stopwatch);
 		modifiersApplied(failedModifiers);
 	}
 

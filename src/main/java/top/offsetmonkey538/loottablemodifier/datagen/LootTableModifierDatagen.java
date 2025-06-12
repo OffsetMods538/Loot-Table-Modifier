@@ -93,7 +93,23 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                             .action(
                                     SetItemAction.builder(Items.COMMAND_BLOCK)
                             )
-                            .build()
+            );
+            addModifier(
+                    id("drop_tnt"),
+                    LootModifier.builder()
+                            .conditionally(
+                                    ItemEntryPredicate.builder(Pattern.compile("minecraft:sugar_cane"))
+                            )
+                            .action(
+                                    AddPoolAction.builder(
+                                            LootPool.builder()
+                                                    .rolls(ConstantLootNumberProvider.create(1))
+                                                    .with(
+                                                            ItemEntry.builder(Items.TNT)
+                                                                    .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 1)))
+                                                    )
+                                    )
+                            )
             );
         }
     }
