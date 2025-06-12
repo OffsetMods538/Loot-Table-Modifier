@@ -12,10 +12,10 @@ import top.offsetmonkey538.loottablemodifier.resource.action.AddPoolAction;
 import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierActionType;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicateType;
+import top.offsetmonkey538.loottablemodifier.resource.predicate.entry.ItemEntryPredicate;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.op.AllOfLootPredicate;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.op.AnyOfLootPredicate;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.op.InvertedLootPredicate;
-import top.offsetmonkey538.loottablemodifier.resource.predicate.pool.LootPoolPredicate;
 
 import static top.offsetmonkey538.loottablemodifier.LootTableModifier.id;
 
@@ -28,7 +28,9 @@ public final class LootModifierPredicateTypes {
     public static final LootModifierPredicateType ANY_OF = register(id("any_of"), AnyOfLootPredicate.CODEC);
     public static final LootModifierPredicateType ALL_OF = register(id("all_of"), AllOfLootPredicate.CODEC);
 
-    public static final LootModifierPredicateType LOOT_POOL = register(id("loot_pool"), LootPoolPredicate.CODEC);
+    public static final LootModifierPredicateType ITEM_ENTRY = register(id("item_entry"), ItemEntryPredicate.CODEC);
+
+    //public static final LootModifierPredicateType LOOT_POOL = register(id("loot_pool"), LootPoolPredicate.CODEC);
 
     private static LootModifierPredicateType register(final @NotNull Identifier id, final @NotNull MapCodec<? extends LootModifierPredicate> codec) {
         return Registry.register(LootModifierPredicateType.REGISTRY, id, new LootModifierPredicateType(codec));

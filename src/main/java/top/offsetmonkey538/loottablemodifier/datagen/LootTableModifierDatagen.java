@@ -14,9 +14,14 @@ import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.loot.provider.number.UniformLootNumberProvider;
 import net.minecraft.registry.RegistryWrapper;
 import top.offsetmonkey538.loottablemodifier.api.datagen.NewLootModifierProvider;
+import top.offsetmonkey538.loottablemodifier.api.datagen.NewNewLootModifierProvider;
+import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
 import top.offsetmonkey538.loottablemodifier.resource.action.AddPoolAction;
+import top.offsetmonkey538.loottablemodifier.resource.action.SetItemAction;
+import top.offsetmonkey538.loottablemodifier.resource.predicate.entry.ItemEntryPredicate;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.regex.Pattern;
 
 import static top.offsetmonkey538.loottablemodifier.LootTableModifier.id;
 
@@ -29,7 +34,50 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
         pack.addProvider(NewModLootModifierProvider::new);
     }
 
-    private static class NewModLootModifierProvider extends NewLootModifierProvider {
+    //private static class NewModLootModifierProvider extends NewLootModifierProvider {
+    //    public NewModLootModifierProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    //        super(dataOutput, registriesFuture);
+    //    }
+
+    //    @Override
+    //    protected void generate(RegistryWrapper.WrapperLookup lookup) {
+    //        addModifier(
+    //                id("drop_tnt"),
+
+
+    //                AddPoolAction.builder(
+    //                        LootPool.builder()
+    //                                .rolls(ConstantLootNumberProvider.create(1))
+    //                                .with(
+    //                                        ItemEntry.builder(Items.TNT)
+    //                                                .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 1)))
+    //                                )
+    //                ),
+
+    //                EntityType.CREEPER,
+    //                EntityType.ZOMBIE
+    //        );
+
+    //        //todo: temp
+    //        addModifier(
+    //                id("test"),
+
+    //                AddPoolAction.builder(
+    //                        LootPool.builder()
+    //                                .with(
+    //                                        ItemEntry.builder(Items.NETHERITE_SWORD).apply(
+    //                                                EnchantWithLevelsLootFunction
+    //                                                        .builder(lookup, UniformLootNumberProvider.create(20, 39))
+    //                                                //.builder(UniformLootNumberProvider.create(20, 39))
+    //                                        )
+    //                                )
+    //                ),
+
+    //                LootTables.ABANDONED_MINESHAFT_CHEST
+    //        );
+    //    }
+    //}
+    private static class NewModLootModifierProvider extends NewNewLootModifierProvider {
         public NewModLootModifierProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
             super(dataOutput, registriesFuture);
         }
@@ -37,38 +85,15 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
         @Override
         protected void generate(RegistryWrapper.WrapperLookup lookup) {
             addModifier(
-                    id("drop_tnt"),
-
-
-                    AddPoolAction.builder(
-                            LootPool.builder()
-                                    .rolls(ConstantLootNumberProvider.create(1))
-                                    .with(
-                                            ItemEntry.builder(Items.TNT)
-                                                    .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 1)))
-                                    )
-                    ),
-
-                    EntityType.CREEPER,
-                    EntityType.ZOMBIE
-            );
-
-            //todo: temp
-            addModifier(
-                    id("test"),
-
-                    AddPoolAction.builder(
-                            LootPool.builder()
-                                    .with(
-                                            ItemEntry.builder(Items.NETHERITE_SWORD).apply(
-                                                    EnchantWithLevelsLootFunction
-                                                            .builder(lookup, UniformLootNumberProvider.create(20, 39))
-                                                    //.builder(UniformLootNumberProvider.create(20, 39))
-                                            )
-                                    )
-                    ),
-
-                    LootTables.ABANDONED_MINESHAFT_CHEST
+                    id("replace_ingots_with_command_block"),
+                    LootModifier.builder()
+                            .conditionally(
+                                    ItemEntryPredicate.builder(Pattern.compile("minecraft:.*_ingot"))
+                            )
+                            .action(
+                                    SetItemAction.builder(Items.COMMAND_BLOCK)
+                            )
+                            .build()
             );
         }
     }

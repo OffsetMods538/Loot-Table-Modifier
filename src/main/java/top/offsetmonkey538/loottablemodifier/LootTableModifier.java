@@ -23,12 +23,9 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.offsetmonkey538.loottablemodifier.api.LootModifierActionTypes;
+import top.offsetmonkey538.loottablemodifier.api.LootModifierPredicateTypes;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifierContext;
-import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierAction;
-import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicate;
-import top.offsetmonkey538.loottablemodifier.resource.predicate.table.LootTablePredicate;
-import top.offsetmonkey538.loottablemodifier.resource.predicate.entry.LootEntryPredicateTypes;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -39,12 +36,20 @@ public class LootTableModifier implements ModInitializer {
 	public static final String MOD_ID = "loot-table-modifier";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
+	public static final boolean IS_DEV;
+	static {
+		final String isDev = System.getProperty("lootTableModifierDev", "");
+		if (isDev.equalsIgnoreCase("true")) IS_DEV = true;
+		else if (isDev.equalsIgnoreCase("false")) IS_DEV = false; // This way it can be disabled in devenv too.
+		else IS_DEV = FabricLoader.getInstance().isDevelopmentEnvironment();
+	}
+
 	@Override
 	public void onInitialize() {
 		LootModifierActionTypes.register();
-		LootEntryPredicateTypes.register();
+		LootModifierPredicateTypes.register();
 
-		if (FabricLoader.getInstance().isDevelopmentEnvironment())
+		if (IS_DEV)
 			ResourceManagerHelper.registerBuiltinResourcePack(id("example_pack"), FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow(), Text.of("Example Pack"), ResourcePackActivationType.NORMAL);
 	}
 
@@ -76,7 +81,8 @@ public class LootTableModifier implements ModInitializer {
 					for (Map.Entry<Identifier, LootModifier> modifierEntry : modifiers.entrySet()) {
 						final LootModifier modifier = modifierEntry.getValue();
 						if (!modifier.testModifies(context)) continue;
-						modifier.apply(context);
+						if (IS_DEV) LOGGER.error("Modifier {} can modify table {}", modifierEntry.getKey(), key.getValue());
+						modifier.apply(context); // FIXME: stuff modifying table or pool may apply multiple times
 					}
 				}
 			}

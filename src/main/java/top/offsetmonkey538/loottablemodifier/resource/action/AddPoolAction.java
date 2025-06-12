@@ -8,6 +8,7 @@ import net.minecraft.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.api.LootModifierActionTypes;
 import top.offsetmonkey538.loottablemodifier.mixin.LootTableAccessor;
+import top.offsetmonkey538.loottablemodifier.resource.LootModifierContext;
 
 import java.util.List;
 
@@ -22,13 +23,13 @@ public record AddPoolAction(List<LootPool> pools) implements LootModifierAction 
     }
 
     @Override
-    public boolean apply(@NotNull LootTable table) {
+    public boolean apply(@NotNull LootModifierContext context) {
         final List<LootPool> newPools = ImmutableList.<LootPool>builder()
-                .addAll(table.pools)
+                .addAll(context.table().pools)
                 .addAll(this.pools)
                 .build();
 
-        ((LootTableAccessor) table).setPools(newPools);
+        ((LootTableAccessor) context.table()).setPools(newPools);
 
         return true;
     }

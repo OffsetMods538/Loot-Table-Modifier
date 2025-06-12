@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.resource.action.AddPoolAction;
 import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierActionType;
+import top.offsetmonkey538.loottablemodifier.resource.action.SetItemAction;
 
 import static top.offsetmonkey538.loottablemodifier.LootTableModifier.id;
 
@@ -16,6 +17,8 @@ public final class LootModifierActionTypes {
     }
 
     public static final LootModifierActionType ADD_ENTRY = register(id("add_pool"), AddPoolAction.CODEC);
+
+    public static final LootModifierActionType SET_ITEM = register(id("set_item"), SetItemAction.CODEC);
 
     private static LootModifierActionType register(final @NotNull Identifier id, final @NotNull MapCodec<? extends LootModifierAction> codec) {
         return Registry.register(LootModifierActionType.REGISTRY, id, new LootModifierActionType(codec));

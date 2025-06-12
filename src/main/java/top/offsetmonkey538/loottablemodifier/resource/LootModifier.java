@@ -1,6 +1,8 @@
 package top.offsetmonkey538.loottablemodifier.resource;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.fabricmc.loader.api.FabricLoader;
@@ -15,61 +17,80 @@ import org.jetbrains.annotations.UnmodifiableView;
 import top.offsetmonkey538.loottablemodifier.resource.action.AddPoolAction;
 import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicate;
-import top.offsetmonkey538.loottablemodifier.resource.predicate.table.LootTablePredicate;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-// Using ArrayList as I want it to be modifiable because I empty it when applying, so I can check for things that weren't applied
-public record LootModifier(@NotNull ArrayList<LootModifierPredicate> modifies, @NotNull @UnmodifiableView List<LootModifierAction> actions) {
-    public static final Codec<LootModifier> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.either(LootModifierPredicate.CODEC, LootModifierPredicate.CODEC.listOf()).fieldOf("modifies").forGetter(LootModifier::modifiesEither),
-            Codec.either(LootModifierAction.CODEC, LootModifierAction.CODEC.listOf()).optionalFieldOf("actions").forGetter(LootModifier::actionsOptionalEither),
+// Using ArrayList as I want it to be modifiable because I empty it when applying, so I can check for things that weren't applied TODO: I don't think I do this anymore? TODO: make sure that changing it to a normal List is fine
+public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> actions, @NotNull @UnmodifiableView List<LootModifierPredicate> predicates) {
+//public record LootModifier(@NotNull @UnmodifiableView ArrayList<LootModifierAction> actions) {
+    private static final Codec<LootModifier> LEGACY_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            // TODO: this should use the table predicate, once that exists
+            Codec.either(LootModifierPredicate.CODEC, LootModifierPredicate.CODEC.listOf()).fieldOf("modifies").forGetter(modifier -> {
+                if (modifier.predicates.size() == 1) return Either.left(modifier.predicates.get(0));
+                return Either.right(modifier.predicates);
+            }),
             LootPool.CODEC.listOf().optionalFieldOf("pools").forGetter(lootModifier -> Optional.empty()),
             LootPool.CODEC.listOf().optionalFieldOf("loot_pools").forGetter(lootModifier -> Optional.empty())
-    ).apply(instance, LootModifier::new));
+    ).apply(instance, LootModifier::fromLegacyCodec));
+
+    private static final Codec<LootModifier> CURRENT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.either(
+                    LootModifierAction.CODEC,
+                    LootModifierAction.CODEC.listOf()
+            ).fieldOf("actions").forGetter(modifier -> {
+                if (modifier.actions.size() == 1) return Either.left(modifier.actions.get(0));
+                return Either.right(modifier.actions);
+            }),
+            Codec.either(
+                    LootModifierPredicate.CODEC,
+                    LootModifierPredicate.CODEC.listOf()
+            ).fieldOf("predicates").forGetter(modifier -> {
+                if (modifier.predicates.size() == 1) return Either.left(modifier.predicates.get(0));
+                return Either.right(modifier.predicates);
+            })
+    ).apply(instance, LootModifier::fromCurrentCodec));
+
+    public static final Codec<LootModifier> CODEC = Codec.either(
+            LEGACY_CODEC,
+            CURRENT_CODEC
+    ).xmap(either -> either.map(it -> it, it -> it), Either::right); // Always encode as current codec, which is on the right.
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // From codec soo yeah
-    private LootModifier(@NotNull Either<LootModifierPredicate, List<LootModifierPredicate>> modifiesEither, @NotNull Optional<Either<LootModifierAction, List<LootModifierAction>>> actions, @NotNull Optional<List<LootPool>> pools, @NotNull Optional<List<LootPool>> lootPools) {
-        this(
-                modifiesEither.right().orElseGet(() -> List.of(modifiesEither.left().orElseThrow())),
-                getActions(actions, pools, lootPools)
-        );
-    }
-    public LootModifier(@NotNull List<LootModifierPredicate> modifies, @NotNull List<LootModifierAction> actions) {
-        this(
-                new ArrayList<>(modifies),
-                Collections.unmodifiableList(actions)
-        );
-    }
+    private static LootModifier fromLegacyCodec(@NotNull Either<LootModifierPredicate, List<LootModifierPredicate>> modifiesEither, @NotNull Optional<List<LootPool>> pools, @NotNull Optional<List<LootPool>> lootPools) {
+        List<LootModifierAction> actions = null;
 
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // From codec soo yeah
-    private static List<LootModifierAction> getActions(@NotNull Optional<Either<LootModifierAction, List<LootModifierAction>>> actions, @NotNull Optional<List<LootPool>> pools, @NotNull Optional<List<LootPool>> lootPools) {
-        List<LootModifierAction> result = null;
-
-        if (actions.isPresent()) result = actions.get().right().orElseGet(() -> actions.get().left().isEmpty() ? null : List.of(actions.get().left().orElseThrow()));
-
-        if (result != null && pools.isPresent()) throw new IllegalStateException("Both \"actions\" and \"pools\" present in loot modifier!");
-        if (result != null && lootPools.isPresent()) throw new IllegalStateException("Both \"actions\" and \"loot_pools\" present in loot modifier!");
         if (pools.isPresent() && lootPools.isPresent()) throw new IllegalStateException("Both \"pools\" and \"loot_pools\" present in loot modifier!");
 
-        if (result == null && pools.isPresent()) result = List.of(new AddPoolAction(pools.get()));
-        if (result == null && lootPools.isPresent()) result = List.of(new AddPoolAction(lootPools.get()));
+        if (pools.isPresent()) actions = List.of(new AddPoolAction(pools.get()));
+        if (lootPools.isPresent()) actions = List.of(new AddPoolAction(lootPools.get()));
 
-        if (result == null) throw new IllegalStateException("Neither \"actions\" nor \"pools\" present in loot modifier!");
+        if (actions == null) throw new IllegalStateException("Neither \"pools\" nor \"loot_pools\" present in loot modifier!");
 
-        return result;
+
+        return new LootModifier(
+                actions,
+                new ArrayList<>(modifiesEither.right().orElseGet(() -> List.of(modifiesEither.left().orElseThrow())))
+        );
     }
 
-    private Either<LootModifierPredicate, List<LootModifierPredicate>> modifiesEither() {
-        if (modifies.size() == 1) return Either.left(modifies.get(0));
-        return Either.right(modifies);
+    private static LootModifier fromCurrentCodec(Either<LootModifierAction, List<LootModifierAction>> actionsEither, Either<LootModifierPredicate, List<LootModifierPredicate>> predicatesEither) {
+        return new LootModifier(
+                actionsEither.map(List::of, it -> it),
+                new ArrayList<>(predicatesEither.map(List::of, it -> it))
+        );
     }
+    //private static Pair<Either<LootModifierAction, List<LootModifierAction>>, Either<LootModifierPredicate, List<LootModifierPredicate>>> toCurrentCodec(LootModifier modifier) {
+    //    final Either<LootModifierAction, List<LootModifierAction>> actionsEither;
+    //    final Either<LootModifierPredicate, List<LootModifierPredicate>> predicatesEither;
 
-    private Optional<Either<LootModifierAction, List<LootModifierAction>>> actionsOptionalEither() {
-        if (actions.size() == 1) return Optional.of(Either.left(actions.get(0)));
-        return Optional.of(Either.right(actions));
-    }
+    //    if (modifier.actions.size() == 1) actionsEither = Either.left(modifier.actions.get(0));
+    //    else actionsEither = Either.right(modifier.actions);
+    //    if (modifier.predicates.size() == 1) predicatesEither = Either.left(modifier.predicates.get(0));
+    //    else predicatesEither = Either.right(modifier.predicates);
+
+    //    return Pair.of(actionsEither, predicatesEither);
+    //}
 
     ///**
     // * @param tableRegistry registry of loot tables to modify
@@ -107,54 +128,32 @@ public record LootModifier(@NotNull ArrayList<LootModifierPredicate> modifies, @
     }
 
     public boolean testModifies(final @NotNull LootModifierContext context) {
-        for (LootModifierPredicate modifiesPredicate : modifies) {
-            if (!modifiesPredicate.test(context)) return false;
+        for (LootModifierPredicate predicate : predicates) {
+            if (!predicate.test(context)) return false;
         }
         return true;
     }
 
-    /*
-	In 1.21.4, the 'Registry' class extends 'RegistryWrapper' and inherits the 'streamEntries' method from *it*.
-	In 1.20.5, the 'Registry' class *doesn't* extend the 'RegistryWrapper' and implements its own 'streamEntries' method.
-	Compiling on both versions works, because the names of the methods are the same, but they compile to different intermediary names, thus a jar compiled for 1.20.5 doesn't work on 1.21.4 and vice versa.
-	Solution: Turn the 'Registry' into a 'RegistryWrapper' as its 'streamEntries' retains the same intermediary on both versions.
-	If 'Registry' implements 'RegistryWrapper': cast it
-	Else: call 'getReadOnlyWrapper' on the registry (doesn't exist on 1.21.4, otherwise would've used 'registry.getReadOnlyWrapper().streamEntries()')
-	 */
-    private static <T> RegistryWrapper<T> getRegistryAsWrapper(@NotNull Registry<T> registry) {
-        //noinspection ConstantValue,RedundantSuppression: On lower versions, Registry doesn't extend RegistryWrapper and thus the 'isAssignableFrom' check can be false. The redundant supression is for the unchecked cast below.
-        if (RegistryWrapper.class.isAssignableFrom(registry.getClass()))
-            //noinspection unchecked,RedundantCast: I swear it casts 🤞
-            return (RegistryWrapper<T>) registry;
-
-        try {
-            //noinspection unchecked: Seriously I swear 🤞🤞
-            return (RegistryWrapper<T>) registry.getClass().getDeclaredMethod(FabricLoader.getInstance().getMappingResolver().mapMethodName("intermediary", "net.minecraft.class_2378", "method_46771", "()Lnet/minecraft/class_7225$class_7226;")).invoke(registry);
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
+    public static LootModifier.Builder builder() {
+        return new LootModifier.Builder();
     }
 
-    // Don't think this is needed? public static NewLootModifier.Builder builder() {
-    // Don't think this is needed?     return new NewLootModifier.Builder();
-    // Don't think this is needed? }
+    public static class Builder {
+        private final ImmutableList.Builder<LootModifierAction> actions = ImmutableList.builder();
+        private final ImmutableList.Builder<LootModifierPredicate> predicates = ImmutableList.builder();
 
-    // Don't think this is needed? public static class Builder {
-    // Don't think this is needed?     private final ImmutableList.Builder<Identifier> modifies = ImmutableList.builder();
-    // Don't think this is needed?     private final ImmutableList.Builder<LootModifierAction> actions = ImmutableList.builder();
-    // Don't think this is needed?
-    // Don't think this is needed?     public NewLootModifier.Builder modifies(@NotNull Identifier... modifies) {
-    // Don't think this is needed?         this.modifies.add(modifies);
-    // Don't think this is needed?         return this;
-    // Don't think this is needed?     }
-    // Don't think this is needed?
-    // Don't think this is needed?     public NewLootModifier.Builder conditionally(@NotNull LootModifierAction.Builder action) {
-    // Don't think this is needed?         this.actions.add(action.build());
-    // Don't think this is needed?         return this;
-    // Don't think this is needed?     }
-    // Don't think this is needed?
-    // Don't think this is needed?     public NewLootModifier build() {
-    // Don't think this is needed?         return new NewLootModifier(this.modifies.build(), this.actions.build());
-    // Don't think this is needed?     }
-    // Don't think this is needed? }
+        public LootModifier.Builder action(@NotNull LootModifierAction.Builder action) {
+            this.actions.add(action.build());
+            return this;
+        }
+
+        public LootModifier.Builder conditionally(@NotNull LootModifierPredicate.Builder predicate) {
+            this.predicates.add(predicate.build());
+            return this;
+        }
+
+        public LootModifier build() {
+            return new LootModifier(this.actions.build(), this.predicates.build());
+        }
+    }
 }

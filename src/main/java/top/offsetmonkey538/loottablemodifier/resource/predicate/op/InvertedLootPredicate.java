@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.api.LootModifierPredicateTypes;
+import top.offsetmonkey538.loottablemodifier.resource.LootModifierContext;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicateType;
 
@@ -19,7 +20,7 @@ public record InvertedLootPredicate(LootModifierPredicate term) implements LootM
     }
 
     @Override
-    public boolean test(@NotNull PredicateContext context) {
+    public boolean test(@NotNull LootModifierContext context) {
         return !term.test(context);
     }
 

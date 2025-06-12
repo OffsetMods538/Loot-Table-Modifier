@@ -10,16 +10,17 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
 import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierAction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static top.offsetmonkey538.loottablemodifier.LootTableModifier.MOD_ID;
@@ -47,10 +48,10 @@ import static top.offsetmonkey538.loottablemodifier.LootTableModifier.MOD_ID;
  * }
  * }</pre>
  */
-public abstract class NewLootModifierProvider extends FabricCodecDataProvider<LootModifier> {
+public abstract class NewNewLootModifierProvider extends FabricCodecDataProvider<LootModifier> {
     private BiConsumer<Identifier, LootModifier> provider;
 
-    public NewLootModifierProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    public NewNewLootModifierProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         super(dataOutput, registriesFuture, DataOutput.OutputType.DATA_PACK, MOD_ID + "/loot_modifier", LootModifier.CODEC);
     }
 
@@ -62,7 +63,7 @@ public abstract class NewLootModifierProvider extends FabricCodecDataProvider<Lo
 
     @Override
     public String getName() {
-        return "New Loot Table Modifiers";
+        return "New New Loot Table Modifiers"; // todo: change
     }
 
     /**
@@ -72,116 +73,9 @@ public abstract class NewLootModifierProvider extends FabricCodecDataProvider<Lo
      */
     protected abstract void generate(RegistryWrapper.WrapperLookup lookup);
 
-    /**
-     * Adds a new loot table modifier for the given {@link EntityType}s.
-     *
-     * @param name Name of this modifier
-     * @param builder The loot pool to add
-     * @param modifies The {@link EntityType} to add the modifier to
-     * @param modifiesAdditional Additional {@link EntityType}s to add the modifier to
-     */
-    protected void addModifier(Identifier name, LootModifierAction.Builder builder, EntityType<?> modifies, EntityType<?>... modifiesAdditional) {
-        addModifier(
-                name,
-                List.of(builder),
-                modifies,
-                modifiesAdditional
-        );
+    protected void addModifier(@NotNull Identifier name, @NotNull LootModifier modifier) {
+        provider.accept(name, modifier);
     }
-
-    /**
-     * Adds a new loot table modifier for the given {@link EntityType}s.
-     *
-     * @param name Name of this modifier
-     * @param builders The loot poolPredicates to add
-     * @param modifies The {@link EntityType} to add the modifier to
-     * @param modifiesAdditional Additional {@link EntityType}s to add the modifier to
-     */
-    protected void addModifier(Identifier name, List<LootModifierAction.Builder> builders, EntityType<?> modifies, EntityType<?>... modifiesAdditional) {
-        addModifier(
-                name,
-                builders,
-                Stream.concat(Stream.of(modifies), Stream.of(modifiesAdditional)).map(EntityLootTableIdGetter.get).toList()
-        );
-    }
-
-    /**
-     * Adds a new loot table modifier for the given {@link RegistryKey}s.
-     *
-     * @param name Name of this modifier
-     * @param builder The loot pool to add
-     * @param modifies The {@link RegistryKey} to add the modifier to
-     * @param modifiesAdditional Additional {@link RegistryKey}s to add the modifier to
-     */
-    protected void addModifier(Identifier name, LootModifierAction.Builder builder, RegistryKey<?> modifies, RegistryKey<?>... modifiesAdditional) {
-        addModifier(
-                name,
-                List.of(builder),
-                modifies,
-                modifiesAdditional
-        );
-    }
-
-    /**
-     * Adds a new loot table modifier for the given {@link RegistryKey}s.
-     *
-     * @param name Name of this modifier
-     * @param builders The loot poolPredicates to add
-     * @param modifies The {@link RegistryKey} to add the modifier to
-     * @param modifiesAdditional Additional {@link RegistryKey}s to add the modifier to
-     */
-    protected void addModifier(Identifier name, List<LootModifierAction.Builder> builders, RegistryKey<?> modifies, RegistryKey<?>... modifiesAdditional) {
-        addModifier(
-                name,
-                builders,
-                Stream.concat(Stream.of(modifies), Stream.of(modifiesAdditional)).map(RegistryKey::getValue).toList()
-        );
-    }
-
-    /**
-     * Adds a new loot table modifier for the given {@link Identifier}s.
-     *
-     * @param name Name of this modifier
-     * @param builder The loot pool to add
-     * @param modifies The {@link Identifier} to add the modifier to
-     * @param modifiesAdditional Additional {@link Identifier}s to add the modifier to
-     */
-    protected void addModifier(Identifier name, LootModifierAction.Builder builder, Identifier modifies, Identifier... modifiesAdditional) {
-        addModifier(
-                name,
-                List.of(builder),
-                modifies,
-                modifiesAdditional
-        );
-    }
-
-    /**
-     * Adds a new loot table modifier for the given {@link Identifier}s.
-     *
-     * @param name Name of this modifier
-     * @param builders The loot poolPredicates to add
-     * @param modifies The {@link Identifier} to add the modifier to
-     * @param modifiesAdditional Additional {@link Identifier}s to add the modifier to
-     */
-    protected void addModifier(Identifier name, List<LootModifierAction.Builder> builders, Identifier modifies, Identifier... modifiesAdditional) {
-        addModifier(
-                name,
-                builders,
-                Stream.concat(Stream.of(modifies), Stream.of(modifiesAdditional)).toList()
-        );
-    }
-
-    private void addModifier(Identifier name, List<LootModifierAction.Builder> builders, List<Identifier> modifies) {
-        //provider.accept(name, new LootModifier(
-        //        builders.stream()
-        //                .map(LootModifierAction.Builder::build)
-        //                .toList(),
-        //        null
-        //        //FIXME: modifies.stream().map(identifier -> new LootTablePredicate(Pattern.compile(identifier.toString()))).toList()
-        //));
-    }
-
-
 
     private static class EntityLootTableIdGetter {
         // Resolver returns the provided name (like 'method_16351') when it fails to map it

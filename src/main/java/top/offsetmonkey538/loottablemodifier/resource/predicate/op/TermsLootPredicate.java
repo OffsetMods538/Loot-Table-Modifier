@@ -6,13 +6,17 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.fabricmc.loader.impl.lib.sat4j.minisat.constraints.cnf.Lits;
+import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.AlternativeLootCondition;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.context.LootContext;
+import net.minecraft.loot.entry.LootPoolEntry;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.api.LootModifierPredicateTypes;
+import top.offsetmonkey538.loottablemodifier.resource.LootModifierContext;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicateType;
 
@@ -22,9 +26,9 @@ import java.util.function.Predicate;
 
 public abstract class TermsLootPredicate implements LootModifierPredicate {
     protected final List<LootModifierPredicate> terms;
-    private final Predicate<LootTable> builtPredicate;
+    private final Predicate<LootModifierContext> builtPredicate;
 
-    protected TermsLootPredicate(final List<LootModifierPredicate> terms, final Predicate<LootTable> builtPredicate) {
+    protected TermsLootPredicate(final List<LootModifierPredicate> terms, final Predicate<LootModifierContext> builtPredicate) {
         this.terms = terms;
         this.builtPredicate = builtPredicate;
     }
@@ -45,8 +49,8 @@ public abstract class TermsLootPredicate implements LootModifierPredicate {
     }
 
     @Override
-    public boolean test(@NotNull PredicateContext context) {
-        return builtPredicate.test(context.table());
+    public boolean test(final @NotNull LootModifierContext context) {
+        return builtPredicate.test(context);
     }
 
     public abstract static class Builder implements LootModifierPredicate.Builder {
