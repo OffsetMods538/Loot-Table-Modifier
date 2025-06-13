@@ -113,7 +113,7 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     id("sugarcane_drop_tnt"),
                     LootModifier.builder()
                             .conditionally(
-                                    ItemEntryPredicate.builder(OptionalPattern.compile(Pattern.quote("minecraft:sugar_cane")))
+                                    ItemEntryPredicate.builder(Items.SUGAR_CANE)
                             )
                             .action(
                                     AddPoolAction.builder(

@@ -4,6 +4,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.loot.entry.ItemEntry;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.api.LootModifierPredicateTypes;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifierContext;
@@ -30,7 +32,12 @@ public record ItemEntryPredicate(OptionalPattern name) implements LootModifierPr
         return name.matcher(itemEntry.item.getIdAsString()).matches();
     }
 
-    // TODO: overrides which can take like identifiers and items and shiz
+    public static LootModifierPredicate.Builder builder(ItemConvertible name) {
+        return builder(Registries.ITEM.getId(name.asItem()));
+    }
+    public static LootModifierPredicate.Builder builder(Identifier name) {
+        return () -> new ItemEntryPredicate(OptionalPattern.literal(name.toString()));
+    }
     public static LootModifierPredicate.Builder builder(OptionalPattern name) {
         return () -> new ItemEntryPredicate(name);
     }

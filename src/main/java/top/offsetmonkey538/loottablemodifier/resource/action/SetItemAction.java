@@ -11,6 +11,7 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.loot.entry.LootPoolEntryTypes;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
@@ -69,8 +70,7 @@ public record SetItemAction(RegistryEntry<Item> item, boolean canReplaceEntry) i
         private boolean canReplaceEntry;
 
         private Builder(@NotNull ItemConvertible item) {
-            //noinspection deprecation Minecraft seems to use it still?
-            this.item = item.asItem().getRegistryEntry();
+            this.item = Registries.ITEM.getEntry(item.asItem());
         }
 
         public SetItemAction.Builder setCanReplaceEntry(boolean canReplaceEntry) {
