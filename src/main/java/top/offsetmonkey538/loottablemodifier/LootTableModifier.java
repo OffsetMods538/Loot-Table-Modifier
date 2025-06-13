@@ -4,11 +4,12 @@ import com.google.common.base.Stopwatch;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -21,7 +22,9 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.text.Text;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.*;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import org.apache.commons.io.file.PathUtils;
@@ -41,13 +44,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
+import static net.minecraft.server.command.CommandManager.literal;
 import static top.offsetmonkey538.loottablemodifier.resource.LootModifierContext.*;
 
 public class LootTableModifier implements ModInitializer {
 	public static final String MOD_ID = "loot-table-modifier";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	private static MinecraftServer minecraftServer;
+	// Only used when IS_DEV is true
+	private static final List<Identifier> MODIFIED_TABLE_IDs = Collections.synchronizedList(new ArrayList<>(0));
 
 	public static final boolean IS_DEV;
 	static {
@@ -62,8 +67,7 @@ public class LootTableModifier implements ModInitializer {
 		LootModifierActionTypes.register();
 		LootModifierPredicateTypes.register();
 
-		if (IS_DEV)
-			ResourceManagerHelper.registerBuiltinResourcePack(id("example_pack"), FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow(), Text.of("Example Pack"), ResourcePackActivationType.NORMAL);
+		if (IS_DEV) enableDebug();
 	}
 
 	public static void runModification(ResourceManager resourceManager, Registry<LootTable> lootRegistry, RegistryOps<JsonElement> registryOps) {
@@ -162,17 +166,12 @@ public class LootTableModifier implements ModInitializer {
 		LOGGER.info("Applied {} modifiers and modified {} entries, {} pools and {} loot tables in {}!", modifiers.size(), entriesModified, poolsModified, modifiedTableIds.size(), stopwatch.stop());
 
 		if (!IS_DEV) return;
-		if (minecraftServer != null) {
-			LOGGER.warn("Dev mode enabled, modified loot tables will be exported.");
-			exportModifiedTables(modifiedTableIds, minecraftServer);
-			return;
-		}
 
-		LOGGER.warn("Dev mode enabled, modified loot tables will be exported once server starts and registries are fully available.");
-		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-			minecraftServer = server;
-			exportModifiedTables(modifiedTableIds, server);
-		});
+		LOGGER.warn("Dev mode enabled, modified loot tables can be exported using the '/loot-table-modifier debug export' command");
+		synchronized (MODIFIED_TABLE_IDs) {
+			MODIFIED_TABLE_IDs.clear();
+			MODIFIED_TABLE_IDs.addAll(modifiedTableIds);
+		}
     }
 
 	private static Map<Identifier, LootModifier> loadModifiers(ResourceManager resourceManager, RegistryOps<JsonElement> registryOps) {
@@ -201,36 +200,61 @@ public class LootTableModifier implements ModInitializer {
 		return result;
 	}
 
-	private static void exportModifiedTables(List<Identifier> tableIDs, MinecraftServer server) {
-		final DynamicOps<JsonElement> ops = RegistryOps.of(JsonOps.INSTANCE, server.getRegistryManager());
-		try {
-			final Path exportDir = FabricLoader.getInstance().getGameDir().resolve(".loot-table-modifier_export");
-			if (Files.exists(exportDir)) PathUtils.deleteDirectory(exportDir);
+	private static void enableDebug() {
+		ResourceManagerHelper.registerBuiltinResourcePack(id("example_pack"), FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow(), Text.of("Example Pack"), ResourcePackActivationType.NORMAL);
+		CommandRegistrationCallback.EVENT.register((dispatcher, commandRegistryAccess, registrationEnvironment) -> {
+			dispatcher.register(
+					literal(MOD_ID)
+							.then(
+									literal("debug")
+											.then(
+													literal("export")
+															.executes(
+																	LootTableModifier::executeExportCommand
+															)
+											)
+							)
+			);
+		});
+	}
 
-			LOGGER.warn("Exporting modified tables to {}", exportDir);
-			final Stopwatch stopwatch = Stopwatch.createStarted();
+	private static int executeExportCommand(CommandContext<ServerCommandSource> context) {
+		synchronized (MODIFIED_TABLE_IDs) {
+			final ServerCommandSource source = context.getSource();
+			final MinecraftServer server = source.getServer();
 
-			for (Identifier id : tableIDs) {
-				final LootTable table = server.getReloadableRegistries().getLootTable(RegistryKey.of(RegistryKeys.LOOT_TABLE, id));
-				final Path file = exportDir.resolve(id.getNamespace()).resolve(id.getPath() + ".json");
-				Files.createDirectories(file.getParent());
+			final DynamicOps<JsonElement> ops = RegistryOps.of(JsonOps.INSTANCE, server.getRegistryManager());
+			try {
+				final Path exportDir = FabricLoader.getInstance().getGameDir().resolve(".loot-table-modifier_export");
+				if (Files.exists(exportDir)) PathUtils.deleteDirectory(exportDir);
 
-				LOGGER.warn("Exporting loot table to {}", file);
-				DataResult<JsonElement> dataResult = LootTable.CODEC.encodeStart(ops, table);
-				final Optional<JsonElement> optionalResult = dataResult.resultOrPartial(LOGGER::error);
-				final JsonElement result = optionalResult.orElseThrow();
+				source.sendFeedback(() -> Text.literal("Exporting modified tables to ").append(Text.literal(exportDir.toString()).setStyle(Style.EMPTY.withUnderline(true).withColor(Formatting.WHITE).withHoverEvent(new HoverEvent.ShowText(Text.literal("Click to copy"))).withClickEvent(new ClickEvent.CopyToClipboard(exportDir.toAbsolutePath().toString())))), true);
+				final Stopwatch stopwatch = Stopwatch.createStarted();
 
-				LOGGER.warn("Writing loot table to {}", file);
+				for (Identifier id : MODIFIED_TABLE_IDs) {
+					final LootTable table = server.getReloadableRegistries().getLootTable(RegistryKey.of(RegistryKeys.LOOT_TABLE, id));
+					final Path file = exportDir.resolve(id.getNamespace()).resolve(id.getPath() + ".json");
+					Files.createDirectories(file.getParent());
 
-				try (JsonWriter jsonWriter = new JsonWriter(Files.newBufferedWriter(file, StandardCharsets.UTF_8))) {
-					jsonWriter.setSerializeNulls(false);
-					jsonWriter.setIndent("  ");
-					JsonHelper.writeSorted(jsonWriter, result, DataProvider.JSON_KEY_SORTING_COMPARATOR);
+					LOGGER.warn("Exporting loot table to {}", file);
+					DataResult<JsonElement> dataResult = LootTable.CODEC.encodeStart(ops, table);
+					final Optional<JsonElement> optionalResult = dataResult.resultOrPartial(LOGGER::error);
+					final JsonElement result = optionalResult.orElseThrow();
+
+					LOGGER.warn("Writing loot table to {}", file);
+
+					try (JsonWriter jsonWriter = new JsonWriter(Files.newBufferedWriter(file, StandardCharsets.UTF_8))) {
+						jsonWriter.setSerializeNulls(false);
+						jsonWriter.setIndent("  ");
+						JsonHelper.writeSorted(jsonWriter, result, DataProvider.JSON_KEY_SORTING_COMPARATOR);
+					}
 				}
+				source.sendFeedback(() -> Text.literal("Exported %s modified tables in %s".formatted(MODIFIED_TABLE_IDs.size(), stopwatch.stop())), true);
+			} catch (IOException e) {
+				throw new RuntimeException("Failed to export modified tables!", e);
 			}
-			LOGGER.warn("Exported {} modified tables in {}", tableIDs.size(), stopwatch.stop());
-		} catch (IOException e) {
-			throw new RuntimeException("Failed to export modified tables!", e);
+
+			return 1;
 		}
 	}
 
