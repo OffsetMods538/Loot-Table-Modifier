@@ -14,6 +14,8 @@ import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPred
 import java.util.*;
 import java.util.function.Predicate;
 
+import static top.offsetmonkey538.loottablemodifier.resource.LootModifierContext.MODIFIED_NONE;
+
 // Using ArrayList as I want it to be modifiable because I empty it when applying, so I can check for things that weren't applied TODO: I don't think I do this anymore? TODO: make sure that changing it to a normal List is fine
 public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> actions, @NotNull @UnmodifiableView List<LootModifierPredicate> predicates) implements Predicate<LootModifierContext> {
 //public record LootModifier(@NotNull @UnmodifiableView ArrayList<LootModifierAction> actions) {
@@ -73,51 +75,17 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
                 new ArrayList<>(predicatesEither.map(List::of, it -> it))
         );
     }
-    //private static Pair<Either<LootModifierAction, List<LootModifierAction>>, Either<LootModifierPredicate, List<LootModifierPredicate>>> toCurrentCodec(LootModifier modifier) {
-    //    final Either<LootModifierAction, List<LootModifierAction>> actionsEither;
-    //    final Either<LootModifierPredicate, List<LootModifierPredicate>> predicatesEither;
 
-    //    if (modifier.actions.size() == 1) actionsEither = Either.left(modifier.actions.get(0));
-    //    else actionsEither = Either.right(modifier.actions);
-    //    if (modifier.predicates.size() == 1) predicatesEither = Either.left(modifier.predicates.get(0));
-    //    else predicatesEither = Either.right(modifier.predicates);
-
-    //    return Pair.of(actionsEither, predicatesEither);
-    //}
-
-    ///**
-    // * @param tableRegistry registry of loot tables to modify
-    // * @return amount of loot tables modified
-    // */
-    //public int apply(final @NotNull Registry<LootTable> tableRegistry) {
-    //    int modified = 0;
-
-    //    for (Iterator<RegistryEntry.Reference<LootTable>> it = getRegistryAsWrapper(tableRegistry).streamEntries().iterator(); it.hasNext(); ) {
-    //        final RegistryEntry.Reference<LootTable> entry = it.next();
-
-    //        final RegistryKey<LootTable> key = entry.registryKey();
-    //        final LootTable table = tableRegistry.get(key);
-
-    //        if (table == null) throw new IllegalStateException("Loot table with id '%s' is null!".formatted(key));
-
-    //        if (modifies.stream().noneMatch(predicate -> predicate.matches(table, key.getValue()))) continue;
-
-    //        modified += apply(table) ? 1 : 0;
-    //    }
-
-    //    return modified;
-    //}
-
-    // TODO: count each time an action is applied? Maybe use the mask to reserve like a few bits to store how many times each was like done or idk
     /**
      * @param context context to modify
-     * @return true when any of the 'actions' could be applied, false otherwise
+     * @return highest modification level from applied actions. {@link LootModifierContext#MODIFIED_NONE} when no action was applied.
+     * @see LootModifierContext#MODIFIED_NONE
      * @see LootModifierContext#MODIFIED_TABLE
      * @see LootModifierContext#MODIFIED_POOL
      * @see LootModifierContext#MODIFIED_ENTRY
      */
     public int apply(final @NotNull LootModifierContext context) {
-        int result = 0b0;
+        int result = MODIFIED_NONE;
         for (LootModifierAction action : actions) {
             result = result | action.apply(context);
         }

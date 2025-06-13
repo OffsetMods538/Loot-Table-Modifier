@@ -10,9 +10,13 @@ public interface LootModifierAction {
     LootModifierActionType getType();
 
     /**
-     * Applies this action to the provided table
+     * Applies this action to the provided context
      * @param context the context to apply to
-     * @return true when table was modified, false otherwise
+     * @return the applied modification level
+     * @see LootModifierContext#MODIFIED_NONE
+     * @see LootModifierContext#MODIFIED_TABLE
+     * @see LootModifierContext#MODIFIED_POOL
+     * @see LootModifierContext#MODIFIED_ENTRY
      */
     int apply(final @NotNull LootModifierContext context);
 
