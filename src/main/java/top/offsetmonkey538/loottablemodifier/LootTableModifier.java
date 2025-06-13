@@ -26,6 +26,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import org.apache.commons.io.file.PathUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.offsetmonkey538.loottablemodifier.api.LootModifierActionTypes;
@@ -67,18 +68,14 @@ public class LootTableModifier implements ModInitializer {
 
 	public static void runModification(ResourceManager resourceManager, Registry<LootTable> lootRegistry, RegistryOps<JsonElement> registryOps) {
 		final Map<Identifier, LootModifier> modifiers = loadModifiers(resourceManager, registryOps);
-		final Map<Identifier, LootModifier> failedModifiers = new HashMap<>(0);
 
-		final List<Identifier> modifiedTableIds = new ArrayList<>(); // todo: will be used for exporting modified ones
+		final List<Identifier> modifiedTableIds = new ArrayList<>(); // Used for exporting modified ones
 		int poolsModified = 0, entriesModified = 0;
 		boolean tableModified, poolModified;
+
 		LOGGER.info("Modifying loot tables...");
 		final Stopwatch stopwatch = Stopwatch.createStarted();
-		// TODO: Would looping through all tables here be faster than doing that for each modifier? To test I guess
 
-
-		// TODO: so about that never-nesting............
-		// fixme: don't think modifying for example tables without any pools or entries would work with this..... Maybe try a do-while instead of for loop? Then I'd have to
 		for (Iterator<RegistryEntry.Reference<LootTable>> it = getRegistryAsWrapper(lootRegistry).streamEntries().iterator(); it.hasNext(); ) {
 			final RegistryEntry.Reference<LootTable> registryEntry = it.next();
 			final RegistryKey<LootTable> key = registryEntry.registryKey();
@@ -87,14 +84,21 @@ public class LootTableModifier implements ModInitializer {
 			final Identifier tableId = key.getValue();
 			if (table == null) throw new IllegalStateException("Loot table with id '%s' is null!".formatted(key));
 
-			// fixme: should create a copy of list because it will be modified and that'll lead to bad stuff during iteration
 			tableModified = false;
-			for (LootPool pool : table.pools) {
-				// fixme: should create a copy of list because it will be modified and that'll lead to bad stuff during iteration
+
+			final List<LootPool> poolsCopy = new LinkedList<>(table.pools);
+			int poolsSize = Math.max(1, poolsCopy.size());
+			for (int i = 0; i < poolsSize; i++) {
+				final @Nullable LootPool pool = poolsCopy.isEmpty() ? null : poolsCopy.get(i);
 				poolModified = false;
-				for (LootPoolEntry entry : pool.entries) {
+
+				final List<LootPoolEntry> entriesCopy = pool == null ? List.of() : new LinkedList<>(pool.entries);
+				int entriesSize = Math.max(1, entriesCopy.size());
+				for (int j = 0; j < entriesSize; j++) {
+					final @Nullable LootPoolEntry entry = entriesCopy.isEmpty() ? null : entriesCopy.get(j);
+
 					for (Map.Entry<Identifier, LootModifier> modifierEntry : modifiers.entrySet()) {
-						// todo: I'm creating a lot of these... Could it make more sense to not use a record so it's modifiable and then keep passing the same instance but modify the values? Think making the values in there protected would mean that only things in the same package could access it? So move it into this package (doesn't really make sense in 'resource' anyway) and that way I can make sure only this modifies stuff
+						// Everything is so fast anyway that there's probably no point in doing what the to-do here said
 						final LootModifierContext context = new LootModifierContext(table, tableId, pool, entry, tableModified, poolModified);
 
 						final LootModifier modifier = modifierEntry.getValue();
@@ -112,6 +116,7 @@ public class LootTableModifier implements ModInitializer {
 						if ((result & MODIFIED_ENTRY) == MODIFIED_ENTRY) entriesModified++;
 					}
 				}
+
 				poolsModified += poolModified ? 1 : 0;
 			}
 			if (tableModified) modifiedTableIds.add(tableId);

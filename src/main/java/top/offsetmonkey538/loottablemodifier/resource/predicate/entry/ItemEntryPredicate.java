@@ -27,6 +27,7 @@ public record ItemEntryPredicate(OptionalPattern name) implements LootModifierPr
 
     @Override
     public boolean test(@NotNull LootModifierContext context) {
+        // No need for a separate null check of entry as null isn't an instance of ItemEntry
         if (!(context.entry() instanceof ItemEntry itemEntry)) return false;
 
         return name.matches(itemEntry.item.getIdAsString());

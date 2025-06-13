@@ -40,6 +40,7 @@ public record SetItemAction(RegistryEntry<Item> item, boolean canReplaceEntry) i
     @Override
     public int apply(@NotNull LootModifierContext context) {
         final LootPoolEntry entry = context.entry();
+        if (entry == null) return MODIFIED_NONE;
 
         if (entry instanceof ItemEntry itemEntry) {
             ((ItemEntryAccessor) itemEntry).setItem(item);
@@ -49,11 +50,12 @@ public record SetItemAction(RegistryEntry<Item> item, boolean canReplaceEntry) i
         if (!canReplaceEntry) return MODIFIED_NONE;
 
         final LootPool pool = context.pool();
+        if (pool == null) return MODIFIED_NONE;
 
         final ImmutableList.Builder<LootPoolEntry> newEntriesBuilder = ImmutableList.builder();
 
         for (LootPoolEntry originalEntry : pool.entries) {
-            if (originalEntry == entry) continue; // I think we do want '==' here as the references should be the same? TODO: test
+            if (originalEntry == entry) continue; // I think we do want '==' here as the references should be the same?
             newEntriesBuilder.add(originalEntry);
         }
         ((LootPoolAccessor) context.pool()).setEntries(newEntriesBuilder.build());

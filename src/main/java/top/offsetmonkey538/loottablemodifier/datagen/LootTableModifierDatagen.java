@@ -145,6 +145,24 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                                     )
                             )
             );
+            addModifier(
+                    id("empty_table_test"),
+                    LootModifier.builder()
+                            .conditionally(
+                                    LootTablePredicate.builder()
+                                            .name(RegistryKey.of(RegistryKeys.LOOT_TABLE, id("test_empty_table")))
+                            )
+                            .action(
+                                    AddPoolAction.builder(
+                                            LootPool.builder()
+                                                    .rolls(ConstantLootNumberProvider.create(1))
+                                                    .with(
+                                                            ItemEntry.builder(Items.TNT)
+                                                                    .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 1)))
+                                                    )
+                                    )
+                            )
+            );
         }
     }
 
