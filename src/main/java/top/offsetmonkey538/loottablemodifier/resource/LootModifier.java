@@ -117,7 +117,7 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
      * @see LootModifierContext#MODIFIED_ENTRY
      */
     public int apply(final @NotNull LootModifierContext context) {
-        int result = 0x0;
+        int result = 0b0;
         for (LootModifierAction action : actions) {
             result = result | action.apply(context);
         }

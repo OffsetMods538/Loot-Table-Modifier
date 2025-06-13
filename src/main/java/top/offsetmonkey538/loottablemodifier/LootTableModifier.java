@@ -85,11 +85,11 @@ public class LootTableModifier implements ModInitializer {
 			if (table == null) throw new IllegalStateException("Loot table with id '%s' is null!".formatted(key));
 
 			// fixme: should create a copy of list because it will be modified and that'll lead to bad stuff during iteration
+			tableModified = false;
 			for (LootPool pool : table.pools) {
-				tableModified = false;
 				// fixme: should create a copy of list because it will be modified and that'll lead to bad stuff during iteration
+				poolModified = false;
 				for (LootPoolEntry entry : pool.entries) {
-					poolModified = false;
 					for (Map.Entry<Identifier, LootModifier> modifierEntry : modifiers.entrySet()) {
 						// todo: I'm creating a lot of these... Could it make more sense to not use a record so it's modifiable and then keep passing the same instance but modify the values? Think making the values in there protected would mean that only things in the same package could access it? So move it into this package (doesn't really make sense in 'resource' anyway) and that way I can make sure only this modifies stuff
 						final LootModifierContext context = new LootModifierContext(table, tableId, pool, entry, tableModified, poolModified);
@@ -108,10 +108,10 @@ public class LootTableModifier implements ModInitializer {
 						if ((result & MODIFIED_POOL) == MODIFIED_POOL) poolModified = true;
 						if ((result & MODIFIED_ENTRY) == MODIFIED_ENTRY) entriesModified++;
 					}
-					poolsModified += poolModified ? 1 : 0;
 				}
-				if (tableModified) modifiedTableIds.add(tableId);
+				poolsModified += poolModified ? 1 : 0;
 			}
+			if (tableModified) modifiedTableIds.add(tableId);
 
 			//for (Map.Entry<Identifier, LootModifier> modifierEntry : modifiers.entrySet()) {
 			//	final LootModifier modifier = modifierEntry.getValue();
