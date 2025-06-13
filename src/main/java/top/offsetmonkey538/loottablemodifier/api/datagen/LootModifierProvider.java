@@ -6,26 +6,24 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.MappingResolver;
 import net.minecraft.data.DataOutput;
 import net.minecraft.entity.EntityType;
-import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import static top.offsetmonkey538.loottablemodifier.LootTableModifier.MOD_ID;
 
 /**
+ * FIXME: wrong
  * A datagen provider for creating loot modifiers.
  * <br>
  * Override {@link #generate(RegistryWrapper.WrapperLookup) generate()} and use the {@code addModifier(...)} methods to add modifiers.
@@ -62,7 +60,7 @@ public abstract class LootModifierProvider extends FabricCodecDataProvider<LootM
 
     @Override
     public String getName() {
-        return "Loot Table Modifiers";
+        return "New New Loot Table Modifiers"; // todo: change
     }
 
     /**
@@ -72,113 +70,9 @@ public abstract class LootModifierProvider extends FabricCodecDataProvider<LootM
      */
     protected abstract void generate(RegistryWrapper.WrapperLookup lookup);
 
-    /**
-     * Adds a new loot table modifier for the given {@link EntityType}s.
-     *
-     * @param name Name of this modifier
-     * @param builder The loot pool to add
-     * @param modifies The {@link EntityType} to add the modifier to
-     * @param modifiesAdditional Additional {@link EntityType}s to add the modifier to
-     */
-    protected void addModifier(Identifier name, LootPool.Builder builder, EntityType<?> modifies, EntityType<?>... modifiesAdditional) {
-        addModifier(
-                name,
-                List.of(builder),
-                modifies,
-                modifiesAdditional
-        );
+    protected void addModifier(@NotNull Identifier name, @NotNull LootModifier.Builder builder) {
+        provider.accept(name, builder.build());
     }
-
-    /**
-     * Adds a new loot table modifier for the given {@link EntityType}s.
-     *
-     * @param name Name of this modifier
-     * @param builders The loot pools to add
-     * @param modifies The {@link EntityType} to add the modifier to
-     * @param modifiesAdditional Additional {@link EntityType}s to add the modifier to
-     */
-    protected void addModifier(Identifier name, List<LootPool.Builder> builders, EntityType<?> modifies, EntityType<?>... modifiesAdditional) {
-        addModifier(
-                name,
-                builders,
-                Stream.concat(Stream.of(modifies), Stream.of(modifiesAdditional)).map(EntityLootTableIdGetter.get).toList()
-        );
-    }
-
-    /**
-     * Adds a new loot table modifier for the given {@link RegistryKey}s.
-     *
-     * @param name Name of this modifier
-     * @param builder The loot pool to add
-     * @param modifies The {@link RegistryKey} to add the modifier to
-     * @param modifiesAdditional Additional {@link RegistryKey}s to add the modifier to
-     */
-    protected void addModifier(Identifier name, LootPool.Builder builder, RegistryKey<?> modifies, RegistryKey<?>... modifiesAdditional) {
-        addModifier(
-                name,
-                List.of(builder),
-                modifies,
-                modifiesAdditional
-        );
-    }
-
-    /**
-     * Adds a new loot table modifier for the given {@link RegistryKey}s.
-     *
-     * @param name Name of this modifier
-     * @param builders The loot pools to add
-     * @param modifies The {@link RegistryKey} to add the modifier to
-     * @param modifiesAdditional Additional {@link RegistryKey}s to add the modifier to
-     */
-    protected void addModifier(Identifier name, List<LootPool.Builder> builders, RegistryKey<?> modifies, RegistryKey<?>... modifiesAdditional) {
-        addModifier(
-                name,
-                builders,
-                Stream.concat(Stream.of(modifies), Stream.of(modifiesAdditional)).map(RegistryKey::getValue).toList()
-        );
-    }
-
-    /**
-     * Adds a new loot table modifier for the given {@link Identifier}s.
-     *
-     * @param name Name of this modifier
-     * @param builder The loot pool to add
-     * @param modifies The {@link Identifier} to add the modifier to
-     * @param modifiesAdditional Additional {@link Identifier}s to add the modifier to
-     */
-    protected void addModifier(Identifier name, LootPool.Builder builder, Identifier modifies, Identifier... modifiesAdditional) {
-        addModifier(
-                name,
-                List.of(builder),
-                modifies,
-                modifiesAdditional
-        );
-    }
-
-    /**
-     * Adds a new loot table modifier for the given {@link Identifier}s.
-     *
-     * @param name Name of this modifier
-     * @param builders The loot pools to add
-     * @param modifies The {@link Identifier} to add the modifier to
-     * @param modifiesAdditional Additional {@link Identifier}s to add the modifier to
-     */
-    protected void addModifier(Identifier name, List<LootPool.Builder> builders, Identifier modifies, Identifier... modifiesAdditional) {
-        addModifier(
-                name,
-                builders,
-                Stream.concat(Stream.of(modifies), Stream.of(modifiesAdditional)).toList()
-        );
-    }
-
-    private void addModifier(Identifier name, List<LootPool.Builder> builders, List<Identifier> modifies) {
-        provider.accept(name, new LootModifier(
-                new ArrayList<>(modifies),
-                builders.stream().map(LootPool.Builder::build).toList()
-        ));
-    }
-
-
 
     private static class EntityLootTableIdGetter {
         // Resolver returns the provided name (like 'method_16351') when it fails to map it
