@@ -52,6 +52,14 @@ public record OptionalPattern(boolean isRegex, @NotNull String patternString, @N
         );
     }
 
+    /**
+     * Not deprecated for removal.
+     * <p>
+     * Use this only if you really need an instance of the {@link Matcher}. Otherwise, use {@link #matches(CharSequence)}, because it removes the overhead the {@link Matcher} when {@link #isRegex} is false.
+     * @see #matches(CharSequence)
+     */
+    @SuppressWarnings("DeprecatedIsStillUsed")
+    @Deprecated()
     public Matcher matcher(CharSequence input) {
         return pattern.matcher(input);
     }

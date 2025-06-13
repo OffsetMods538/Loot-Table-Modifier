@@ -29,7 +29,7 @@ public record ItemEntryPredicate(OptionalPattern name) implements LootModifierPr
     public boolean test(@NotNull LootModifierContext context) {
         if (!(context.entry() instanceof ItemEntry itemEntry)) return false;
 
-        return name.matcher(itemEntry.item.getIdAsString()).matches();
+        return name.matches(itemEntry.item.getIdAsString());
     }
 
     public static LootModifierPredicate.Builder builder(ItemConvertible name) {

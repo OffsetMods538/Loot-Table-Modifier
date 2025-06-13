@@ -14,6 +14,6 @@ public record LootConditionPredicate(@NotNull OptionalPattern functionPattern) {
         final Identifier functionId = Registries.LOOT_CONDITION_TYPE.getId(condition.getType());
         if (functionId == null) return false;
 
-        return functionPattern.matcher(functionId.toString()).matches();
+        return functionPattern.matches(functionId.toString());
     }
 }

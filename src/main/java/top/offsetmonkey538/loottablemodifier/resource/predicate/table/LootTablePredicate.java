@@ -71,14 +71,14 @@ public record LootTablePredicate(@Nullable List<OptionalPattern> identifiers, @N
         if (identifiers != null) {
             boolean idResult = false;
             final String tableIdString = context.tableId().toString();
-            for (OptionalPattern pattern : identifiers) idResult = idResult || pattern.matcher(tableIdString).matches();
+            for (OptionalPattern pattern : identifiers) idResult = idResult || pattern.matches(tableIdString);
             result = idResult;
         }
 
         if (types != null) {
             boolean typeResult = false;
             final String tableTypeString = LootContextTypes.MAP.inverse().get(context.table().getType()).toString();
-            for (OptionalPattern pattern : types) typeResult = typeResult || pattern.matcher(tableTypeString).matches();
+            for (OptionalPattern pattern : types) typeResult = typeResult || pattern.matches(tableTypeString);
             result = result && typeResult;
         }
 
