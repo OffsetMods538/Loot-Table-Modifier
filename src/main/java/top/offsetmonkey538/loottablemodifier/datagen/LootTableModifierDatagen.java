@@ -25,6 +25,7 @@ import net.minecraft.util.context.ContextType;
 import top.offsetmonkey538.loottablemodifier.api.datagen.NewLootModifierProvider;
 import top.offsetmonkey538.loottablemodifier.api.datagen.NewNewLootModifierProvider;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
+import top.offsetmonkey538.loottablemodifier.resource.OptionalPattern;
 import top.offsetmonkey538.loottablemodifier.resource.action.AddPoolAction;
 import top.offsetmonkey538.loottablemodifier.resource.action.SetItemAction;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.entry.ItemEntryPredicate;
@@ -102,7 +103,7 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     id("replace_ingots_with_command_block"),
                     LootModifier.builder()
                             .conditionally(
-                                    ItemEntryPredicate.builder(Pattern.compile("minecraft:.*_ingot"))
+                                    ItemEntryPredicate.builder(OptionalPattern.compile("minecraft:.*_ingot"))
                             )
                             .action(
                                     SetItemAction.builder(Items.COMMAND_BLOCK)
@@ -112,7 +113,7 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     id("sugarcane_drop_tnt"),
                     LootModifier.builder()
                             .conditionally(
-                                    ItemEntryPredicate.builder(Pattern.compile("minecraft:sugar_cane"))
+                                    ItemEntryPredicate.builder(OptionalPattern.compile(Pattern.quote("minecraft:sugar_cane")))
                             )
                             .action(
                                     AddPoolAction.builder(

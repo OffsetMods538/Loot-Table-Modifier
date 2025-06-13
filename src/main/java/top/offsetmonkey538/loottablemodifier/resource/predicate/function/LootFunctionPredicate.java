@@ -5,7 +5,6 @@ import net.minecraft.loot.function.LootFunction;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
-import top.offsetmonkey538.loottablemodifier.resource.predicate.Util;
 
 import java.util.regex.Pattern;
 

@@ -18,9 +18,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.offsetmonkey538.loottablemodifier.api.LootModifierPredicateTypes;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifierContext;
+import top.offsetmonkey538.loottablemodifier.resource.OptionalPattern;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicateType;
-import top.offsetmonkey538.loottablemodifier.resource.predicate.Util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -32,27 +32,27 @@ import java.util.regex.Pattern;
 import static top.offsetmonkey538.loottablemodifier.LootTableModifier.LOGGER;
 
 
-public record LootTablePredicate(@Nullable List<Pattern> identifiers, @Nullable List<Pattern> types) implements LootModifierPredicate {
+public record LootTablePredicate(@Nullable List<OptionalPattern> identifiers, @Nullable List<OptionalPattern> types) implements LootModifierPredicate {
     public static final MapCodec<LootTablePredicate> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.either(Util.PATTERN_CODEC, Util.PATTERN_CODEC.listOf()).optionalFieldOf("identifiers").forGetter(LootTablePredicate::optionalEitherIdentifier),
-            Codec.either(Util.PATTERN_CODEC, Util.PATTERN_CODEC.listOf()).optionalFieldOf("types").forGetter(LootTablePredicate::optionalEitherType)
+            Codec.either(OptionalPattern.CODEC, OptionalPattern.CODEC.listOf()).optionalFieldOf("identifiers").forGetter(LootTablePredicate::optionalEitherIdentifier),
+            Codec.either(OptionalPattern.CODEC, OptionalPattern.CODEC.listOf()).optionalFieldOf("types").forGetter(LootTablePredicate::optionalEitherType)
     ).apply(instance, LootTablePredicate::new));
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // Codec gib it to me
-    private LootTablePredicate(@NotNull Optional<Either<Pattern, List<Pattern>>> optionalIdentifier, @NotNull Optional<Either<Pattern, List<Pattern>>> optionalType) {
+    private LootTablePredicate(@NotNull Optional<Either<OptionalPattern, List<OptionalPattern>>> optionalIdentifier, @NotNull Optional<Either<OptionalPattern, List<OptionalPattern>>> optionalType) {
         this(
                 optionalIdentifier.map(it -> it.map(List::of, it2 -> it2)).orElse(null),
                 optionalType.map(it -> it.map(List::of, it2 -> it2)).orElse(null)
         );
     }
 
-    private Optional<Either<Pattern, List<Pattern>>> optionalEitherIdentifier() {
+    private Optional<Either<OptionalPattern, List<OptionalPattern>>> optionalEitherIdentifier() {
         if (identifiers == null || identifiers.isEmpty()) return Optional.empty();
 
         if (identifiers.size() == 1) return Optional.of(Either.left(identifiers.get(0)));
         return Optional.of(Either.right(identifiers));
     }
-    private Optional<Either<Pattern, List<Pattern>>> optionalEitherType() {
+    private Optional<Either<OptionalPattern, List<OptionalPattern>>> optionalEitherType() {
         if (types == null || types.isEmpty()) return Optional.empty();
 
         if (types.size() == 1) return Optional.of(Either.left(types.get(0)));
@@ -71,14 +71,14 @@ public record LootTablePredicate(@Nullable List<Pattern> identifiers, @Nullable 
         if (identifiers != null) {
             boolean idResult = false;
             final String tableIdString = context.tableId().toString();
-            for (Pattern pattern : identifiers) idResult = idResult || pattern.matcher(tableIdString).matches();
+            for (OptionalPattern pattern : identifiers) idResult = idResult || pattern.matcher(tableIdString).matches();
             result = idResult;
         }
 
         if (types != null) {
             boolean typeResult = false;
             final String tableTypeString = LootContextTypes.MAP.inverse().get(context.table().getType()).toString();
-            for (Pattern pattern : types) typeResult = typeResult || pattern.matcher(tableTypeString).matches();
+            for (OptionalPattern pattern : types) typeResult = typeResult || pattern.matcher(tableTypeString).matches();
             result = result && typeResult;
         }
 
@@ -90,8 +90,8 @@ public record LootTablePredicate(@Nullable List<Pattern> identifiers, @Nullable 
     }
 
     public static class Builder implements LootModifierPredicate.Builder {
-        private final ImmutableList.Builder<Pattern> names = ImmutableList.builder();
-        private final ImmutableList.Builder<Pattern> types = ImmutableList.builder();
+        private final ImmutableList.Builder<OptionalPattern> names = ImmutableList.builder();
+        private final ImmutableList.Builder<OptionalPattern> types = ImmutableList.builder();
 
 
         public LootTablePredicate.Builder name(@NotNull EntityType<?>... names) {
@@ -107,10 +107,10 @@ public record LootTablePredicate(@Nullable List<Pattern> identifiers, @Nullable 
             return this;
         }
         public LootTablePredicate.Builder name(@NotNull String... names) {
-            for (String name : names) this.names.add(Pattern.compile(Pattern.quote(name)));
+            for (String name : names) this.names.add(OptionalPattern.literal(name));
             return this;
         }
-        public LootTablePredicate.Builder name(@NotNull Pattern... names) {
+        public LootTablePredicate.Builder name(@NotNull OptionalPattern... names) {
             this.names.add(names);
             return this;
         }
@@ -125,10 +125,10 @@ public record LootTablePredicate(@Nullable List<Pattern> identifiers, @Nullable 
             return this;
         }
         public LootTablePredicate.Builder type(@NotNull String... types) {
-            for (String type : types) type(Pattern.compile(Pattern.quote(type)));
+            for (String type : types) this.types.add(OptionalPattern.literal(type));
             return this;
         }
-        public LootTablePredicate.Builder type(@NotNull Pattern... types) {
+        public LootTablePredicate.Builder type(@NotNull OptionalPattern... types) {
             this.types.add(types);
             return this;
         }
