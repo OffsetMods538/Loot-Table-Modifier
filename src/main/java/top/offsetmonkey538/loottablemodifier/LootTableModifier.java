@@ -32,8 +32,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.offsetmonkey538.loottablemodifier.api.LootModifierActionTypes;
-import top.offsetmonkey538.loottablemodifier.api.LootModifierPredicateTypes;
+import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierActionTypes;
+import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicateTypes;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifierContext;
 

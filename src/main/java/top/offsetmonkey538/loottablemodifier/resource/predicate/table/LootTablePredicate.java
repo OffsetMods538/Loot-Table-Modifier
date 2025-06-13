@@ -16,7 +16,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.context.ContextType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import top.offsetmonkey538.loottablemodifier.api.LootModifierPredicateTypes;
+import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicateTypes;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifierContext;
 import top.offsetmonkey538.loottablemodifier.resource.OptionalPattern;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicate;
@@ -27,7 +27,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 
 import static top.offsetmonkey538.loottablemodifier.LootTableModifier.LOGGER;
 

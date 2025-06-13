@@ -1,9 +1,8 @@
 package top.offsetmonkey538.loottablemodifier.resource.predicate.op;
 
 import com.mojang.serialization.MapCodec;
-import net.minecraft.loot.condition.AnyOfLootCondition;
 import net.minecraft.util.Util;
-import top.offsetmonkey538.loottablemodifier.api.LootModifierPredicateTypes;
+import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicateTypes;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicateType;
 

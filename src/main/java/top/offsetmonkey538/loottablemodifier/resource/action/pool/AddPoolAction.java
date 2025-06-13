@@ -1,17 +1,20 @@
-package top.offsetmonkey538.loottablemodifier.resource.action;
+package top.offsetmonkey538.loottablemodifier.resource.action.pool;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
-import top.offsetmonkey538.loottablemodifier.LootTableModifier;
-import top.offsetmonkey538.loottablemodifier.api.LootModifierActionTypes;
+import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierActionTypes;
 import top.offsetmonkey538.loottablemodifier.mixin.LootTableAccessor;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifierContext;
+import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierAction;
+import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierActionType;
 
 import java.util.List;
+
+import static top.offsetmonkey538.loottablemodifier.resource.LootModifierContext.MODIFIED_NONE;
+import static top.offsetmonkey538.loottablemodifier.resource.LootModifierContext.MODIFIED_POOL;
 
 public record AddPoolAction(List<LootPool> pools) implements LootModifierAction {
     public static final MapCodec<AddPoolAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -20,12 +23,12 @@ public record AddPoolAction(List<LootPool> pools) implements LootModifierAction 
 
     @Override
     public LootModifierActionType getType() {
-        return LootModifierActionTypes.ADD_ENTRY;
+        return LootModifierActionTypes.ADD_POOL;
     }
 
     @Override
     public int apply(@NotNull LootModifierContext context) {
-        if (context.tableAlreadyModified()) return LootModifierContext.MODIFIED_NONE;
+        if (context.tableAlreadyModified()) return MODIFIED_NONE;
 
         final List<LootPool> newPools = ImmutableList.<LootPool>builder()
                 .addAll(context.table().pools)
@@ -34,7 +37,7 @@ public record AddPoolAction(List<LootPool> pools) implements LootModifierAction 
 
         ((LootTableAccessor) context.table()).setPools(newPools);
 
-        return LootModifierContext.MODIFIED_TABLE;
+        return MODIFIED_POOL;
     }
 
     public static AddPoolAction.Builder builder(@NotNull LootPool.Builder poolBuilder) {

@@ -6,7 +6,7 @@ package top.offsetmonkey538.loottablemodifier.resource.action;
 //import net.minecraft.loot.LootPool;
 //import net.minecraft.loot.LootTable;
 //import org.jetbrains.annotations.NotNull;
-//import top.offsetmonkey538.loottablemodifier.api.LootModifierActionTypes;
+//import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierActionTypes;
 //import top.offsetmonkey538.loottablemodifier.mixin.LootTableAccessor;
 //import top.offsetmonkey538.loottablemodifier.resource.LootModifierContext;
 //import top.offsetmonkey538.loottablemodifier.resource.predicate.pool.LootPoolPredicate;

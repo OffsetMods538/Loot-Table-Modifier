@@ -40,7 +40,6 @@ public abstract class ReloadableRegistriesMixin {
     )
     private static <T> void loottablemodifier$modifyLootTables(LootDataType<T> lootDataType, ResourceManager resourceManager, RegistryOps<JsonElement> registryOps, CallbackInfoReturnable<MutableRegistry<?>> cir) {
         if (lootDataType != LootDataType.LOOT_TABLES) return;
-
         //noinspection unchecked
         LootTableModifier.runModification(resourceManager, (Registry<LootTable>) cir.getReturnValue(), registryOps);
     }

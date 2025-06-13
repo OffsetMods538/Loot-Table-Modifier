@@ -1,13 +1,12 @@
-package top.offsetmonkey538.loottablemodifier.api;
+package top.offsetmonkey538.loottablemodifier.resource.action;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
-import top.offsetmonkey538.loottablemodifier.resource.action.AddPoolAction;
-import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierAction;
-import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierActionType;
-import top.offsetmonkey538.loottablemodifier.resource.action.SetItemAction;
+import top.offsetmonkey538.loottablemodifier.resource.action.pool.AddPoolAction;
+import top.offsetmonkey538.loottablemodifier.resource.action.entry.SetItemAction;
+import top.offsetmonkey538.loottablemodifier.resource.action.pool.RemovePoolAction;
 
 import static top.offsetmonkey538.loottablemodifier.LootTableModifier.id;
 
@@ -16,7 +15,8 @@ public final class LootModifierActionTypes {
 
     }
 
-    public static final LootModifierActionType ADD_ENTRY = register(id("add_pool"), AddPoolAction.CODEC);
+    public static final LootModifierActionType ADD_POOL = register(id("add_pool"), AddPoolAction.CODEC);
+    public static final LootModifierActionType REMOVE_POOL = register(id("remove_pool"), RemovePoolAction.CODEC);
 
     public static final LootModifierActionType SET_ITEM = register(id("set_item"), SetItemAction.CODEC);
 

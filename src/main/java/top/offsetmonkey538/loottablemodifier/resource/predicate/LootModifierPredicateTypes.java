@@ -1,17 +1,9 @@
-package top.offsetmonkey538.loottablemodifier.api;
+package top.offsetmonkey538.loottablemodifier.resource.predicate;
 
 import com.mojang.serialization.MapCodec;
-import net.minecraft.loot.condition.AllOfLootCondition;
-import net.minecraft.loot.condition.AnyOfLootCondition;
-import net.minecraft.loot.condition.InvertedLootCondition;
-import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
-import top.offsetmonkey538.loottablemodifier.resource.action.AddPoolAction;
-import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierActionType;
-import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicate;
-import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicateType;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.entry.ItemEntryPredicate;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.op.AllOfLootPredicate;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.op.AnyOfLootPredicate;

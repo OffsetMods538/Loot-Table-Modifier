@@ -7,13 +7,11 @@ import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
-import top.offsetmonkey538.loottablemodifier.api.LootModifierPredicateTypes;
+import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicateTypes;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifierContext;
 import top.offsetmonkey538.loottablemodifier.resource.OptionalPattern;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicateType;
-
-import java.util.regex.Pattern;
 
 public record ItemEntryPredicate(OptionalPattern name) implements LootModifierPredicate {
     public static final MapCodec<ItemEntryPredicate> CODEC = RecordCodecBuilder.mapCodec(

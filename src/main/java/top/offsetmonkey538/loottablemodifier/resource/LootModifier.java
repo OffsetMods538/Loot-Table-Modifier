@@ -7,7 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.loot.LootPool;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
-import top.offsetmonkey538.loottablemodifier.resource.action.AddPoolAction;
+import top.offsetmonkey538.loottablemodifier.resource.action.pool.AddPoolAction;
 import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicate;
 

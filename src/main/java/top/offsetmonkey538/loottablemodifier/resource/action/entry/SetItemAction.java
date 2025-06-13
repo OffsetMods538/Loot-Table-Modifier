@@ -1,4 +1,4 @@
-package top.offsetmonkey538.loottablemodifier.resource.action;
+package top.offsetmonkey538.loottablemodifier.resource.action.entry;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
@@ -7,21 +7,17 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTable;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.entry.LootPoolEntry;
-import net.minecraft.loot.entry.LootPoolEntryTypes;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
-import top.offsetmonkey538.loottablemodifier.api.LootModifierActionTypes;
+import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierActionTypes;
 import top.offsetmonkey538.loottablemodifier.mixin.ItemEntryAccessor;
 import top.offsetmonkey538.loottablemodifier.mixin.LootPoolAccessor;
-import top.offsetmonkey538.loottablemodifier.mixin.LootTableAccessor;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifierContext;
-
-import java.util.List;
+import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierAction;
+import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierActionType;
 
 import static top.offsetmonkey538.loottablemodifier.resource.LootModifierContext.MODIFIED_ENTRY;
 import static top.offsetmonkey538.loottablemodifier.resource.LootModifierContext.MODIFIED_NONE;

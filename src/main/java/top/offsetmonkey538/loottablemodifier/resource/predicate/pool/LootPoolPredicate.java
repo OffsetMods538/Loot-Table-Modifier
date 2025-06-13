@@ -13,7 +13,7 @@ package top.offsetmonkey538.loottablemodifier.resource.predicate.pool;
 //import net.minecraft.util.Identifier;
 //import org.jetbrains.annotations.NotNull;
 //import org.jetbrains.annotations.Nullable;
-//import top.offsetmonkey538.loottablemodifier.api.LootModifierPredicateTypes;
+//import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicateTypes;
 //import top.offsetmonkey538.loottablemodifier.resource.LootModifierContext;
 //import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicate;
 //import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicateType;

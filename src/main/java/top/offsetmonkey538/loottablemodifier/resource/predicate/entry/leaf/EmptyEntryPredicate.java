@@ -6,7 +6,7 @@ package top.offsetmonkey538.loottablemodifier.resource.predicate.entry.leaf;
 //import net.minecraft.loot.entry.ItemEntry;
 //import net.minecraft.util.Identifier;
 //import org.jetbrains.annotations.NotNull;
-//import top.offsetmonkey538.loottablemodifier.api.LootModifierPredicateTypes;
+//import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicateTypes;
 //import top.offsetmonkey538.loottablemodifier.resource.LootModifierContext;
 //import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicateType;
 //import top.offsetmonkey538.loottablemodifier.resource.predicate.condition.LootConditionPredicate;

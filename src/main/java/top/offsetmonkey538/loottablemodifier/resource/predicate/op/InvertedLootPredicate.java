@@ -2,9 +2,8 @@ package top.offsetmonkey538.loottablemodifier.resource.predicate.op;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
-import top.offsetmonkey538.loottablemodifier.api.LootModifierPredicateTypes;
+import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicateTypes;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifierContext;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicateType;
