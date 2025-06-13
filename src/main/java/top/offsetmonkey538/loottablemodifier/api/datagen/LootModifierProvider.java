@@ -12,16 +12,13 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
-import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierAction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import static top.offsetmonkey538.loottablemodifier.LootTableModifier.MOD_ID;
 
@@ -48,10 +45,10 @@ import static top.offsetmonkey538.loottablemodifier.LootTableModifier.MOD_ID;
  * }
  * }</pre>
  */
-public abstract class NewNewLootModifierProvider extends FabricCodecDataProvider<LootModifier> {
+public abstract class LootModifierProvider extends FabricCodecDataProvider<LootModifier> {
     private BiConsumer<Identifier, LootModifier> provider;
 
-    public NewNewLootModifierProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    public LootModifierProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         super(dataOutput, registriesFuture, DataOutput.OutputType.DATA_PACK, MOD_ID + "/loot_modifier", LootModifier.CODEC);
     }
 

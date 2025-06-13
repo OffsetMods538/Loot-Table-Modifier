@@ -3,27 +3,21 @@ package top.offsetmonkey538.loottablemodifier.datagen;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
-import net.minecraft.data.DataOutput;
-import net.minecraft.data.loottable.LootTableProvider;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.LootTables;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.loot.entry.ItemEntry;
-import net.minecraft.loot.function.EnchantWithLevelsLootFunction;
 import net.minecraft.loot.function.SetCountLootFunction;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.loot.provider.number.UniformLootNumberProvider;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.util.context.ContextType;
 import top.offsetmonkey538.loottablemodifier.api.datagen.NewLootModifierProvider;
-import top.offsetmonkey538.loottablemodifier.api.datagen.NewNewLootModifierProvider;
+import top.offsetmonkey538.loottablemodifier.api.datagen.LootModifierProvider;
 import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
 import top.offsetmonkey538.loottablemodifier.resource.OptionalPattern;
 import top.offsetmonkey538.loottablemodifier.resource.action.AddPoolAction;
@@ -31,11 +25,8 @@ import top.offsetmonkey538.loottablemodifier.resource.action.SetItemAction;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.entry.ItemEntryPredicate;
 import top.offsetmonkey538.loottablemodifier.resource.predicate.table.LootTablePredicate;
 
-import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
-import java.util.regex.Pattern;
 
 import static top.offsetmonkey538.loottablemodifier.LootTableModifier.id;
 
@@ -92,7 +83,7 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
     //        );
     //    }
     //}
-    private static class NewModLootModifierProvider extends NewNewLootModifierProvider {
+    private static class NewModLootModifierProvider extends LootModifierProvider {
         public NewModLootModifierProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
             super(dataOutput, registriesFuture);
         }
