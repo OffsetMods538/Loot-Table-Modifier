@@ -5,6 +5,10 @@
 
 Allows datapacks (and thus mods as well) to add to loot tables, instead of just overwriting them.
 
+This mod shouldn't impact performance while playing the game, but only when datapacks are reloading (joining a world, starting a server, `/reload` command, whatever else).  
+Performance impact during pack reloading varies depending on the datapacks.  
+The mod writes how long applying modifiers took in the console.
+
 Also provides a datagen provider for creating loot table modifiers in mods.
 
 A modifier json file includes two components:
