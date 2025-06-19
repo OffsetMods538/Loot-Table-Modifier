@@ -54,7 +54,7 @@ public record LootTablePredicate(@Nullable List<OptionalPattern> identifiers, @N
 
     @Override
     public LootModifierPredicateType getType() {
-        return LootModifierPredicateTypes.LOOT_TABLE;
+        return LootModifierPredicateTypes.TABLE;
     }
 
     @Override

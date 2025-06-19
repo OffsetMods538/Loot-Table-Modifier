@@ -20,7 +20,7 @@ public record ItemEntryPredicate(OptionalPattern name) implements LootModifierPr
 
     @Override
     public LootModifierPredicateType getType() {
-        return LootModifierPredicateTypes.ITEM_ENTRY;
+        return LootModifierPredicateTypes.ENTRY_ITEM;
     }
 
     @Override

@@ -21,9 +21,9 @@ public final class LootModifierPredicateTypes {
     public static final LootModifierPredicateType ANY_OF = register(id("any_of"), AnyOfLootPredicate.CODEC);
     public static final LootModifierPredicateType ALL_OF = register(id("all_of"), AllOfLootPredicate.CODEC);
 
-    public static final LootModifierPredicateType ITEM_ENTRY = register(id("item_entry"), ItemEntryPredicate.CODEC);
+    public static final LootModifierPredicateType ENTRY_ITEM = register(id("entry_item"), ItemEntryPredicate.CODEC);
 
-    public static final LootModifierPredicateType LOOT_TABLE = register(id("loot_table"), LootTablePredicate.CODEC);
+    public static final LootModifierPredicateType TABLE = register(id("table"), LootTablePredicate.CODEC);
 
     //public static final LootModifierPredicateType LOOT_POOL = register(id("loot_pool"), LootPoolPredicate.CODEC);
 
@@ -32,6 +32,6 @@ public final class LootModifierPredicateTypes {
     }
 
     public static void register() {
-        // Registers action types by loading the class
+        // Registers predicate types by loading the class
     }
 }
