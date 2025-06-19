@@ -206,20 +206,18 @@ public class LootTableModifier implements ModInitializer {
 
 	private static void enableDebug() {
 		ResourceManagerHelper.registerBuiltinResourcePack(id("example_pack"), FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow(), Text.of("Example Pack"), ResourcePackActivationType.NORMAL);
-		CommandRegistrationCallback.EVENT.register((dispatcher, commandRegistryAccess, registrationEnvironment) -> {
-			dispatcher.register(
-					literal(MOD_ID)
-							.then(
-									literal("debug")
-											.then(
-													literal("export")
-															.executes(
-																	LootTableModifier::executeExportCommand
-															)
-											)
-							)
-			);
-		});
+		CommandRegistrationCallback.EVENT.register((dispatcher, commandRegistryAccess, registrationEnvironment) -> dispatcher.register(
+                literal(MOD_ID)
+                        .then(
+                                literal("debug")
+                                        .then(
+                                                literal("export")
+                                                        .executes(
+                                                                LootTableModifier::executeExportCommand
+                                                        )
+                                        )
+                        )
+        ));
 	}
 
 	private static int executeExportCommand(CommandContext<ServerCommandSource> context) {
@@ -229,7 +227,7 @@ public class LootTableModifier implements ModInitializer {
 
 			final DynamicOps<JsonElement> ops = RegistryOps.of(JsonOps.INSTANCE, server.getRegistryManager());
 			try {
-				final Path exportDir = FabricLoader.getInstance().getGameDir().resolve(".loot-table-modifier_export");
+				final Path exportDir = FabricLoader.getInstance().getGameDir().resolve(".loot-table-modifier").resolve("export");
 				if (Files.exists(exportDir)) PathUtils.deleteDirectory(exportDir);
 
 				source.sendFeedback(() -> Text.literal("Exporting modified tables to ").append(Text.literal(exportDir.toString()).setStyle(Style.EMPTY.withUnderline(true).withColor(Formatting.WHITE).withHoverEvent(new HoverEvent.ShowText(Text.literal("Click to copy"))).withClickEvent(new ClickEvent.CopyToClipboard(exportDir.toAbsolutePath().toString())))), true);
