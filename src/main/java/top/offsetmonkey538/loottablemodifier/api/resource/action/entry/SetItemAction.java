@@ -27,7 +27,7 @@ public record SetItemAction(RegistryEntry<Item> item, boolean canReplaceEntry) i
 
     @Override
     public LootModifierActionType getType() {
-        return LootModifierActionTypes.SET_ITEM;
+        return LootModifierActionTypes.ENTRY_ITEM_SET;
     }
 
     @Override
@@ -51,7 +51,7 @@ public record SetItemAction(RegistryEntry<Item> item, boolean canReplaceEntry) i
             if (originalEntry == entry) continue; // I think we do want '==' here as the references should be the same?
             newEntriesBuilder.add(originalEntry);
         }
-        ((LootPoolAccessor) context.pool()).setEntries(newEntriesBuilder.build());
+        ((LootPoolAccessor) pool).setEntries(newEntriesBuilder.build());
 
         return MODIFIED_ENTRY;
     }

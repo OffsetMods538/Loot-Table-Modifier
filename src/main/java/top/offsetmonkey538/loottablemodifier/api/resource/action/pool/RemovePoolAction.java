@@ -19,7 +19,7 @@ public record RemovePoolAction() implements LootModifierAction {
 
     @Override
     public LootModifierActionType getType() {
-        return LootModifierActionTypes.REMOVE_POOL;
+        return LootModifierActionTypes.POOL_REMOVE;
     }
 
     @Override

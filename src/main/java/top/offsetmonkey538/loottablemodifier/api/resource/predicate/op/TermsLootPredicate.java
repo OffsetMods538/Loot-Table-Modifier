@@ -60,6 +60,6 @@ abstract class TermsLootPredicate implements LootModifierPredicate {
             return this.build(this.terms.build());
         }
 
-        protected abstract TermsLootPredicate build(List<LootModifierPredicate> terms);
+        protected abstract LootModifierPredicate build(List<LootModifierPredicate> terms);
     }
 }

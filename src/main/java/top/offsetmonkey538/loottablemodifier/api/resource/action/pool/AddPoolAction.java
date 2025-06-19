@@ -20,7 +20,7 @@ public record AddPoolAction(List<LootPool> pools) implements LootModifierAction 
 
     @Override
     public LootModifierActionType getType() {
-        return LootModifierActionTypes.ADD_POOL;
+        return LootModifierActionTypes.POOL_ADD;
     }
 
     @Override

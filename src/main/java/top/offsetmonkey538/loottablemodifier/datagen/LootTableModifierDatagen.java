@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
@@ -18,6 +19,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import top.offsetmonkey538.loottablemodifier.api.datagen.LootModifierProvider;
 import top.offsetmonkey538.loottablemodifier.api.resource.LootModifier;
+import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.AddEntryAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.util.OptionalPattern;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.AddPoolAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.SetItemAction;
@@ -119,6 +121,20 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                             )
                             .action(
                                     RemovePoolAction.builder()
+                            )
+            );
+            addModifier(
+                    id("add_cake_entry_to_dirt_block"),
+                    LootModifier.builder()
+                            .conditionally(
+                                    LootTablePredicate.builder()
+                                            .name(Blocks.DIRT)
+                            )
+                            .action(
+                                    AddEntryAction.builder(
+                                            ItemEntry.builder(Items.CAKE)
+                                                    .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 1)))
+                                    )
                             )
             );
         }
