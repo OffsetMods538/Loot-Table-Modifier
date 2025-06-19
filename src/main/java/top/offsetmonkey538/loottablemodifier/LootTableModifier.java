@@ -32,10 +32,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.offsetmonkey538.loottablemodifier.resource.action.LootModifierActionTypes;
-import top.offsetmonkey538.loottablemodifier.resource.predicate.LootModifierPredicateTypes;
-import top.offsetmonkey538.loottablemodifier.resource.LootModifier;
-import top.offsetmonkey538.loottablemodifier.resource.LootModifierContext;
+import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierActionTypes;
+import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicateTypes;
+import top.offsetmonkey538.loottablemodifier.api.resource.LootModifier;
+import top.offsetmonkey538.loottablemodifier.api.resource.util.LootModifierContext;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -45,14 +45,11 @@ import java.nio.file.Path;
 import java.util.*;
 
 import static net.minecraft.server.command.CommandManager.literal;
-import static top.offsetmonkey538.loottablemodifier.resource.LootModifierContext.*;
+import static top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierAction.*;
 
 public class LootTableModifier implements ModInitializer {
 	public static final String MOD_ID = "loot-table-modifier";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-
-	// Only used when IS_DEV is true
-	private static final List<Identifier> MODIFIED_TABLE_IDs = Collections.synchronizedList(new ArrayList<>(0));
 
 	public static final boolean IS_DEV;
 	static {
@@ -60,6 +57,13 @@ public class LootTableModifier implements ModInitializer {
 		if (isDev.equalsIgnoreCase("true")) IS_DEV = true;
 		else if (isDev.equalsIgnoreCase("false")) IS_DEV = false; // This way it can be disabled in devenv too.
 		else IS_DEV = FabricLoader.getInstance().isDevelopmentEnvironment();
+	}
+
+	// Only used when IS_DEV is true
+	private static final List<Identifier> MODIFIED_TABLE_IDs;
+	static {
+		if (IS_DEV) MODIFIED_TABLE_IDs = Collections.synchronizedList(new ArrayList<>(0));
+		else MODIFIED_TABLE_IDs = null;
 	}
 
 	@Override
