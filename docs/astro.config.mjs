@@ -9,6 +9,9 @@ export default defineConfig({
   integrations: [
       starlight({
           title: 'My Docs',
+          logo: {
+            src: './src/assets/icon.png'
+          },
           social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/withastro/starlight' }],
           sidebar: [
               {
