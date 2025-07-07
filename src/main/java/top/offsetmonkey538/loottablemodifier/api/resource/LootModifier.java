@@ -11,7 +11,6 @@ import org.jetbrains.annotations.UnmodifiableView;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.AddPoolAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicate;
-import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicateTypes;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.op.AllOfLootPredicate;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.table.LootTablePredicate;
 import top.offsetmonkey538.loottablemodifier.api.resource.util.LootModifierContext;
@@ -19,10 +18,10 @@ import top.offsetmonkey538.loottablemodifier.api.resource.util.LootModifierConte
 import java.util.*;
 import java.util.function.Predicate;
 
+import static top.offsetmonkey538.loottablemodifier.LootTableModifier.LOGGER;
 import static top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierAction.MODIFIED_NONE;
 
-public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> actions, @NotNull @UnmodifiableView List<LootModifierPredicate> predicates) implements Predicate<LootModifierContext> {
-//public record LootModifier(@NotNull @UnmodifiableView ArrayList<LootModifierAction> actions) {
+public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> actions, @NotNull LootModifierPredicate predicate) implements Predicate<LootModifierContext> {
     private static final Codec<LootModifier> LEGACY_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.either(Identifier.CODEC, Identifier.CODEC.listOf()).fieldOf("modifies").forGetter(modifier -> {
                 throw new IllegalStateException("Tried using legacy loot table modifier codec for serialization for some reason!");
@@ -39,13 +38,7 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
                 if (modifier.actions.size() == 1) return Either.left(modifier.actions.get(0));
                 return Either.right(modifier.actions);
             }),
-            Codec.either(
-                    LootModifierPredicate.CODEC,
-                    LootModifierPredicate.CODEC.listOf()
-            ).fieldOf("predicates").forGetter(modifier -> {
-                if (modifier.predicates.size() == 1) return Either.left(modifier.predicates.get(0));
-                return Either.right(modifier.predicates);
-            })
+            LootModifierPredicate.CODEC.fieldOf("predicate").forGetter(LootModifier::predicate)
     ).apply(instance, LootModifier::fromCurrentCodec));
 
     public static final Codec<LootModifier> CODEC = Codec.either(
@@ -66,21 +59,21 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
         return actions;
     }
 
-    private static @NotNull List<LootModifierPredicate> getPredicateFromLegacyCodec(@NotNull Either<Identifier, List<Identifier>> modifiesEither) {
-        if (modifiesEither.left().isPresent()) return List.of(LootTablePredicate.builder().name(modifiesEither.left().get()).build());
+    private static @NotNull LootModifierPredicate getPredicateFromLegacyCodec(@NotNull Either<Identifier, List<Identifier>> modifiesEither) {
+        if (modifiesEither.left().isPresent()) return LootTablePredicate.builder().name(modifiesEither.left().get()).build();
 
 
         final LootModifierPredicate.Builder predicateBuilder = AllOfLootPredicate.builder();
         for (final Identifier currentId : modifiesEither.right().orElseGet(List::of)) {
             predicateBuilder.and(LootTablePredicate.builder().name(currentId));
         }
-        return List.of(predicateBuilder.build());
+        return predicateBuilder.build();
     }
 
-    private static LootModifier fromCurrentCodec(Either<LootModifierAction, List<LootModifierAction>> actionsEither, Either<LootModifierPredicate, List<LootModifierPredicate>> predicatesEither) {
+    private static LootModifier fromCurrentCodec(Either<LootModifierAction, List<LootModifierAction>> actionsEither, LootModifierPredicate predicate) {
         return new LootModifier(
                 actionsEither.map(List::of, it -> it),
-                new ArrayList<>(predicatesEither.map(List::of, it -> it))
+                predicate
         );
     }
 
@@ -101,10 +94,7 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
     }
 
     public boolean test(final @NotNull LootModifierContext context) {
-        for (LootModifierPredicate predicate : predicates) {
-            if (!predicate.test(context)) return false;
-        }
-        return true;
+        return predicate.test(context);
     }
 
     public static LootModifier.Builder builder() {
@@ -113,7 +103,7 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
 
     public static class Builder {
         private final ImmutableList.Builder<LootModifierAction> actions = ImmutableList.builder();
-        private final ImmutableList.Builder<LootModifierPredicate> predicates = ImmutableList.builder();
+        private LootModifierPredicate predicate;
 
         public LootModifier.Builder action(@NotNull LootModifierAction.Builder action) {
             this.actions.add(action.build());
@@ -121,12 +111,13 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
         }
 
         public LootModifier.Builder conditionally(@NotNull LootModifierPredicate.Builder predicate) {
-            this.predicates.add(predicate.build());
+            if (this.predicate != null) LOGGER.error("Predicate has already been set for this builder! The previously set predicate will be overwritten! Please use the 'LootModifierPredicate.Builder#and()' and 'LootModifierPredicate.Builder#or()' methods for adding multiple conditions!");
+            this.predicate = predicate.build();
             return this;
         }
 
         public LootModifier build() {
-            return new LootModifier(this.actions.build(), this.predicates.build());
+            return new LootModifier(this.actions.build(), this.predicate);
         }
     }
 }
