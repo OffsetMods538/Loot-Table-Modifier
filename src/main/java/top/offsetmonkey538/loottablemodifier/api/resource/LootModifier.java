@@ -11,7 +11,6 @@ import org.jetbrains.annotations.UnmodifiableView;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.AddPoolAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicate;
-import top.offsetmonkey538.loottablemodifier.api.resource.predicate.op.AllOfLootPredicate;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.table.LootTablePredicate;
 import top.offsetmonkey538.loottablemodifier.api.resource.util.LootModifierContext;
 
@@ -60,12 +59,9 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
     }
 
     private static @NotNull LootModifierPredicate getPredicateFromLegacyCodec(@NotNull Either<Identifier, List<Identifier>> modifiesEither) {
-        if (modifiesEither.left().isPresent()) return LootTablePredicate.builder().name(modifiesEither.left().get()).build();
-
-
-        final LootModifierPredicate.Builder predicateBuilder = AllOfLootPredicate.builder();
-        for (final Identifier currentId : modifiesEither.right().orElseGet(List::of)) {
-            predicateBuilder.and(LootTablePredicate.builder().name(currentId));
+        final LootTablePredicate.Builder predicateBuilder = LootTablePredicate.builder();
+        for (final Identifier currentId : modifiesEither.map(List::of, it -> it)) {
+            predicateBuilder.name(currentId);
         }
         return predicateBuilder.build();
     }
