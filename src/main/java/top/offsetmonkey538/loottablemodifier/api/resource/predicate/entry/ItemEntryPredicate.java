@@ -9,13 +9,13 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicateTypes;
 import top.offsetmonkey538.loottablemodifier.api.resource.util.LootModifierContext;
-import top.offsetmonkey538.loottablemodifier.api.resource.util.OptionalPattern;
+import top.offsetmonkey538.loottablemodifier.api.resource.util.OptionalIdentifierPattern;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicateType;
 
-public record ItemEntryPredicate(OptionalPattern name) implements LootModifierPredicate {
+public record ItemEntryPredicate(OptionalIdentifierPattern name) implements LootModifierPredicate {
     public static final MapCodec<ItemEntryPredicate> CODEC = RecordCodecBuilder.mapCodec(
-            instance -> instance.group(OptionalPattern.CODEC.fieldOf("name").forGetter(ItemEntryPredicate::name)).apply(instance, ItemEntryPredicate::new)
+            instance -> instance.group(OptionalIdentifierPattern.CODEC.fieldOf("name").forGetter(ItemEntryPredicate::name)).apply(instance, ItemEntryPredicate::new)
     );
 
     @Override
@@ -35,9 +35,9 @@ public record ItemEntryPredicate(OptionalPattern name) implements LootModifierPr
         return builder(Registries.ITEM.getId(name.asItem()));
     }
     public static LootModifierPredicate.Builder builder(Identifier name) {
-        return () -> new ItemEntryPredicate(OptionalPattern.literal(name.toString()));
+        return () -> new ItemEntryPredicate(OptionalIdentifierPattern.literal(name));
     }
-    public static LootModifierPredicate.Builder builder(OptionalPattern name) {
+    public static LootModifierPredicate.Builder builder(OptionalIdentifierPattern name) {
         return () -> new ItemEntryPredicate(name);
     }
 }
