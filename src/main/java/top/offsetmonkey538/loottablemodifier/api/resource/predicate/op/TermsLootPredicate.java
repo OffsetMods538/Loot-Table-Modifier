@@ -1,8 +1,6 @@
 package top.offsetmonkey538.loottablemodifier.api.resource.predicate.op;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -24,17 +22,12 @@ abstract class TermsLootPredicate implements LootModifierPredicate {
 
     protected static <T extends TermsLootPredicate> MapCodec<T> createCodec(final Function<List<LootModifierPredicate>, T> constructor) {
         return RecordCodecBuilder.mapCodec(
-                instance -> instance.group(Codec.either(LootModifierPredicate.CODEC, LootModifierPredicate.CODEC.listOf()).fieldOf("terms").forGetter(TermsLootPredicate::eitherTerms)).apply(instance, eitherToFunction(constructor))
+                instance -> instance.group(LootModifierPredicate.CODEC.listOf().fieldOf("terms").forGetter(TermsLootPredicate::getTerms)).apply(instance, constructor)
         );
     }
 
-    private static <T extends TermsLootPredicate> Function<Either<LootModifierPredicate, List<LootModifierPredicate>>, T> eitherToFunction(final Function<List<LootModifierPredicate>, T> constructor) {
-        return eitherTerms -> constructor.apply(eitherTerms.right().orElseGet(() -> List.of(eitherTerms.left().orElseThrow())));
-    }
-
-    private Either<LootModifierPredicate, List<LootModifierPredicate>> eitherTerms() {
-        if (terms.size() == 1) return Either.left(terms.get(0));
-        return Either.right(terms);
+    private List<LootModifierPredicate> getTerms() {
+        return terms;
     }
 
     @Override
@@ -45,13 +38,7 @@ abstract class TermsLootPredicate implements LootModifierPredicate {
     public abstract static class Builder implements LootModifierPredicate.Builder {
         private final ImmutableList.Builder<LootModifierPredicate> terms = ImmutableList.builder();
 
-        protected Builder(LootModifierPredicate.Builder... terms) {
-            for (LootModifierPredicate.Builder builder : terms) {
-                this.terms.add(builder.build());
-            }
-        }
-
-        public void add(LootModifierPredicate.Builder builder) {
+        protected void add(LootModifierPredicate.Builder builder) {
             this.terms.add(builder.build());
         }
 

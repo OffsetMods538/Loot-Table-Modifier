@@ -20,15 +20,11 @@ public class AllOfLootPredicate extends TermsLootPredicate {
         return LootModifierPredicateTypes.ALL_OF;
     }
 
-    public static AllOfLootPredicate.Builder builder(LootModifierPredicate.Builder... terms) {
-        return new AllOfLootPredicate.Builder(terms);
+    public static AllOfLootPredicate.Builder builder() {
+        return new AllOfLootPredicate.Builder();
     }
 
     public static class Builder extends TermsLootPredicate.Builder {
-        public Builder(LootModifierPredicate.Builder... builders) {
-            super(builders);
-        }
-
         @Override
         public LootModifierPredicate.Builder and(LootModifierPredicate.Builder builder) {
             this.add(builder);

@@ -17,7 +17,6 @@ import java.util.function.Predicate;
 
 import static top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierAction.MODIFIED_NONE;
 
-// Using ArrayList as I want it to be modifiable because I empty it when applying, so I can check for things that weren't applied TODO: I don't think I do this anymore? TODO: make sure that changing it to a normal List is fine
 public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> actions, @NotNull @UnmodifiableView List<LootModifierPredicate> predicates) implements Predicate<LootModifierContext> {
 //public record LootModifier(@NotNull @UnmodifiableView ArrayList<LootModifierAction> actions) {
     private static final Codec<LootModifier> LEGACY_CODEC = RecordCodecBuilder.create(instance -> instance.group(

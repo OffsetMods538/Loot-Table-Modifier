@@ -42,16 +42,12 @@ public record AddEntryAction(List<LootPoolEntry> entries) implements LootModifie
         return MODIFIED_ENTRY;
     }
 
-    public static AddEntryAction.Builder builder(@NotNull LootPoolEntry.Builder<?> entryBuilder) {
-        return new AddEntryAction.Builder(entryBuilder);
+    public static AddEntryAction.Builder builder() {
+        return new AddEntryAction.Builder();
     }
 
     public static class Builder implements LootModifierAction.Builder {
         private final ImmutableList.Builder<LootPoolEntry> entries = ImmutableList.builder();
-
-        private Builder(@NotNull LootPoolEntry.Builder<?> poolBuilder) {
-            entries.add(poolBuilder.build());
-        }
 
         public AddEntryAction.Builder entry(LootPoolEntry.Builder<?> poolBuilder) {
             this.entries.add(poolBuilder.build());

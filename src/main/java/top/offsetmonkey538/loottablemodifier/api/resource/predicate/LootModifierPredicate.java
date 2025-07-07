@@ -25,11 +25,11 @@ public interface LootModifierPredicate extends Predicate<LootModifierContext> {
         }
 
         default LootModifierPredicate.Builder or(LootModifierPredicate.Builder otherPredicate) {
-            return AnyOfLootPredicate.builder(this, otherPredicate);
+            return AnyOfLootPredicate.builder().or(this).or(otherPredicate);
         }
 
         default LootModifierPredicate.Builder and(LootModifierPredicate.Builder otherPredicate) {
-            return AllOfLootPredicate.builder(this, otherPredicate);
+            return AllOfLootPredicate.builder().and(this).and(otherPredicate);
         }
     }
 }

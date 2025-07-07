@@ -1,8 +1,6 @@
 package top.offsetmonkey538.loottablemodifier.api.resource.predicate.table;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.Block;
@@ -27,29 +25,27 @@ import java.util.Optional;
 
 public record LootTablePredicate(@Nullable List<OptionalIdentifierPattern> identifiers, @Nullable List<OptionalIdentifierPattern> types) implements LootModifierPredicate {
     public static final MapCodec<LootTablePredicate> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.either(OptionalIdentifierPattern.CODEC, OptionalIdentifierPattern.CODEC.listOf()).optionalFieldOf("identifiers").forGetter(LootTablePredicate::optionalEitherIdentifier),
-            Codec.either(OptionalIdentifierPattern.CODEC, OptionalIdentifierPattern.CODEC.listOf()).optionalFieldOf("types").forGetter(LootTablePredicate::optionalEitherType)
+            OptionalIdentifierPattern.CODEC.listOf().optionalFieldOf("identifiers").forGetter(LootTablePredicate::optionalIdentifier),
+            OptionalIdentifierPattern.CODEC.listOf().optionalFieldOf("types").forGetter(LootTablePredicate::optionalType)
     ).apply(instance, LootTablePredicate::new));
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // Codec gib it to me
-    private LootTablePredicate(@NotNull Optional<Either<OptionalIdentifierPattern, List<OptionalIdentifierPattern>>> optionalIdentifier, @NotNull Optional<Either<OptionalIdentifierPattern, List<OptionalIdentifierPattern>>> optionalType) {
+    private LootTablePredicate(@NotNull Optional<List<OptionalIdentifierPattern>> optionalIdentifier, @NotNull Optional<List<OptionalIdentifierPattern>> optionalType) {
         this(
-                optionalIdentifier.map(it -> it.map(List::of, it2 -> it2)).orElse(null),
-                optionalType.map(it -> it.map(List::of, it2 -> it2)).orElse(null)
+                optionalIdentifier.orElse(null),
+                optionalType.orElse(null)
         );
     }
 
-    private Optional<Either<OptionalIdentifierPattern, List<OptionalIdentifierPattern>>> optionalEitherIdentifier() {
+    private Optional<List<OptionalIdentifierPattern>> optionalIdentifier() {
         if (identifiers == null || identifiers.isEmpty()) return Optional.empty();
 
-        if (identifiers.size() == 1) return Optional.of(Either.left(identifiers.get(0)));
-        return Optional.of(Either.right(identifiers));
+        return Optional.of(identifiers);
     }
-    private Optional<Either<OptionalIdentifierPattern, List<OptionalIdentifierPattern>>> optionalEitherType() {
+    private Optional<List<OptionalIdentifierPattern>> optionalType() {
         if (types == null || types.isEmpty()) return Optional.empty();
 
-        if (types.size() == 1) return Optional.of(Either.left(types.get(0)));
-        return Optional.of(Either.right(types));
+        return Optional.of(types);
     }
 
     @Override

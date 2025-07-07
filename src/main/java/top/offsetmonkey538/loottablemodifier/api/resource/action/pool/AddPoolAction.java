@@ -37,16 +37,12 @@ public record AddPoolAction(List<LootPool> pools) implements LootModifierAction 
         return MODIFIED_POOL;
     }
 
-    public static AddPoolAction.Builder builder(@NotNull LootPool.Builder poolBuilder) {
-        return new AddPoolAction.Builder(poolBuilder);
+    public static AddPoolAction.Builder builder() {
+        return new AddPoolAction.Builder();
     }
 
     public static class Builder implements LootModifierAction.Builder {
         private final ImmutableList.Builder<LootPool> pools = ImmutableList.builder();
-
-        private Builder(@NotNull LootPool.Builder poolBuilder) {
-            pools.add(poolBuilder.build());
-        }
 
         public AddPoolAction.Builder pool(LootPool.Builder poolBuilder) {
             this.pools.add(poolBuilder.build());
