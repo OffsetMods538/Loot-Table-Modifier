@@ -30,15 +30,9 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
     ).apply(instance, (modifiesEither, pools, lootPools) -> new LootModifier(getActionsFromLegacyCodec(pools, lootPools), getPredicateFromLegacyCodec(modifiesEither))));
 
     private static final Codec<LootModifier> CURRENT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.either(
-                    LootModifierAction.CODEC,
-                    LootModifierAction.CODEC.listOf()
-            ).fieldOf("actions").forGetter(modifier -> {
-                if (modifier.actions.size() == 1) return Either.left(modifier.actions.get(0));
-                return Either.right(modifier.actions);
-            }),
+            LootModifierAction.CODEC.listOf().fieldOf("actions").forGetter(LootModifier::actions),
             LootModifierPredicate.CODEC.fieldOf("predicate").forGetter(LootModifier::predicate)
-    ).apply(instance, LootModifier::fromCurrentCodec));
+    ).apply(instance, LootModifier::new));
 
     public static final Codec<LootModifier> CODEC = Codec.either(
             LEGACY_CODEC,
@@ -64,13 +58,6 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
             predicateBuilder.name(currentId);
         }
         return predicateBuilder.build();
-    }
-
-    private static LootModifier fromCurrentCodec(Either<LootModifierAction, List<LootModifierAction>> actionsEither, LootModifierPredicate predicate) {
-        return new LootModifier(
-                actionsEither.map(List::of, it -> it),
-                predicate
-        );
     }
 
     /**
