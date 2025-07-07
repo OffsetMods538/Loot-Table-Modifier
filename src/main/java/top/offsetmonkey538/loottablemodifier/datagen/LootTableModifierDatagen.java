@@ -20,6 +20,9 @@ import net.minecraft.registry.RegistryWrapper;
 import top.offsetmonkey538.loottablemodifier.api.datagen.LootModifierProvider;
 import top.offsetmonkey538.loottablemodifier.api.resource.LootModifier;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.AddEntryAction;
+import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.RemoveEntryAction;
+import top.offsetmonkey538.loottablemodifier.api.resource.predicate.op.AllOfLootPredicate;
+import top.offsetmonkey538.loottablemodifier.api.resource.predicate.op.InvertedLootPredicate;
 import top.offsetmonkey538.loottablemodifier.api.resource.util.OptionalIdentifierPattern;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.AddPoolAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.SetItemAction;
@@ -117,7 +120,10 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     id("remove_pools_with_sticks"),
                     LootModifier.builder()
                             .conditionally(
-                                    ItemEntryPredicate.builder(Items.STICK)
+                                    AllOfLootPredicate.builder()
+                                            .and(ItemEntryPredicate.builder(Items.STICK))
+                                            // Exclude witch to test if AllOf and Inverted work + so I can test RemoveEntry on witch.
+                                            .and(InvertedLootPredicate.builder(LootTablePredicate.builder().name(EntityType.WITCH)))
                             )
                             .action(
                                     RemovePoolAction.builder()
@@ -149,6 +155,18 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                                             ItemEntry.builder(Items.CAKE)
                                                     .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 1)))
                                     )
+                            )
+            );
+            addModifier(
+                    id("remove_glowstone_and_gunpowder_from_witch"),
+                    LootModifier.builder()
+                            .conditionally(LootTablePredicate.builder().name(EntityType.WITCH))
+                            .conditionally(
+                                    ItemEntryPredicate.builder(Items.GLOWSTONE_DUST)
+                                            .or(ItemEntryPredicate.builder(Items.GUNPOWDER))
+                            )
+                            .action(
+                                    RemoveEntryAction.builder()
                             )
             );
         }
