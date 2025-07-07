@@ -24,8 +24,6 @@ public record RemovePoolAction() implements LootModifierAction {
 
     @Override
     public int apply(@NotNull LootModifierContext context) {
-        if (context.tableAlreadyModified()) return MODIFIED_NONE;
-
         final LootTable table = context.table();
         final LootPool pool = context.pool();
         if (pool == null) return MODIFIED_NONE;

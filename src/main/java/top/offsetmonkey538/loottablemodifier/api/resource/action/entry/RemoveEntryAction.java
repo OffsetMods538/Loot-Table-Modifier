@@ -24,9 +24,6 @@ public record RemoveEntryAction() implements LootModifierAction {
 
     @Override
     public int apply(@NotNull LootModifierContext context) {
-        // TODO: Should this be removed? All matching entries in a pool should be removed, right? Same with RemovePoolAction?
-        if (context.poolAlreadyModified()) return MODIFIED_NONE;
-
         final LootPool pool = context.pool();
         final LootPoolEntry entry = context.entry();
         if (pool == null || entry == null) return MODIFIED_NONE;
