@@ -57,14 +57,14 @@ public record LootTablePredicate(@Nullable List<OptionalIdentifierPattern> ident
     public boolean test(@NotNull LootModifierContext context) {
         boolean result = true;
 
-        if (identifiers != null) {
+        if (identifiers != null && !identifiers.isEmpty()) {
             boolean idResult = false;
             final String tableIdString = context.tableId().toString();
             for (OptionalIdentifierPattern pattern : identifiers) idResult = idResult || pattern.matches(tableIdString);
             result = idResult;
         }
 
-        if (types != null) {
+        if (types != null && !types.isEmpty()) {
             boolean typeResult = false;
             final String tableTypeString = LootContextTypes.MAP.inverse().get(context.table().getType()).toString();
             for (OptionalIdentifierPattern pattern : types) typeResult = typeResult || pattern.matches(tableTypeString);
