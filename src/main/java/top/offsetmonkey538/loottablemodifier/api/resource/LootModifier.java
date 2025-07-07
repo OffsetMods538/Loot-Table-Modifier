@@ -5,11 +5,15 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.loot.LootPool;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.AddPoolAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicate;
+import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicateTypes;
+import top.offsetmonkey538.loottablemodifier.api.resource.predicate.op.AllOfLootPredicate;
+import top.offsetmonkey538.loottablemodifier.api.resource.predicate.table.LootTablePredicate;
 import top.offsetmonkey538.loottablemodifier.api.resource.util.LootModifierContext;
 
 import java.util.*;
@@ -20,14 +24,12 @@ import static top.offsetmonkey538.loottablemodifier.api.resource.action.LootModi
 public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> actions, @NotNull @UnmodifiableView List<LootModifierPredicate> predicates) implements Predicate<LootModifierContext> {
 //public record LootModifier(@NotNull @UnmodifiableView ArrayList<LootModifierAction> actions) {
     private static final Codec<LootModifier> LEGACY_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            // TODO: this should use the table predicate, once that exists
-            Codec.either(LootModifierPredicate.CODEC, LootModifierPredicate.CODEC.listOf()).fieldOf("modifies").forGetter(modifier -> {
-                if (modifier.predicates.size() == 1) return Either.left(modifier.predicates.get(0));
-                return Either.right(modifier.predicates);
+            Codec.either(Identifier.CODEC, Identifier.CODEC.listOf()).fieldOf("modifies").forGetter(modifier -> {
+                throw new IllegalStateException("Tried using legacy loot table modifier codec for serialization for some reason!");
             }),
             LootPool.CODEC.listOf().optionalFieldOf("pools").forGetter(lootModifier -> Optional.empty()),
             LootPool.CODEC.listOf().optionalFieldOf("loot_pools").forGetter(lootModifier -> Optional.empty())
-    ).apply(instance, LootModifier::fromLegacyCodec));
+    ).apply(instance, (modifiesEither, pools, lootPools) -> new LootModifier(getActionsFromLegacyCodec(pools, lootPools), getPredicateFromLegacyCodec(modifiesEither))));
 
     private static final Codec<LootModifier> CURRENT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.either(
@@ -51,22 +53,28 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
             CURRENT_CODEC
     ).xmap(either -> either.map(it -> it, it -> it), Either::right); // Always encode as current codec, which is on the right.
 
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // From codec soo yeah
-    private static LootModifier fromLegacyCodec(@NotNull Either<LootModifierPredicate, List<LootModifierPredicate>> modifiesEither, @NotNull Optional<List<LootPool>> pools, @NotNull Optional<List<LootPool>> lootPools) {
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // from the codec
+    private static @NotNull List<LootModifierAction> getActionsFromLegacyCodec(@NotNull Optional<List<LootPool>> pools, @NotNull Optional<List<LootPool>> lootPools) {
         List<LootModifierAction> actions = null;
 
-        if (pools.isPresent() && lootPools.isPresent()) throw new IllegalStateException("Both \"pools\" and \"loot_pools\" present in loot modifier!");
+        if (pools.isPresent() && lootPools.isPresent()) throw new IllegalStateException("Both \"pools\" and \"loot_pools\" present in legacy loot modifier!");
 
         if (pools.isPresent()) actions = List.of(new AddPoolAction(pools.get()));
         if (lootPools.isPresent()) actions = List.of(new AddPoolAction(lootPools.get()));
 
-        if (actions == null) throw new IllegalStateException("Neither \"pools\" nor \"loot_pools\" present in loot modifier!");
+        if (actions == null) throw new IllegalStateException("Neither \"pools\" nor \"loot_pools\" present in legacy loot modifier!");
+        return actions;
+    }
+
+    private static @NotNull List<LootModifierPredicate> getPredicateFromLegacyCodec(@NotNull Either<Identifier, List<Identifier>> modifiesEither) {
+        if (modifiesEither.left().isPresent()) return List.of(LootTablePredicate.builder().name(modifiesEither.left().get()).build());
 
 
-        return new LootModifier(
-                actions,
-                new ArrayList<>(modifiesEither.right().orElseGet(() -> List.of(modifiesEither.left().orElseThrow())))
-        );
+        final LootModifierPredicate.Builder predicateBuilder = AllOfLootPredicate.builder();
+        for (final Identifier currentId : modifiesEither.right().orElseGet(List::of)) {
+            predicateBuilder.and(LootTablePredicate.builder().name(currentId));
+        }
+        return List.of(predicateBuilder.build());
     }
 
     private static LootModifier fromCurrentCodec(Either<LootModifierAction, List<LootModifierAction>> actionsEither, Either<LootModifierPredicate, List<LootModifierPredicate>> predicatesEither) {
