@@ -6,17 +6,20 @@ import starlight from '@astrojs/starlight';
 export default defineConfig({
     integrations: [
         starlight({
-            title: 'My Docs',
+            title: 'Loot Table Modifier Docs',
             logo: {
-                src: './src/assets/icon.png'
+                src: './src/assets/face.svg'
             },
-            social: [{icon: 'github', label: 'GitHub', href: 'https://github.com/withastro/starlight'}],
+            social: [
+                {icon: 'github', label: 'GitHub', href: 'https://github.com/OffsetMods538/Loot-Table-Modifier'},
+                {icon: 'discord', label: 'Discord', href: 'https://discord.offsetmonkey538.top'}
+            ],
             sidebar: [
                 {
                     label: 'Guides',
                     items: [
                         // Each item here is one entry in the navigation menu.
-                        {label: 'Example Guide', slug: 'guides/example'},
+                        {label: 'About', slug: 'guides/about'},
                     ],
                 },
                 {
