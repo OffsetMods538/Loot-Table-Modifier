@@ -1,14 +1,21 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import starlightSocialIcons from './src/utils/socialIcons';
 import starlight from '@astrojs/starlight';
 
 // https://astro.build/config
 export default defineConfig({
     integrations: [
+        starlightSocialIcons({
+            modrinth: "https://modrinth.com/mod/loot-table-modifier"
+        }),
         starlight({
             title: 'Loot Table Modifier Docs',
             logo: {
                 src: './src/assets/face.svg'
+            },
+            components: {
+                SocialIcons: './src/utils/SocialIcons.astro'
             },
             social: [
                 {icon: 'github', label: 'GitHub', href: 'https://github.com/OffsetMods538/Loot-Table-Modifier'},
