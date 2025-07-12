@@ -16,8 +16,6 @@ const combinedLinks: {
     main: { label: string; href: string; icon: IconProps["name"] }[];
     custom: { label: string; href: string; icon: keyof typeof customIcons }[];
 } = { main: config.social || [], custom: augment || [] };
-
-console.log(augment)
 ---
 
 {
