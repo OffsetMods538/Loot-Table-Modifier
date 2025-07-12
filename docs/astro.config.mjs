@@ -25,17 +25,39 @@ export default defineConfig({
                 {icon: 'github', label: 'GitHub', href: 'https://github.com/OffsetMods538/Loot-Table-Modifier'},
                 {icon: 'discord', label: 'Discord', href: 'https://discord.offsetmonkey538.top'}
             ],
+            /*
+                ## Installing
+
+                ## Development Mode
+
+                ## Examples
+                ### Replace all ingots with diamonds
+                ### Make creepers and zombies drop both their normal drops and tnt (add another pool)
+                ### Make creepers and zombies drop their normal drops or tnt (add to the normal pool)
+                ### Remove pools with sticks
+                ### Remove entries with sticks
+                ### Remove glowstone and gunpowder from witches
+             */
             sidebar: [
                 {
                     label: 'Guides',
                     items: [
-                        {label: 'About', slug: 'guides/about'},
+                        {label: 'Setting up', slug: 'guides/setting_up'},
+                        {
+                            label: 'Examples',
+                            items: [
+                                //{label: 'Replace any ingot with a diamond', slug: 'guides/examples/replace_ingot_w_diamond'},
+                                //{label: 'Make Creepers and Zombies drop tnt', slug: 'guides/examples/creepers_and_zombies_drop_tnt'},
+                                //{label: 'Remove sticks', slug: 'guides/examples/remove_sticks'},
+                                //{label: 'Remove glowstone and gunpowder from witches', slug: 'guides/examples/remove_glowstone_and_gunpowder_witches'},
+                            ],
+                        },
                     ],
                 },
                 {
                     label: 'Reference',
                     items: [
-                        //{label: 'About', slug: 'guides/about'},
+                        //{label: 'Development Mode', slug: 'reference/dev_mode'},
                     ],
                 },
             ],
