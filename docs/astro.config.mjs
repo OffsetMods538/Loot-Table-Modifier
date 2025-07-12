@@ -10,12 +10,16 @@ export default defineConfig({
             modrinth: "https://modrinth.com/mod/loot-table-modifier"
         }),
         starlight({
-            title: 'Loot Table Modifier Docs',
+            title: 'Loot Table Modifier',
             logo: {
                 src: './src/assets/face.svg'
             },
+            customCss: [
+                './src/styles/custom.css'
+            ],
             components: {
-                SocialIcons: './src/utils/SocialIcons.astro'
+                SocialIcons: './src/utils/SocialIcons.astro',
+                PageFrame: './src/utils/PageFrame.astro'
             },
             social: [
                 {icon: 'github', label: 'GitHub', href: 'https://github.com/OffsetMods538/Loot-Table-Modifier'},
@@ -25,13 +29,14 @@ export default defineConfig({
                 {
                     label: 'Guides',
                     items: [
-                        // Each item here is one entry in the navigation menu.
                         {label: 'About', slug: 'guides/about'},
                     ],
                 },
                 {
                     label: 'Reference',
-                    autogenerate: {directory: 'reference'},
+                    items: [
+                        //{label: 'About', slug: 'guides/about'},
+                    ],
                 },
             ],
         }),
