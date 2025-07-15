@@ -3,6 +3,8 @@ import { defineConfig } from 'astro/config';
 import starlightSocialIcons from './src/utils/socialIcons';
 import starlight from '@astrojs/starlight';
 
+const site = 'https://docs.loot-table-modifier.pages.dev/';
+
 // https://astro.build/config
 export default defineConfig({
     integrations: [
@@ -46,6 +48,22 @@ export default defineConfig({
                     items: [
                         {label: 'Loot Modifier', slug: 'reference/loot_modifier'},
                     ],
+                },
+            ],
+            head: [
+                {
+                    tag: 'meta',
+                    attrs: {
+                        name: 'og:image',
+                        content: `${site}og.png`
+                    }
+                },
+                {
+                    tag: 'meta',
+                    attrs: {
+                        name: 'twitter:image',
+                        content: `${site}og.png`
+                    }
                 },
             ],
         }),
