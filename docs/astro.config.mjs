@@ -50,22 +50,6 @@ export default defineConfig({
                     ],
                 },
             ],
-            head: [
-                {
-                    tag: 'meta',
-                    attrs: {
-                        name: 'og:image',
-                        content: `${site}og.png`
-                    }
-                },
-                {
-                    tag: 'meta',
-                    attrs: {
-                        name: 'twitter:image',
-                        content: `${site}og.png`
-                    }
-                },
-            ],
         }),
     ]
 });
