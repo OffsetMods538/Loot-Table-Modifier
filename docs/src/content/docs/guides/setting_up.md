@@ -9,7 +9,7 @@ When developing a plain datapack, all you need to do is download it from [modrin
 Currently, as of v2 alpha 1, only **fabric** is supported. Running though [Sinytra Connector](https://modrinth.com/mod/connector) may or may not be possible (please do let me know on [discord](https://discord.offsetmonkey538.top) if you test it :D), but a NeoForge version is planned for the future.
 
 ### Mod developers
-Mods can include Loot Table Modifier as a JIJ dependency like this:
+Mods can depend on Loot Table Modifier like this:
 ```groovy
 repositories {
     // ...rest of repositories block
@@ -24,12 +24,22 @@ repositories {
 
 dependencies {
     // ...rest of dependencies block
-
-    // 'include' can be omitted if you want users to manually download Loot Table Modifier because you think it's too big to include or you want to support me by having them look at ads on my modrinth page :D
-    include implementation("top.offsetmonkey538.loottablemodifier:loot-table-modifier:VERSION_HERE")
+    
+    implementation "top.offsetmonkey538.loottablemodifier:loot-table-modifier:VERSION_HERE"
 }
 ```
 Make sure to replace `VERSION_HERE` with the actual version you want to use!
+
+Also add this to your `fabric.mod.json` file:
+```json
+{
+  "depends": {
+    // ...Others
+    // This matches the major version of 2. I plan on following semver for future releases so it should be safe to depend on this.
+    "loot-table-modifier": ">=2.0.0 <3.0.0"
+  }
+}
+```
 
 
 ## Loot Modifiers
