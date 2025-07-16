@@ -17,21 +17,24 @@ A predicate specifically matching an entry will also activate the action on the 
 
 Actions tell the mod how a matched loot table, pool or entry should be modified.
 
-|                      |                                            |
-|----------------------|--------------------------------------------|
-| [`pool_add`]()       | Adds the provided pools to a matched table |
-| [`pool_remove`]()    | Removes matched pools                      |
-| [`entry_add`]()      | Adds the provided entry to matched pools   |
-| [`entry_item_set`]() | Sets the item in a matched item entry      |
+Actions are json objects that consist of their identifier `type` and then any other fields specific to each action.  
+Below is a list of all currently supported actions:
+
+|                                          |                                            |
+|------------------------------------------|--------------------------------------------|
+| [`loot-table-modifier:pool_add`]()       | Adds the provided pools to a matched table |
+| [`loot-table-modifier:pool_remove`]()    | Removes matched pools                      |
+| [`loot-table-modifier:entry_add`]()      | Adds the provided entry to matched pools   |
+| [`loot-table-modifier:entry_item_set`]() | Sets the item in a matched item entry      |
 
 ## Predicates
 
 Predicates tell the mod which loot tables, pools or entries should be modified.
 
-|                  |                                                   |
-|------------------|---------------------------------------------------|
-| `inverted`       | Inverts the result of the provided predicate      |
-| `any_of`         | Matches when any of the provided predicates match |
-| `all_of`         | Matches when all of the provided predicates match |
-| [`entry_item`]() | Matches an item entry based on its identifier     |
-| [`table`]()      | Matches a table based on its identifier or type   |
+|                                      |                                                   |
+|--------------------------------------|---------------------------------------------------|
+| `loot-table-modifier:inverted`       | Inverts the result of the provided predicate      |
+| `loot-table-modifier:any_of`         | Matches when any of the provided predicates match |
+| `loot-table-modifier:all_of`         | Matches when all of the provided predicates match |
+| [`loot-table-modifier:entry_item`]() | Matches an item entry based on its identifier     |
+| [`loot-table-modifier:table`]()      | Matches a table based on its identifier or type   |
