@@ -3,7 +3,7 @@ title: Replace any Minecraft ingot with a diamond
 ---
 
 The following loot modifier will replace any Minecraft ingot item with a diamond:
-```json5
+```json
 {
   "actions": {
     "type": "loot-table-modifier:entry_item_set",
