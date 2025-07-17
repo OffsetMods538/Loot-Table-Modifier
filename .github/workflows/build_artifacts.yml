@@ -74,4 +74,4 @@ jobs:
         env:
           SEELF_TOKEN: ${{ secrets.SEELF_TOKEN }}
           SEELF_ENVIRONMENT: staging
-          SEELF_APPLICATION_URL: https://seelf.oracle.offsetmonkey538.top/api/v1/apps/300iPGklqlRiNAza52yq40TirYp/deployments
+          SEELF_APPLICATION_URL: https://seelf.oracle.offsetmonkey538.top/api/v1/apps/300qBnG3t1dOFrUGfw1EeWYwKYA/deployments
