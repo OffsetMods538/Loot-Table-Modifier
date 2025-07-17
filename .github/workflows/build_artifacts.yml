@@ -50,8 +50,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - run: |
-          tar -czf archive.tar.gz docs Dockerfile docker-compose.yml |
-          curl -i -X POST -H "Authorization: Bearer $SEELF_TOKEN" -F environment=$SEELF_ENVIRONMENT -F archive=@archive.tar.gz $SEELF_APPLICATION_URL
+          tar -czf archive.tar.gz docs Dockerfile docker-compose.yml && curl -i -X POST -H "Authorization: Bearer $SEELF_TOKEN" -F environment=$SEELF_ENVIRONMENT -F archive=@archive.tar.gz $SEELF_APPLICATION_URL
         env:
           SEELF_TOKEN: ${{ secrets.SEELF_TOKEN }}
           SEELF_ENVIRONMENT: staging
