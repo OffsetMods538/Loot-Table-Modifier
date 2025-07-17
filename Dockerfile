@@ -8,7 +8,7 @@
 
 FROM node:lts AS build
 WORKDIR /docs
-COPY . .
+COPY ./docs .
 RUN npm i
 RUN npm run build
 
