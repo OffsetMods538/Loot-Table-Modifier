@@ -2,16 +2,15 @@
 services:
   web:
     build: .
-    env_file: .env
     restart: unless-stopped
     networks:
       - traefik-proxy
     labels:
       - "traefik.enable=true"
 
-      - "traefik.http.routers.example-site.rule=Host(`${URL_PREFIX}loot-table-modifier.docs.offsetmonkey538.top`)"
-      - "traefik.http.routers.example-site.service=example-site"
-      - "traefik.http.services.example-site.loadbalancer.server.port=80"
+      - "traefik.http.routers.${URL_PREFIX}example-site.rule=Host(`${URL_PREFIX}loot-table-modifier.docs.offsetmonkey538.top`)"
+      - "traefik.http.routers.${URL_PREFIX}example-site.service=${URL_PREFIX}example-site"
+      - "traefik.http.services.${URL_PREFIX}example-site.loadbalancer.server.port=80"
 
 networks:
   traefik-proxy:
