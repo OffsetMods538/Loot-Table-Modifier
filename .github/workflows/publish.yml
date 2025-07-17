@@ -82,8 +82,8 @@ jobs:
         env:
           URL_PREFIX: ""
         with:
-          input: docker-compose-template.yml
-          output: docker-compose.yml
+          input: docs/docker-compose-template.yml
+          output: docs/docker-compose.yml
 
       - name: Publish
         run: ./build.sh
