@@ -9,8 +9,9 @@
 FROM node:lts AS build
 WORKDIR /docs
 COPY ./docs .
-RUN npm i
-RUN npm run build
+RUN npm install -g pnpm
+RUN pnpm i
+RUN pnpm run build
 
 FROM httpd:2.4 AS runtime
 COPY --from=build /docs/dist /usr/local/apache2/htdocs/
