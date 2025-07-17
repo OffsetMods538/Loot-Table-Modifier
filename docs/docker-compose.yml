@@ -1,0 +1,19 @@
+# Hosts a static page
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    networks:
+      - traefik-proxy
+    labels:
+      - "traefik.enable=true"
+
+      - "traefik.http.routers.example-site.rule=Host(`loot-table-modifier.docs.offsetmonkey538.top`)"
+      - "traefik.http.routers.example-site.service=${URL_PREFIX}example-site"
+      - "traefik.http.services.example-site.loadbalancer.server.port=80"
+
+networks:
+  traefik-proxy:
+    external: true
