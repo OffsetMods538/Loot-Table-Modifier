@@ -5,4 +5,3 @@
 
 FROM httpd:latest AS runtime
 COPY ./dist /usr/local/apache2/htdocs/
-CMD ["nginx", "-g", "daemon off;"]
