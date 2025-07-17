@@ -3,5 +3,14 @@
 #COPY ./dist /usr/share/nginx/html
 #CMD ["nginx", "-g", "daemon off;"]
 
-FROM httpd:latest AS runtime
-COPY ./dist /usr/local/apache2/htdocs/
+#FROM httpd:latest AS runtime
+#COPY ./dist /usr/local/apache2/htdocs/
+
+FROM node:lts AS build
+WORKDIR /docs
+COPY . .
+RUN npm i
+RUN npm run build
+
+FROM httpd:2.4 AS runtime
+COPY --from=build /docs/dist /usr/local/apache2/htdocs/
