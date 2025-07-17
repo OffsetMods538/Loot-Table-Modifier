@@ -6,7 +6,7 @@ on:
 
 
 jobs:
-  publish:
+  publish-mod:
     runs-on: ubuntu-latest
 
     permissions:
@@ -57,3 +57,37 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
 
+  publish-docs:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./docs
+    steps:
+      - uses: actions/checkout@v4
+
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - name: Install node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: pnpm install
+
+
+      - uses: danielr1996/envsubst-action@1.1.0
+        env:
+          URL_PREFIX: ""
+        with:
+          input: docker-compose-template.yml
+          output: docker-compose.yml
+
+      - name: Publish
+        run: ./build.sh
+        env:
+          SEELF_TOKEN: ${{ secrets.SEELF_TOKEN }}
+          SEELF_ENVIRONMENT: staging
+          SEELF_APPLICATION_URL: https://seelf.oracle.offsetmonkey538.top/api/v1/apps/300iPGklqlRiNAza52yq40TirYp/deployments
