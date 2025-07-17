@@ -43,9 +43,9 @@ jobs:
 
   publish-docs:
     runs-on: ubuntu-latest
-    defaults:
-     run:
-       working-directory: ./docs
+    #defaults:
+    # run:
+    #   working-directory: ./docs
     steps:
       - uses: actions/checkout@v4
 
