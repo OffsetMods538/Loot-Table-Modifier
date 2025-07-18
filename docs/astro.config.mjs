@@ -13,6 +13,7 @@ export default defineConfig({
         }),
         starlight({
             title: 'Loot Table Modifier',
+            credits: true,
             logo: {
                 src: './src/assets/face.svg'
             },
