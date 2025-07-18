@@ -17,7 +17,7 @@ The same applies in reverse; a more specific predicate also counts as matching e
 
 :::note
 I use the `?` character at the end of field names to signify optional fields. The value I add for optional fields in the default one. The field names do not actually have a `?` at the end!  
-I also make use of comments (text starting with `//`) in codeblocks to explain stuff, which you'll have to remove because Minecraft doesn't understand them.
+I also make use of comments in codeblocks to explain stuff, which you'll have to remove because Minecraft doesn't understand them.
 ```json
 {
   // Range of 0 to 10
@@ -99,8 +99,7 @@ See: [todo](todo)
 ```json
 {
   "type": "loot-table-modifier:entry_item_set",
-  // Identifier of an item
-  "name": "",
+  "name": /* Identifier of an item */,
   // Either true or false
   "canReplaceEntry?": false
 }
@@ -113,12 +112,102 @@ See: [Replace any Minecraft ingot with a diamond](../../guides/examples/replace_
 
 ## Predicates
 
-Predicates tell the mod which loot tables, pools or entries should be modified.
+:::note
+Predicates may use this thing I call a `RegexIdentifier`.
 
-|                                      |                                                   |
-|--------------------------------------|---------------------------------------------------|
-| [`loot-table-modifier:inverted`]()   | Inverts the result of the provided predicate      |
-| [`loot-table-modifier:any_of`]()     | Matches when any of the provided predicates match |
-| [`loot-table-modifier:all_of`]()     | Matches when all of the provided predicates match |
-| [`loot-table-modifier:entry_item`]() | Matches an item entry based on its identifier     |
-| [`loot-table-modifier:table`]()      | Matches a table based on its identifier or type   |
+Identifiers are used all over Minecraft for identifying stuff like items (`minecraft:diamond_sword`), blocks (`minecraft:stone`), entities (`minecraft:zombie`), even loot tables (`minecraft:chests/end_city_treasure`) and so on.  
+In short, a `RegexIdentifier` allows either matching an identifier directly or using a regex pattern for that. (you can view the supported regex syntax [here](https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html))
+
+A `RegexIdentifier` can either be an inlined string or an object with the `regexPattern` field.
+
+In this case, only the exact identifier of `minecraft:diamond_sword` will be matched.
+```json
+{
+  "coolValue": "minecraft:diamond_sword"
+}
+```
+
+In this case, the regex pattern would match all the Minecraft swords (`minecraft:wooden_sword`, `minecraft:stone_sword`, etc.)
+```json
+{
+  "coolValue": {
+    "regexPattern": "minecraft:.*_sword"
+  }
+}
+```
+:::
+
+Predicates tell the mod which loot tables, pools or entries should be modified.  
+Different predicates can be combined using `invert`, `any_of` and `all_of`.
+
+Below is a list of all supported predicates:
+
+|                                                 |                                                   |
+|-------------------------------------------------|---------------------------------------------------|
+| [`loot-table-modifier:inverted`](#invert)       | Inverts the result of the provided predicate      |
+| [`loot-table-modifier:any_of`](#any-of)         | Matches when any of the provided predicates match |
+| [`loot-table-modifier:all_of`](#all-of)         | Matches when all of the provided predicates match |
+| [`loot-table-modifier:entry_item`](#item-entry) | Matches an item entry based on its identifier     |
+| [`loot-table-modifier:table`](#loot-table)      | Matches a table based on its identifier or type   |
+
+### Invert
+```json
+{
+  "type": "loot-table-modifier:inverted",
+  "term": {
+    // Another predicate
+  }
+}
+```
+This predicate will match when the provided predicate doesn't. A logical `NOT` operation.
+
+### Any of
+```json
+{
+  "type": "loot-table-modifier:any_of",
+  "terms": [
+    {
+      // Another predicate
+    },
+    {
+      // Yet another predicate
+    }
+  ]
+}
+```
+This predicate will match when any of the provided predicates match. A logical `OR` operation.
+
+### All of
+```json
+{
+  "type": "loot-table-modifier:all_of",
+  "terms": [
+    {
+      // Another predicate
+    },
+    {
+      // Yet another predicate
+    }
+  ]
+}
+```
+This predicate will match when all of the provided predicates match. A logical `AND` operation.
+
+### Item Entry
+```json
+{
+  "type": "loot-table-modifier:entry_item",
+  "name": /* RegexIdentifier */
+}
+```
+This predicate will match item entries based on their identifiers.
+
+### Loot Table
+```json
+{
+  "type": "loot-table-modifier:table",
+  "identifiers?": /* RegexIdentifier */,
+  "types?": /* RegexIdentifier */
+}
+```
+This predicate will match loot tables based on their identifiers or types.
