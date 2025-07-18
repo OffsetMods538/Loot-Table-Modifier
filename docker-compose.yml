@@ -1,7 +1,7 @@
 # Hosts a static page
 services:
-  web:
-    build: .
+  ${URL_PREFIX}loot-table-modifier:
+    image: registry.oracle.offsetmonkey538.top/loot-table-modifier/docs:${SHORT_COMMIT_HASH}
     restart: unless-stopped
     networks:
       - traefik-proxy
