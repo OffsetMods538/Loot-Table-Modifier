@@ -54,8 +54,8 @@ jobs:
           URL_PREFIX: staging-
           SHORT_COMMIT_HASH: ${{ env.short_commit_hash }}
         with:
-          input: docs/docker-compose-template.yml
-          output: docs/docker-compose.yml
+          input: docker-compose-template.yml
+          output: docker-compose.yml
 
       - name: Login to container registry
         uses: docker/login-action@v3
