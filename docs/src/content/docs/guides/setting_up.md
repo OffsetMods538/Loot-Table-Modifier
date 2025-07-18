@@ -49,7 +49,7 @@ Full documentation on loot modifiers can be found [here](/reference/loot_modifie
 
 For mod developers, there's a datagen provider available with the name `LootModifierProvider`. I uhh... seem to have forgotten to write javadoc for that, but you can take a look at the included `LootTableModifierDatagen` class which I use for testing :D
 
-For datapack makers (or mod developers who can't figure out datagen because there's no javadoc for it) there is also an online generator available [here](https://misode-2l52sq8cl-misodes-projects.vercel.app/) under `Modded Generators`.
+For datapack makers (or mod developers who can't figure out datagen because there's no javadoc for it) there is also an online generator available [here](https://misode-itd7xiyf1-misodes-projects.vercel.app/) under `Modded Generators`.
 
 ## Development Mode
 
