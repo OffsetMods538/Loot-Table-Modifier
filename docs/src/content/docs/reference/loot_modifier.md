@@ -113,28 +113,7 @@ See: [Replace any Minecraft ingot with a diamond](../../guides/examples/replace_
 ## Predicates
 
 :::note
-Predicates may use this thing I call a `RegexIdentifier`.
-
-Identifiers are used all over Minecraft for identifying stuff like items (`minecraft:diamond_sword`), blocks (`minecraft:stone`), entities (`minecraft:zombie`), even loot tables (`minecraft:chests/end_city_treasure`) and so on.  
-In short, a `RegexIdentifier` allows either matching an identifier directly or using a regex pattern for that. (you can view the supported regex syntax [here](https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html))
-
-A `RegexIdentifier` can either be an inlined string or an object with the `regexPattern` field.
-
-In this case, only the exact identifier of `minecraft:diamond_sword` will be matched.
-```json
-{
-  "coolValue": "minecraft:diamond_sword"
-}
-```
-
-In this case, the regex pattern would match all the Minecraft swords (`minecraft:wooden_sword`, `minecraft:stone_sword`, etc.)
-```json
-{
-  "coolValue": {
-    "regexPattern": "minecraft:.*_sword"
-  }
-}
-```
+Predicates may use this thing I call a `RegexIdentifier`, which you can read about [here](../regex_identifier).
 :::
 
 Predicates tell the mod which loot tables, pools or entries should be modified.  

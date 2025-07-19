@@ -46,6 +46,7 @@ export default defineConfig({
                     label: 'Reference',
                     items: [
                         {label: 'Loot Modifier', slug: 'reference/loot_modifier'},
+                        {label: 'Regex Identifier', slug: 'reference/regex_identifier'},
                     ],
                 },
             ],
