@@ -36,6 +36,6 @@ Loot modifiers are in datapacks, meaning mods and modpacks are able to use them 
 Unlike some mods which replace stuff at runtime, Loot Table Modifier does all of its processing during data loading. This means that the mod will have no performance impact during gameplay! (Except of course if you make a zombie drop a bajillion stacks of diamonds, though that's not the mod's fault...)
 
 :::note
-There is also an online generator for loot modifiers in development and available [here](https://misode-itd7xiyf1-misodes-projects.vercel.app/) under 'Modded Generators'.  
+There is also an online generator for loot modifiers in development and available [here](https://misode-itd7xiyf1-misodes-projects.vercel.app/) under `Modded Generators`.  
 It should be up to date with v2 alpha 1, but there may be issues. Please contat me on my [discord](https://discord.offsetmonkey538.top) if anything goes wrong :D
 :::
