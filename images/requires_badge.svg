@@ -1,8 +1,8 @@
-<svg width="234" height="56" viewBox="0 0 234 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="234" height="56" viewBox="0 0 234 56" shape-rendering="geometricPrecision" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g id="requires" filter="url(#filter0_d_1_50)">
         <rect width="234" height="56" rx="8" fill="url(#paint0_linear_1_50)"/>
         <rect x="1.05" y="1.05" width="231.9" height="53.9" rx="6.95" stroke="white" stroke-opacity="0.15" stroke-width="2.1"/>
-        <g shape-rendering="geometricPrecision" id="logo" filter="url(#filter1_d_1_50)">
+        <g id="logo" filter="url(#filter1_d_1_50)">
             <g id="Loot Table Modifier Icon(3)(1) 1" clip-path="url(#clip0_1_50)">
                 <path id="Vector" d="M15 8H48V48H15V8Z" fill="#9BADB7"/>
                 <path id="Vector_2" d="M16.4348 9.42857H46.5652V46.5714H16.4348V9.42857Z" fill="#A4B7C2"/>
