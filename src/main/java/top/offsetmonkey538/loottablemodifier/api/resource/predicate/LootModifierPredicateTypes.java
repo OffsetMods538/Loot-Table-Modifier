@@ -46,8 +46,6 @@ public final class LootModifierPredicateTypes {
      */
     public static final LootModifierPredicateType TABLE = register(id("table"), TablePredicate.CODEC);
 
-    //public static final LootModifierPredicateType LOOT_POOL = register(id("loot_pool"), LootPoolPredicate.CODEC);
-
     private static LootModifierPredicateType register(final @NotNull Identifier id, final @NotNull MapCodec<? extends LootModifierPredicate> codec) {
         return Registry.register(LootModifierPredicateType.REGISTRY, id, new LootModifierPredicateType(codec));
     }
