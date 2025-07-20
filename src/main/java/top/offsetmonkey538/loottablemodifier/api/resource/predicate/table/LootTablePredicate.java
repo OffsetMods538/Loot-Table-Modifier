@@ -176,7 +176,7 @@ public record LootTablePredicate(@Nullable List<RegexPattern> identifiers, @Null
          */
         @Contract("_->this")
         public LootTablePredicate.Builder type(@NotNull Identifier type) {
-            this.types.add(RegexPattern.literal(type));
+            type(RegexPattern.literal(type));
             return this;
         }
         /**

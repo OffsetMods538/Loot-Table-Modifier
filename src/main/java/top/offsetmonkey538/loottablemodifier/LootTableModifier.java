@@ -128,43 +128,7 @@ public class LootTableModifier implements ModInitializer {
 				poolsModified += poolModified ? 1 : 0;
 			}
 			if (tableModified) modifiedTableIds.add(tableId);
-
-			//for (Map.Entry<Identifier, LootModifier> modifierEntry : modifiers.entrySet()) {
-			//	final LootModifier modifier = modifierEntry.getValue();
-
-			//	for (LootModifierPredicate modifiesPredicate : modifier.modifies()) {
-			//		if (modifiesPredicate.requiredContext() == LootModifierContext.REQUIRES_TABLE && !modifiesPredicate.test(tableContext)) continue;
-
-			//		for (LootPool pool : table.pools) {
-			//			final LootModifierContext poolContext = new LootModifierContext(table, key.getValue(), pool);
-
-			//			if (modifiesPredicate.requiredContext() == LootModifierContext.REQUIRES_POOL && !modifiesPredicate.test(poolContext)) continue;
-
-			//			for (LootPoolEntry entry : pool.entries) {
-			//				final LootModifierContext entryContext = new LootModifierContext(table, key.getValue(), pool, entry);
-
-			//				if (modifiesPredicate.requiredContext() == LootModifierContext.REQUIRES_POOL && !modifiesPredicate.test(entryContext)) continue;
-
-			//				for (LootModifierAction action : modifier.actions()) {
-			//					action.apply(entryContext);
-			//				}
-			//			}
-			//		}
-			//	}
-			//}
-
-
-			// t~odo: modified += apply(table) ? 1 : 0; (done?)
 		}
-
-
-		//for (Map.Entry<Identifier, LootModifier> modifierEntry : modifiers.entrySet()) {
-		//	final LootModifier modifier = modifierEntry.getValue();
-
-		//	amountModified += modifier.apply(lootRegistry);
-
-		//	// TODO: try to figure smt out abt this: if (!modifier.modifies().isEmpty()) failedModifiers.put(modifierEntry.getKey(), modifier);
-		//}
 
 
 		LOGGER.info("Applied {} modifiers and modified {} entries, {} pools and {} loot tables in {}!", modifiers.size(), entriesModified, poolsModified, modifiedTableIds.size(), stopwatch.stop());
