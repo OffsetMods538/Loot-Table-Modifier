@@ -36,7 +36,7 @@ export default defineConfig({
                             items: [
                                 {label: 'Replace any ingot with a diamond', slug: 'guides/examples/replace_ingot_w_diamond'},
                                 {label: 'Make Creepers and Zombies drop tnt', slug: 'guides/examples/creepers_and_zombies_drop_tnt'},
-                                //{label: 'Remove sticks', slug: 'guides/examples/remove_sticks'},
+                                {label: 'Remove sticks', slug: 'guides/examples/remove_sticks'},
                                 //{label: 'Remove glowstone and gunpowder from witches', slug: 'guides/examples/remove_glowstone_and_gunpowder_witches'},
                             ],
                         },
