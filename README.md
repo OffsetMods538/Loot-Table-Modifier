@@ -3,6 +3,19 @@
 [![modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg)](https://modrinth.com/mod/loot-table-modifier)  
 [![Requires Fabric API](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/requires/fabric-api_vector.svg)](https://modrinth.com/mod/fabric-api)
 
+todo: good readme for alpha version
+
+Allows datapacks to modify loot tables, instead of just overwriting them.  
+Version 2 of the mod is currently in alpha. v2 adds more ways to modify loot tables than just adding to them  
+v2 will be backwards-compatible with v1 modifiers, so no need to worry about them breaking.
+
+If you want to use v1, then see the original description below.
+If you do decide to try out the alpha version of v2 (please do), then please go ahead and read the documentation [here](https://loot-table-modifier.docs.offsetmonkey538.top/) and if you encounter any problems, have suggestions for new actions/predicates or just want to say literally anything about the mod, please please please join my discord and tell me about it. I want to make this as good as I can and any sort of feedback really helps.  
+
+
+
+## Original Description
+
 Allows datapacks (and thus mods as well) to add to loot tables, instead of just overwriting them.
 
 This mod shouldn't impact performance while playing the game, but only when datapacks are reloading (joining a world, starting a server, `/reload` command, whatever else).  
@@ -69,21 +82,3 @@ dependencies {
     modImplementation "top.offsetmonkey538.loottablemodifier:loot-table-modifier:1.0.1+1.21.1"
 }
 ```
-
-## Badges
-###### No need to use them if you don't want to
-Badges are meant for developers to put on their project pages, so users can see that Loot Table Modifier is used or requires.  
-They're based on [Devin's Badges](https://github.com/intergrav/devins-badges).
-
-The `uses` badge is meant for mods or modpacks which want to display that Loot Table Modifier is included.  
-It can be used in Markdown like this: `[![This project includes Loot Table Modifier](https://raw.githubusercontent.com/OffsetMods538/Loot-Table-Modifier/master/images/uses_badge.svg)](https://modrinth.com/mod/loot-table-modifier)`  
-And will look like this:  
-[![This project includes Loot Table Modifier](https://raw.githubusercontent.com/OffsetMods538/Loot-Table-Modifier/master/images/uses_badge.svg)](https://modrinth.com/mod/loot-table-modifier)  
-Clicking it will bring the user to the Modrinth page for Loot Table Modifier
-
-
-The `requires` badge is meant for datapacks which want to display that Loot Table Modifier is required for the pack to function.  
-It can be used in Markdown like this: `[![This project requires Loot Table Modifier to be installed](https://raw.githubusercontent.com/OffsetMods538/Loot-Table-Modifier/master/images/requires_badge.svg)](https://modrinth.com/mod/loot-table-modifier)`  
-And will look like this:  
-[![This project requires Loot Table Modifier to be installed](https://raw.githubusercontent.com/OffsetMods538/Loot-Table-Modifier/master/images/requires_badge.svg)](https://modrinth.com/mod/loot-table-modifier)  
-Clicking it will bring the user to the Modrinth page for Loot Table Modifier
