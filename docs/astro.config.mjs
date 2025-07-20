@@ -30,7 +30,7 @@ export default defineConfig({
                 {
                     label: 'Guides',
                     items: [
-                        {label: 'Setting up', slug: 'guides/setting_up'},
+                        {label: 'Getting Started', slug: 'guides/getting_started'},
                         {
                             label: 'Examples',
                             items: [

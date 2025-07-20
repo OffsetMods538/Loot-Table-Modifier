@@ -1,5 +1,5 @@
 ---
-title: Setting up
+title: Getting Started
 ---
 
 ## Installing

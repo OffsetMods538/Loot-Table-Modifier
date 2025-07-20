@@ -7,7 +7,7 @@ hero:
     file: ../../assets/icon.svg
   actions:
     - text: Get Started
-      link: /guides/setting_up/
+      link: /guides/getting_started/
       icon: right-arrow
     - text: View on Modrinth
       link: https://modrinth.com/mod/loot-table-modifier
