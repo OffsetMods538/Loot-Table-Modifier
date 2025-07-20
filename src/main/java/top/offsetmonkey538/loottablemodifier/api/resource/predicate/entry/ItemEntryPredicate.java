@@ -6,6 +6,7 @@ import net.minecraft.item.ItemConvertible;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicateTypes;
 import top.offsetmonkey538.loottablemodifier.api.resource.util.LootModifierContext;
@@ -13,6 +14,11 @@ import top.offsetmonkey538.loottablemodifier.api.resource.util.OptionalIdentifie
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicateType;
 
+/**
+ * Matches an item entry based on its item
+ *
+ * @param name the {@link OptionalIdentifierPattern} matching the item identifier
+ */
 public record ItemEntryPredicate(OptionalIdentifierPattern name) implements LootModifierPredicate {
     public static final MapCodec<ItemEntryPredicate> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(OptionalIdentifierPattern.CODEC.fieldOf("name").forGetter(ItemEntryPredicate::name)).apply(instance, ItemEntryPredicate::new)
@@ -31,13 +37,34 @@ public record ItemEntryPredicate(OptionalIdentifierPattern name) implements Loot
         return name.matches(itemEntry.item.getIdAsString());
     }
 
-    public static LootModifierPredicate.Builder builder(ItemConvertible name) {
+    /**
+     * Creates a builder for {@link ItemEntryPredicate} matching the provided item
+     *
+     * @param name the item to match
+     * @return a new {@link ItemEntryPredicate.Builder}
+     */
+    @Contract("_->new")
+    public static ItemEntryPredicate.Builder builder(ItemConvertible name) {
         return builder(Registries.ITEM.getId(name.asItem()));
     }
-    public static LootModifierPredicate.Builder builder(Identifier name) {
-        return () -> new ItemEntryPredicate(OptionalIdentifierPattern.literal(name));
+    /**
+     * Creates a builder for {@link ItemEntryPredicate} matching the item based on the provided identifier
+     *
+     * @param name the item id to match
+     * @return a new {@link ItemEntryPredicate.Builder}
+     */
+    @Contract("_->new")
+    public static ItemEntryPredicate.Builder builder(Identifier name) {
+        return builder(OptionalIdentifierPattern.literal(name));
     }
-    public static LootModifierPredicate.Builder builder(OptionalIdentifierPattern name) {
+    /**
+     * Creates a builder for {@link ItemEntryPredicate} matching the provided item
+     *
+     * @param name the {@link OptionalIdentifierPattern} to match the item id with
+     * @return a new {@link ItemEntryPredicate.Builder}
+     */
+    @Contract("_->new")
+    public static ItemEntryPredicate.Builder builder(OptionalIdentifierPattern name) {
         return () -> new ItemEntryPredicate(name);
     }
 }

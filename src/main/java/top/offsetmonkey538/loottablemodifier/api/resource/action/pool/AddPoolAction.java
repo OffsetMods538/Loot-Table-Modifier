@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.loot.LootPool;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierActionTypes;
 import top.offsetmonkey538.loottablemodifier.mixin.LootTableAccessor;
@@ -13,6 +14,11 @@ import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierAct
 
 import java.util.List;
 
+/**
+ * Adds the provided pools to matched tables
+ *
+ * @param pools the pools to add
+ */
 public record AddPoolAction(List<LootPool> pools) implements LootModifierAction {
     public static final MapCodec<AddPoolAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             LootPool.CODEC.listOf().fieldOf("pools").forGetter(AddPoolAction::pools)
@@ -37,13 +43,33 @@ public record AddPoolAction(List<LootPool> pools) implements LootModifierAction 
         return MODIFIED_POOL;
     }
 
+    /**
+     * Creates a builder for {@link AddPoolAction}
+     *
+     * @return a new {@link AddPoolAction.Builder}
+     */
+    @Contract("->new")
     public static AddPoolAction.Builder builder() {
         return new AddPoolAction.Builder();
     }
 
+    /**
+     * Builder for {@link AddPoolAction}
+     */
     public static class Builder implements LootModifierAction.Builder {
+        private Builder() {
+
+        }
+
         private final ImmutableList.Builder<LootPool> pools = ImmutableList.builder();
 
+        /**
+         * Adds a pool
+         *
+         * @param poolBuilder The pool to add
+         * @return this
+         */
+        @Contract("_->this")
         public AddPoolAction.Builder pool(LootPool.Builder poolBuilder) {
             this.pools.add(poolBuilder.build());
             return this;

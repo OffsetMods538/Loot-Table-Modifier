@@ -6,8 +6,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.loot.LootPool;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
+import top.offsetmonkey538.loottablemodifier.api.datagen.LootModifierProvider;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.AddPoolAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicate;
@@ -20,6 +22,12 @@ import java.util.function.Predicate;
 import static top.offsetmonkey538.loottablemodifier.LootTableModifier.LOGGER;
 import static top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierAction.MODIFIED_NONE;
 
+/**
+ * A loot modifier. Use the {@link LootModifier.Builder} for building it and the {@link LootModifierProvider} for generating the files.
+ *
+ * @param actions a list of actions to apply
+ * @param predicate the predicate
+ */
 public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> actions, @NotNull LootModifierPredicate predicate) implements Predicate<LootModifierContext> {
     private static final Codec<LootModifier> LEGACY_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.either(Identifier.CODEC, Identifier.CODEC.listOf()).fieldOf("modifies").forGetter(modifier -> {
@@ -61,6 +69,8 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
     }
 
     /**
+     * Applied all the actions of this modifier using the provided context.
+     *
      * @param context context to modify
      * @return highest modification level from applied actions. {@link LootModifierAction#MODIFIED_NONE} when no action was applied.
      * @see LootModifierAction#MODIFIED_NONE
@@ -76,29 +86,69 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
         return result;
     }
 
+    /**
+     * Tests the predicate of this loot modifier against the provided context.
+     *
+     * @param context the context to match against
+     * @return if the predicate of this loot modifier matched the provided context
+     */
     public boolean test(final @NotNull LootModifierContext context) {
         return predicate.test(context);
     }
 
+    /**
+     * Creates a builder for {@link LootModifier}
+     *
+     * @return a new {@link LootModifier.Builder}
+     */
+    @Contract("->new")
     public static LootModifier.Builder builder() {
         return new LootModifier.Builder();
     }
 
+    /**
+     * Builder for {@link LootModifier}
+     */
     public static class Builder {
+        private Builder() {
+
+        }
+
         private final ImmutableList.Builder<LootModifierAction> actions = ImmutableList.builder();
         private LootModifierPredicate predicate;
 
+        /**
+         * Adds an action
+         *
+         * @param action the action to add
+         * @return this
+         */
+        @Contract("_->this")
         public LootModifier.Builder action(@NotNull LootModifierAction.Builder action) {
             this.actions.add(action.build());
             return this;
         }
 
+        /**
+         * Sets the predicate
+         * <br />
+         * Loot modifier may only have one predicate and this may only be called once!
+         *
+         * @param predicate the predicate to use
+         * @return this
+         */
+        @Contract("_->this")
         public LootModifier.Builder conditionally(@NotNull LootModifierPredicate.Builder predicate) {
             if (this.predicate != null) LOGGER.error("Predicate has already been set for this builder! The previously set predicate will be overwritten! Please use the 'LootModifierPredicate.Builder#and()' and 'LootModifierPredicate.Builder#or()' methods for adding multiple conditions!");
             this.predicate = predicate.build();
             return this;
         }
 
+        /**
+         * Builds the {@link LootModifier}
+         *
+         * @return a built {@link LootModifier}
+         */
         public LootModifier build() {
             return new LootModifier(this.actions.build(), this.predicate);
         }

@@ -14,24 +14,32 @@ import java.util.function.BiConsumer;
 import static top.offsetmonkey538.loottablemodifier.LootTableModifier.MOD_ID;
 
 /**
- * FIXME: wrong
  * A datagen provider for creating loot modifiers.
  * <br>
- * Override {@link #generate(RegistryWrapper.WrapperLookup) generate()} and use the {@code addModifier(...)} methods to add modifiers.
+ * Override {@link #generate(RegistryWrapper.WrapperLookup) generate()} and use the {@link #addModifier(Identifier, LootModifier.Builder)} method to add modifiers.
  * <br>
  * <pre>{@code
  * @Override
  * protected void generate(RegistryWrapper.WrapperLookup lookup) {
- *     addModifier(
- *             Identifier.of("testmod", "drop_tnt"),
- *             LootPool.builder()
- *                     .rolls(ConstantLootNumberProvider.create(1))
- *                     .with(
- *                             ItemEntry.builder(Items.TNT)
- *                                     .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 1)))
- *                     ),
- *             EntityType.CREEPER,
- *             EntityType.ZOMBIE
+ *      addModifier(
+ *          Identifier.of("testmod", "mobs_drop_tnt"),
+ *              LootModifier.builder()
+ *                  .conditionally(
+ *                      LootTablePredicate.builder()
+ *                          .name(EntityType.CREEPER)
+ *                          .name(EntityType.ZOMBIE)
+ *                  )
+ *                  .action(
+ *                      AddPoolAction.builder()
+ *                          .pool(
+ *                              LootPool.builder()
+ *                                  .rolls(ConstantLootNumberProvider.create(1))
+ *                                  .with(
+ *                                      ItemEntry.builder(Items.TNT)
+ *                                          .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 1)))
+ *                                  )
+ *                          )
+ *                  )
  *     );
  * }
  * }</pre>
@@ -51,16 +59,22 @@ public abstract class LootModifierProvider extends FabricCodecDataProvider<LootM
 
     @Override
     public String getName() {
-        return "New New Loot Table Modifiers"; // todo: change
+        return "Loot Table Modifiers";
     }
 
     /**
-     * Override and use {@code addModifier()} methods to add modifiers.
+     * Override and use {@link #addModifier(Identifier, LootModifier.Builder)} method to add modifiers.
      *
      * @param lookup A lookup for registries.
      */
     protected abstract void generate(RegistryWrapper.WrapperLookup lookup);
 
+    /**
+     * Adds a loot modifier using the provided name and builder.
+     *
+     * @param name the identifier of the modifier
+     * @param builder the builder to generate the loot modifier from
+     */
     protected void addModifier(@NotNull Identifier name, @NotNull LootModifier.Builder builder) {
         provider.accept(name, builder.build());
     }

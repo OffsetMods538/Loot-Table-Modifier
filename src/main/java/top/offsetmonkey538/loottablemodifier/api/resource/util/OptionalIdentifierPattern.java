@@ -4,11 +4,20 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * {@link OptionalIdentifierPattern}s allow either matching {@link Identifier}s directly or using regex to do so.
+ * <br />
+ * Use {@link #literal(Identifier)} for creating literal patterns and {@link #compile(String)} for creating regex patterns.
+ *
+ * @param isRegex if this {@link OptionalIdentifierPattern} is using regex or not
+ * @param patternString the pattern as a plain string
+ * @param pattern the compiled pattern
+ */
 public record OptionalIdentifierPattern(boolean isRegex, @NotNull String patternString, @NotNull Pattern pattern) {
     private static final Codec<OptionalIdentifierPattern> INLINE_CODEC = Identifier.CODEC.xmap(OptionalIdentifierPattern::literal, instance -> Identifier.of(instance.patternString()));
     private static final Codec<OptionalIdentifierPattern> FULL_CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -22,6 +31,13 @@ public record OptionalIdentifierPattern(boolean isRegex, @NotNull String pattern
             pattern -> pattern.isRegex ? Either.right(pattern) : Either.left(pattern)
     );
 
+    /**
+     * Creates a literal {@link OptionalIdentifierPattern} from the provided {@link Identifier}.
+     *
+     * @param identifier the {@link Identifier} to match
+     * @return a new {@link OptionalIdentifierPattern} matching the provided {@link Identifier}
+     */
+    @Contract("_->new")
     public static OptionalIdentifierPattern literal(final Identifier identifier) {
         return new OptionalIdentifierPattern(
                 false,
@@ -29,10 +45,14 @@ public record OptionalIdentifierPattern(boolean isRegex, @NotNull String pattern
                 Pattern.compile(Pattern.quote(identifier.toString()))
         );
     }
-    //public static OptionalIdentifierPattern literal(final String literalString) {
-    //
-    //}
 
+    /**
+     * Compiles a {@link OptionalIdentifierPattern} from the provided regex pattern.
+     *
+     * @param regexPattern the pattern to use
+     * @return a new {@link OptionalIdentifierPattern} compiled from the provided regex pattern
+     * @see Pattern#compile(String)
+     */
     public static OptionalIdentifierPattern compile(final String regexPattern) {
         return new OptionalIdentifierPattern(
                 true,
@@ -42,19 +62,13 @@ public record OptionalIdentifierPattern(boolean isRegex, @NotNull String pattern
     }
 
     /**
-     * Not deprecated for removal.
-     * <p>
-     * Use this only if you really need an instance of the {@link Matcher}. Otherwise, use {@link #matches(CharSequence)}, because it removes the overhead of the {@link Matcher} when {@link #isRegex} is false.
-     * @see #matches(CharSequence)
+     * Checks if the provided character sequence matches this.
+     *
+     * @param input the character sequence to check
+     * @return if the provided character sequence matches this
      */
-    @SuppressWarnings("DeprecatedIsStillUsed")
-    @Deprecated(forRemoval = false)
-    public Matcher matcher(CharSequence input) {
-        return pattern.matcher(input);
-    }
-
     public boolean matches(CharSequence input) {
-        if (isRegex) return matcher(input).matches();
+        if (isRegex) return pattern.matcher(input).matches();
         return patternString.contentEquals(input);
     }
 }

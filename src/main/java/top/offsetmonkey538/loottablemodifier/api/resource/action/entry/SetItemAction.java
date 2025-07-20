@@ -11,6 +11,7 @@ import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierActionTypes;
 import top.offsetmonkey538.loottablemodifier.mixin.ItemEntryAccessor;
@@ -19,6 +20,12 @@ import top.offsetmonkey538.loottablemodifier.api.resource.util.LootModifierConte
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierActionType;
 
+/**
+ * Sets the item in matched item entries
+ *
+ * @param item the new item to replace the existing one with
+ * @param canReplaceEntry if other types of entries can be replaced with a basic item entry containing the target item
+ */
 public record SetItemAction(RegistryEntry<Item> item, boolean canReplaceEntry) implements LootModifierAction {
     public static final MapCodec<SetItemAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Item.ENTRY_CODEC.fieldOf("name").forGetter(SetItemAction::item),
@@ -56,10 +63,20 @@ public record SetItemAction(RegistryEntry<Item> item, boolean canReplaceEntry) i
         return MODIFIED_ENTRY;
     }
 
+    /**
+     * Creates a builder for {@link SetItemAction}
+     *
+     * @param item the new item to replace the existing one with
+     * @return a new {@link SetItemAction.Builder}
+     */
+    @Contract("_->new")
     public static SetItemAction.Builder builder(@NotNull ItemConvertible item) {
         return new SetItemAction.Builder(item);
     }
 
+    /**
+     * Builder for {@link SetItemAction}
+     */
     public static class Builder implements LootModifierAction.Builder {
         private final RegistryEntry<Item> item;
         private boolean canReplaceEntry;
@@ -68,6 +85,13 @@ public record SetItemAction(RegistryEntry<Item> item, boolean canReplaceEntry) i
             this.item = Registries.ITEM.getEntry(item.asItem());
         }
 
+        /**
+         * Sets if other types of entries can be replaced with a basic item entry containing the target item
+         *
+         * @param canReplaceEntry if other types of entries can be replaced with a basic item entry containing the target item
+         * @return this
+         */
+        @Contract("_->this")
         public SetItemAction.Builder setCanReplaceEntry(boolean canReplaceEntry) {
             this.canReplaceEntry = canReplaceEntry;
             return this;

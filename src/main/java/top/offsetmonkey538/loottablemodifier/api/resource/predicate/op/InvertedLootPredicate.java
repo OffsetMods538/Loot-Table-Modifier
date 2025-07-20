@@ -8,6 +8,11 @@ import top.offsetmonkey538.loottablemodifier.api.resource.util.LootModifierConte
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicateType;
 
+/**
+ * Matches when the provided predicate doesn't
+ *
+ * @param term the predicate to invert
+ */
 public record InvertedLootPredicate(LootModifierPredicate term) implements LootModifierPredicate {
     public static final MapCodec<InvertedLootPredicate> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(LootModifierPredicate.CODEC.fieldOf("term").forGetter(InvertedLootPredicate::term)).apply(instance, InvertedLootPredicate::new)
@@ -23,7 +28,13 @@ public record InvertedLootPredicate(LootModifierPredicate term) implements LootM
         return !term.test(context);
     }
 
-    public static LootModifierPredicate.Builder builder(LootModifierPredicate.Builder term) {
+    /**
+     * Creates a builder for {@link InvertedLootPredicate}
+     *
+     * @param term the predicate to invert
+     * @return a new {@link InvertedLootPredicate.Builder} containing the provided predicate
+     */
+    public static InvertedLootPredicate.Builder builder(LootModifierPredicate.Builder term) {
         return () -> new InvertedLootPredicate(term.build());
     }
 }

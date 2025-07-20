@@ -8,6 +8,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.loot.LootTable;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.offsetmonkey538.loottablemodifier.api.resource.util.LootTableIdGetter;
@@ -19,6 +20,7 @@ import java.util.function.Function;
 
 import static top.offsetmonkey538.loottablemodifier.LootTableModifier.LOGGER;
 
+@ApiStatus.Internal
 public class LootTableIdGetterImpl implements LootTableIdGetter {
 
     @Override

@@ -33,18 +33,21 @@ import java.util.function.BiConsumer;
 
 import static top.offsetmonkey538.loottablemodifier.LootTableModifier.id;
 
+/**
+ * Datagen for loot modifiers used for testing.
+ */
 public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
 
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
         final FabricDataGenerator.Pack pack = fabricDataGenerator.createBuiltinResourcePack(id("example_pack"));
 
-        pack.addProvider(NewModLootModifierProvider::new);
+        pack.addProvider(ModLootModifierProvider::new);
         pack.addProvider(LootProvider::new);
     }
 
-    private static class NewModLootModifierProvider extends LootModifierProvider {
-        public NewModLootModifierProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    private static class ModLootModifierProvider extends LootModifierProvider {
+        public ModLootModifierProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
             super(dataOutput, registriesFuture);
         }
 
