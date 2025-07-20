@@ -1,7 +1,7 @@
 import dex.plugins.outlet.v2.util.ReleaseType
 
 plugins {
-	id 'fabric-loom' version '1.10-SNAPSHOT'
+	id 'fabric-loom' version '1.11-SNAPSHOT'
 	id 'io.github.dexman545.outlet' version '1.6.1'
 	id 'com.modrinth.minotaur' version '2.+'
 	id 'maven-publish'
@@ -12,8 +12,21 @@ targetCompatibility = JavaVersion.VERSION_17
 
 archivesBaseName = "loot-table-modifier"
 group = "top.offsetmonkey538.loottablemodifier"
-version = "${project.mod_version}+${project.minecraft_version}"
-if (System.getenv("IS_DEBUG") == "true") version = "${version}-${System.currentTimeMillis()}"
+
+
+version = project.mod_version
+
+if ("true".equalsIgnoreCase(System.getenv("IS_DEBUG"))) {
+	version = "${version}-${System.currentTimeMillis()}"
+}
+
+final String customVersion = System.getenv("CUSTOM_VERSION")
+if (customVersion != null && !customVersion.isEmpty()) {
+	version = "${version}-${customVersion}"
+}
+
+version = "${project.version}+${project.minecraft_version}"
+println "Version: ${version}"
 
 outlet {
 	maintainPropertiesFile = System.getenv("DISABLE_PROPERTIES_UPDATE") == null
@@ -146,13 +159,12 @@ java {
 tasks.named("javadoc", Javadoc) {
 	options.addFileOption('-add-stylesheet', project.file("javadoc-stylesheet.css"))
 
-	// Temporarily
-	//options {
-	//	links(
-	//			"https://maven.fabricmc.net/docs/fabric-api-${project.fapi_version}/",
-	//			"https://maven.fabricmc.net/docs/yarn-${project.yarn_version}/"
-	//	)
-	//}
+	options {
+		links(
+				"https://maven.fabricmc.net/docs/fabric-api-${project.fapi_version}/",
+				"https://maven.fabricmc.net/docs/yarn-${project.yarn_version}/"
+		)
+	}
 }
 
 jar {
@@ -162,21 +174,34 @@ jar {
 }
 
 modrinth {
+	// Main properties
 	token = System.getenv("MODRINTH_TOKEN")
 	projectId = "loot-table-modifier"
+	gameVersions = outlet.mcVersions()
+
+	// Version stuff
 	def customVersionName = System.getenv("VERSION_NAME")
 	if (customVersionName != null) versionName = customVersionName
+
 	versionNumber = "${project.version}"
-	versionType = "alpha"
+
 	def isPreRelease = System.getenv("VERSION_IS_PRERELEASE")
-	versionType = !"false".equals(isPreRelease) ? "beta" : "release"
+	versionType = "true".equalsIgnoreCase(isPreRelease) ? "beta" : "release"
+
+	if (project.mod_version.contains("beta")) versionType = "beta"
+	else if (project.mod_version.contains("alpha")) versionType = "alpha"
+
+
+	// Files
 	uploadFile = remapJar.archiveFile
 	//additionalFiles = [sourcesJar.archiveFile, javadocJar.archiveFile]
 	additionalFiles = [sourcesJar.archiveFile]
-	gameVersions = outlet.mcVersions()
+
+
 	syncBodyFrom = rootProject.file("README.md").text
 	def changelogEnv = System.getenv("VERSION_CHANGELOG")
 	if (changelogEnv != null) changelog = changelogEnv
+
 
 	dependencies {
 		required.project "fabric-api"
@@ -184,6 +209,8 @@ modrinth {
 }
 
 tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
+
+
 publishing {
 	repositories {
 		maven {
@@ -204,11 +231,5 @@ publishing {
 
 			from(components["java"])
 		}
-	}
-	tasks.publishMavenPublicationToMavenLocal.doLast {
-		if (System.getenv("IS_DEBUG") == "true") System.out.println("Version: " + version)
-	}
-	tasks.publishMavenPublicationToOffsetMonkey538Repository.doLast {
-		if (System.getenv("IS_DEBUG") == "true") System.out.println("Version: " + version)
 	}
 }

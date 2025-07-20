@@ -1,0 +1,58 @@
+name: Publish docs
+
+on:
+  push:
+    branches:
+      - "*"
+  release:
+    types: [published]
+
+
+jobs:
+  publish-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set url prefix
+        run: |
+          if [[ "${{ github.event_name }}" == "push" || "${{ github.event.release.prerelease }}" == "true" ]]; then
+            echo "url_prefix=staging-" >> "$GITHUB_ENV"
+          else
+            echo "url_prefix=" >> "$GITHUB_ENV"
+          fi
+
+      - name: Store short commit hash
+        run: echo "short_commit_hash=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
+
+      - uses: danielr1996/envsubst-action@1.1.0
+        env:
+          URL_PREFIX: ${{ env.url_prefix }}
+          SHORT_COMMIT_HASH: ${{ env.short_commit_hash }}
+        with:
+          input: docker-compose-template.yml
+          output: docker-compose.yml
+
+      - name: Login to container registry
+        uses: docker/login-action@v3
+        with:
+          registry: registry.oracle.offsetmonkey538.top
+          username: ${{ secrets.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: registry.oracle.offsetmonkey538.top/loot-table-modifier/docs:${{ env.short_commit_hash }}
+
+      - run: |
+          tar -czf archive.tar.gz docker-compose.yml && curl -i -X POST -H "Authorization: Bearer $SEELF_TOKEN" -F environment=$SEELF_ENVIRONMENT -F archive=@archive.tar.gz $SEELF_APPLICATION_URL
+        env:
+          SEELF_TOKEN: ${{ secrets.SEELF_TOKEN }}
+          SEELF_ENVIRONMENT: staging
+          SEELF_APPLICATION_URL: https://seelf.oracle.offsetmonkey538.top/api/v1/apps/300qBnG3t1dOFrUGfw1EeWYwKYA/deployments

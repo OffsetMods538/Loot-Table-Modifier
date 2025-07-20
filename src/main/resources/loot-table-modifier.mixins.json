@@ -1,12 +1,14 @@
 {
-	"required": true,
-	"package": "top.offsetmonkey538.loottablemodifier.mixin",
-	"compatibilityLevel": "JAVA_17",
-	"mixins": [
-		"LootTableAccessor",
-		"ReloadableRegistriesMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
+    "required": true,
+    "package": "top.offsetmonkey538.loottablemodifier.mixin",
+    "compatibilityLevel": "JAVA_17",
+    "mixins": [
+        "ItemEntryAccessor",
+        "LootPoolAccessor",
+        "LootTableAccessor",
+        "ReloadableRegistriesMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
 	}
 }
