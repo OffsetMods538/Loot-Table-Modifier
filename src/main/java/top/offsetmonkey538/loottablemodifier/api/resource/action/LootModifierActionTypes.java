@@ -5,11 +5,11 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.AddEntryAction;
-import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.RemoveEntryAction;
-import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.AddPoolAction;
-import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.SetItemAction;
-import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.RemovePoolAction;
+import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.EntryAddAction;
+import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.EntryRemoveAction;
+import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.PoolAddAction;
+import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.EntryItemSetAction;
+import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.PoolRemoveAction;
 
 import static top.offsetmonkey538.loottablemodifier.LootTableModifier.id;
 
@@ -24,26 +24,26 @@ public final class LootModifierActionTypes {
     }
 
     /**
-     * Type of {@link AddPoolAction}
+     * Type of {@link PoolAddAction}
      */
-    public static final LootModifierActionType POOL_ADD = register(id("pool_add"), AddPoolAction.CODEC);
+    public static final LootModifierActionType POOL_ADD = register(id("pool_add"), PoolAddAction.CODEC);
     /**
-     * Type of {@link RemovePoolAction}
+     * Type of {@link PoolRemoveAction}
      */
-    public static final LootModifierActionType POOL_REMOVE = register(id("pool_remove"), RemovePoolAction.CODEC);
+    public static final LootModifierActionType POOL_REMOVE = register(id("pool_remove"), PoolRemoveAction.CODEC);
 
     /**
-     * Type of {@link AddEntryAction}
+     * Type of {@link EntryAddAction}
      */
-    public static final LootModifierActionType ENTRY_ADD = register(id("entry_add"), AddEntryAction.CODEC);
+    public static final LootModifierActionType ENTRY_ADD = register(id("entry_add"), EntryAddAction.CODEC);
     /**
-     * Type of {@link RemoveEntryAction}
+     * Type of {@link EntryRemoveAction}
      */
-    public static final LootModifierActionType ENTRY_REMOVE = register(id("entry_remove"), RemoveEntryAction.CODEC);
+    public static final LootModifierActionType ENTRY_REMOVE = register(id("entry_remove"), EntryRemoveAction.CODEC);
     /**
-     * Type of {@link SetItemAction}
+     * Type of {@link EntryItemSetAction}
      */
-    public static final LootModifierActionType ENTRY_ITEM_SET = register(id("entry_item_set"), SetItemAction.CODEC);
+    public static final LootModifierActionType ENTRY_ITEM_SET = register(id("entry_item_set"), EntryItemSetAction.CODEC);
 
     private static LootModifierActionType register(final @NotNull Identifier id, final @NotNull MapCodec<? extends LootModifierAction> codec) {
         return Registry.register(LootModifierActionType.REGISTRY, id, new LootModifierActionType(codec));

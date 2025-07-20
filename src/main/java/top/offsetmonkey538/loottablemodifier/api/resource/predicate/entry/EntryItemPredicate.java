@@ -19,9 +19,9 @@ import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifier
  *
  * @param name the {@link RegexPattern} matching the item identifier
  */
-public record ItemEntryPredicate(RegexPattern name) implements LootModifierPredicate {
-    public static final MapCodec<ItemEntryPredicate> CODEC = RecordCodecBuilder.mapCodec(
-            instance -> instance.group(RegexPattern.CODEC.fieldOf("name").forGetter(ItemEntryPredicate::name)).apply(instance, ItemEntryPredicate::new)
+public record EntryItemPredicate(RegexPattern name) implements LootModifierPredicate {
+    public static final MapCodec<EntryItemPredicate> CODEC = RecordCodecBuilder.mapCodec(
+            instance -> instance.group(RegexPattern.CODEC.fieldOf("name").forGetter(EntryItemPredicate::name)).apply(instance, EntryItemPredicate::new)
     );
 
     @Override
@@ -38,33 +38,33 @@ public record ItemEntryPredicate(RegexPattern name) implements LootModifierPredi
     }
 
     /**
-     * Creates a builder for {@link ItemEntryPredicate} matching the provided item
+     * Creates a builder for {@link EntryItemPredicate} matching the provided item
      *
      * @param name the item to match
-     * @return a new {@link ItemEntryPredicate.Builder}
+     * @return a new {@link EntryItemPredicate.Builder}
      */
     @Contract("_->new")
-    public static ItemEntryPredicate.Builder builder(ItemConvertible name) {
+    public static EntryItemPredicate.Builder builder(ItemConvertible name) {
         return builder(Registries.ITEM.getId(name.asItem()));
     }
     /**
-     * Creates a builder for {@link ItemEntryPredicate} matching the item based on the provided identifier
+     * Creates a builder for {@link EntryItemPredicate} matching the item based on the provided identifier
      *
      * @param name the item id to match
-     * @return a new {@link ItemEntryPredicate.Builder}
+     * @return a new {@link EntryItemPredicate.Builder}
      */
     @Contract("_->new")
-    public static ItemEntryPredicate.Builder builder(Identifier name) {
+    public static EntryItemPredicate.Builder builder(Identifier name) {
         return builder(RegexPattern.literal(name));
     }
     /**
-     * Creates a builder for {@link ItemEntryPredicate} matching the provided item
+     * Creates a builder for {@link EntryItemPredicate} matching the provided item
      *
      * @param name the {@link RegexPattern} to match the item id with
-     * @return a new {@link ItemEntryPredicate.Builder}
+     * @return a new {@link EntryItemPredicate.Builder}
      */
     @Contract("_->new")
-    public static ItemEntryPredicate.Builder builder(RegexPattern name) {
-        return () -> new ItemEntryPredicate(name);
+    public static EntryItemPredicate.Builder builder(RegexPattern name) {
+        return () -> new EntryItemPredicate(name);
     }
 }

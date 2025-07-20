@@ -4,9 +4,9 @@ import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.api.resource.util.LootModifierContext;
-import top.offsetmonkey538.loottablemodifier.api.resource.predicate.op.AllOfLootPredicate;
-import top.offsetmonkey538.loottablemodifier.api.resource.predicate.op.AnyOfLootPredicate;
-import top.offsetmonkey538.loottablemodifier.api.resource.predicate.op.InvertedLootPredicate;
+import top.offsetmonkey538.loottablemodifier.api.resource.predicate.op.AllOfPredicate;
+import top.offsetmonkey538.loottablemodifier.api.resource.predicate.op.AnyOfPredicate;
+import top.offsetmonkey538.loottablemodifier.api.resource.predicate.op.InvertedPredicate;
 
 import java.util.function.Predicate;
 
@@ -49,39 +49,39 @@ public interface LootModifierPredicate extends Predicate<LootModifierContext> {
         /**
          * Inverts this builder.
          * <br />
-         * Wraps this builder in an {@link InvertedLootPredicate}
+         * Wraps this builder in an {@link InvertedPredicate}
          *
          * @return An inverted version of this builder.
          */
         @Contract("->new")
         default Builder invert() {
-            return InvertedLootPredicate.builder(this);
+            return InvertedPredicate.builder(this);
         }
 
         /**
          * Adds another predicate builder in an {@code OR} relationship.
          * <br />
-         * Wraps this and the provided builder in an {@link AnyOfLootPredicate}
+         * Wraps this and the provided builder in an {@link AnyOfPredicate}
          *
          * @param otherPredicate The other predicate
          * @return A builder matching when this builder or the provided other builder match.
          */
         @Contract("_->new")
         default LootModifierPredicate.Builder or(@NotNull LootModifierPredicate.Builder otherPredicate) {
-            return AnyOfLootPredicate.builder().or(this).or(otherPredicate);
+            return AnyOfPredicate.builder().or(this).or(otherPredicate);
         }
 
         /**
          * Adds another predicate builder in an {@code AND} relationship.
          * <br />
-         * Wraps this and the provided builder in an {@link AllOfLootPredicate}
+         * Wraps this and the provided builder in an {@link AllOfPredicate}
          *
          * @param otherPredicate The other predicate
          * @return A builder matching when this builder and the provided other builder match.
          */
         @Contract("_->new")
         default LootModifierPredicate.Builder and(@NotNull LootModifierPredicate.Builder otherPredicate) {
-            return AllOfLootPredicate.builder().and(this).and(otherPredicate);
+            return AllOfPredicate.builder().and(this).and(otherPredicate);
         }
     }
 }

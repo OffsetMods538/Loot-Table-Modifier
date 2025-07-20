@@ -13,13 +13,13 @@ import java.util.List;
 /**
  * Matches when any of the provided predicates match
  */
-public class AnyOfLootPredicate extends TermsLootPredicate {
+public class AnyOfPredicate extends TermsPredicate {
     /**
      * The codec
      */
-    public static final MapCodec<AnyOfLootPredicate> CODEC = createCodec(AnyOfLootPredicate::new);
+    public static final MapCodec<AnyOfPredicate> CODEC = createCodec(AnyOfPredicate::new);
 
-    private AnyOfLootPredicate(final List<LootModifierPredicate> terms) {
+    private AnyOfPredicate(final List<LootModifierPredicate> terms) {
         super(terms, Util.anyOf(terms));
     }
 
@@ -29,33 +29,33 @@ public class AnyOfLootPredicate extends TermsLootPredicate {
     }
 
     /**
-     * Creates a builder for {@link AnyOfLootPredicate}
+     * Creates a builder for {@link AnyOfPredicate}
      *
-     * @return a new {@link AnyOfLootPredicate.Builder}
+     * @return a new {@link AnyOfPredicate.Builder}
      */
     @Contract("->new")
-    public static AnyOfLootPredicate.Builder builder() {
-        return new AnyOfLootPredicate.Builder();
+    public static AnyOfPredicate.Builder builder() {
+        return new AnyOfPredicate.Builder();
     }
 
     /**
-     * Builder for {@link AnyOfLootPredicate}
+     * Builder for {@link AnyOfPredicate}
      */
-    public static class Builder extends TermsLootPredicate.Builder {
+    public static class Builder extends TermsPredicate.Builder {
         private Builder() {
 
         }
 
         @Override
         @Contract("_->this")
-        public AnyOfLootPredicate.Builder or(@NotNull LootModifierPredicate.Builder builder) {
+        public AnyOfPredicate.Builder or(@NotNull LootModifierPredicate.Builder builder) {
             this.add(builder);
             return this;
         }
 
         @Override
-        protected AnyOfLootPredicate build(List<LootModifierPredicate> terms) {
-            return new AnyOfLootPredicate(terms);
+        protected AnyOfPredicate build(List<LootModifierPredicate> terms) {
+            return new AnyOfPredicate(terms);
         }
     }
 }

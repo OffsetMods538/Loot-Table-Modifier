@@ -13,9 +13,9 @@ import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifier
  *
  * @param term the predicate to invert
  */
-public record InvertedLootPredicate(LootModifierPredicate term) implements LootModifierPredicate {
-    public static final MapCodec<InvertedLootPredicate> CODEC = RecordCodecBuilder.mapCodec(
-            instance -> instance.group(LootModifierPredicate.CODEC.fieldOf("term").forGetter(InvertedLootPredicate::term)).apply(instance, InvertedLootPredicate::new)
+public record InvertedPredicate(LootModifierPredicate term) implements LootModifierPredicate {
+    public static final MapCodec<InvertedPredicate> CODEC = RecordCodecBuilder.mapCodec(
+            instance -> instance.group(LootModifierPredicate.CODEC.fieldOf("term").forGetter(InvertedPredicate::term)).apply(instance, InvertedPredicate::new)
     );
 
     @Override
@@ -29,12 +29,12 @@ public record InvertedLootPredicate(LootModifierPredicate term) implements LootM
     }
 
     /**
-     * Creates a builder for {@link InvertedLootPredicate}
+     * Creates a builder for {@link InvertedPredicate}
      *
      * @param term the predicate to invert
-     * @return a new {@link InvertedLootPredicate.Builder} containing the provided predicate
+     * @return a new {@link InvertedPredicate.Builder} containing the provided predicate
      */
-    public static InvertedLootPredicate.Builder builder(LootModifierPredicate.Builder term) {
-        return () -> new InvertedLootPredicate(term.build());
+    public static InvertedPredicate.Builder builder(LootModifierPredicate.Builder term) {
+        return () -> new InvertedPredicate(term.build());
     }
 }

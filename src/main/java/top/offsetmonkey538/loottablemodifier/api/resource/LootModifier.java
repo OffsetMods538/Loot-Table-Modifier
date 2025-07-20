@@ -10,10 +10,10 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 import top.offsetmonkey538.loottablemodifier.api.datagen.LootModifierProvider;
-import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.AddPoolAction;
+import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.PoolAddAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicate;
-import top.offsetmonkey538.loottablemodifier.api.resource.predicate.table.LootTablePredicate;
+import top.offsetmonkey538.loottablemodifier.api.resource.predicate.table.TablePredicate;
 import top.offsetmonkey538.loottablemodifier.api.resource.util.LootModifierContext;
 
 import java.util.*;
@@ -53,15 +53,15 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
 
         if (pools.isPresent() && lootPools.isPresent()) throw new IllegalStateException("Both \"pools\" and \"loot_pools\" present in legacy loot modifier!");
 
-        if (pools.isPresent()) actions = List.of(new AddPoolAction(pools.get()));
-        if (lootPools.isPresent()) actions = List.of(new AddPoolAction(lootPools.get()));
+        if (pools.isPresent()) actions = List.of(new PoolAddAction(pools.get()));
+        if (lootPools.isPresent()) actions = List.of(new PoolAddAction(lootPools.get()));
 
         if (actions == null) throw new IllegalStateException("Neither \"pools\" nor \"loot_pools\" present in legacy loot modifier!");
         return actions;
     }
 
     private static @NotNull LootModifierPredicate getPredicateFromLegacyCodec(@NotNull Either<Identifier, List<Identifier>> modifiesEither) {
-        final LootTablePredicate.Builder predicateBuilder = LootTablePredicate.builder();
+        final TablePredicate.Builder predicateBuilder = TablePredicate.builder();
         for (final Identifier currentId : modifiesEither.map(List::of, it -> it)) {
             predicateBuilder.name(currentId);
         }

@@ -21,10 +21,10 @@ import java.util.List;
  *
  * @param entries the entries to add
  */
-public record AddEntryAction(List<LootPoolEntry> entries) implements LootModifierAction {
-    public static final MapCodec<AddEntryAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            LootPoolEntryTypes.CODEC.listOf().fieldOf("entries").forGetter(AddEntryAction::entries)
-    ).apply(instance, AddEntryAction::new));
+public record EntryAddAction(List<LootPoolEntry> entries) implements LootModifierAction {
+    public static final MapCodec<EntryAddAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            LootPoolEntryTypes.CODEC.listOf().fieldOf("entries").forGetter(EntryAddAction::entries)
+    ).apply(instance, EntryAddAction::new));
 
     @Override
     public LootModifierActionType getType() {
@@ -49,17 +49,17 @@ public record AddEntryAction(List<LootPoolEntry> entries) implements LootModifie
     }
 
     /**
-     * Creates a builder for {@link AddEntryAction}
+     * Creates a builder for {@link EntryAddAction}
      *
-     * @return a new {@link AddEntryAction.Builder}
+     * @return a new {@link EntryAddAction.Builder}
      */
     @Contract("->new")
-    public static AddEntryAction.Builder builder() {
-        return new AddEntryAction.Builder();
+    public static EntryAddAction.Builder builder() {
+        return new EntryAddAction.Builder();
     }
 
     /**
-     * Builder for {@link AddEntryAction}
+     * Builder for {@link EntryAddAction}
      */
     public static class Builder implements LootModifierAction.Builder {
         private Builder() {
@@ -75,14 +75,14 @@ public record AddEntryAction(List<LootPoolEntry> entries) implements LootModifie
          * @return this
          */
         @Contract("_->this")
-        public AddEntryAction.Builder entry(LootPoolEntry.Builder<?> entryBuilder) {
+        public EntryAddAction.Builder entry(LootPoolEntry.Builder<?> entryBuilder) {
             this.entries.add(entryBuilder.build());
             return this;
         }
 
         @Override
-        public AddEntryAction build() {
-            return new AddEntryAction(entries.build());
+        public EntryAddAction build() {
+            return new EntryAddAction(entries.build());
         }
     }
 }

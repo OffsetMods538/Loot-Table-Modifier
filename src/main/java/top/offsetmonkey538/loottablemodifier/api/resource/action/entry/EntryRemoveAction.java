@@ -18,8 +18,8 @@ import top.offsetmonkey538.loottablemodifier.mixin.LootPoolAccessor;
 /**
  * Removes the matched entries from their pools
  */
-public record RemoveEntryAction() implements LootModifierAction {
-    public static final MapCodec<RemoveEntryAction> CODEC = Codec.of(Encoder.empty(), Decoder.unit(RemoveEntryAction::new));
+public record EntryRemoveAction() implements LootModifierAction {
+    public static final MapCodec<EntryRemoveAction> CODEC = Codec.of(Encoder.empty(), Decoder.unit(EntryRemoveAction::new));
 
     @Override
     public LootModifierActionType getType() {
@@ -45,12 +45,12 @@ public record RemoveEntryAction() implements LootModifierAction {
     }
 
     /**
-     * Creates a builder for {@link RemoveEntryAction}
+     * Creates a builder for {@link EntryRemoveAction}
      *
-     * @return a new {@link RemoveEntryAction.Builder}
+     * @return a new {@link EntryRemoveAction.Builder}
      */
     @Contract("->new")
-    public static RemoveEntryAction.Builder builder() {
-        return RemoveEntryAction::new;
+    public static EntryRemoveAction.Builder builder() {
+        return EntryRemoveAction::new;
     }
 }

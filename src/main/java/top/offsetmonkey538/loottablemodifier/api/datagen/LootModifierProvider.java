@@ -25,12 +25,12 @@ import static top.offsetmonkey538.loottablemodifier.LootTableModifier.MOD_ID;
  *          Identifier.of("testmod", "mobs_drop_tnt"),
  *              LootModifier.builder()
  *                  .conditionally(
- *                      LootTablePredicate.builder()
+ *                      TablePredicate.builder()
  *                          .name(EntityType.CREEPER)
  *                          .name(EntityType.ZOMBIE)
  *                  )
  *                  .action(
- *                      AddPoolAction.builder()
+ *                      PoolAddAction.builder()
  *                          .pool(
  *                              LootPool.builder()
  *                                  .rolls(ConstantLootNumberProvider.create(1))

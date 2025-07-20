@@ -19,14 +19,14 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import top.offsetmonkey538.loottablemodifier.api.datagen.LootModifierProvider;
 import top.offsetmonkey538.loottablemodifier.api.resource.LootModifier;
-import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.AddEntryAction;
-import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.RemoveEntryAction;
+import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.EntryAddAction;
+import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.EntryRemoveAction;
+import top.offsetmonkey538.loottablemodifier.api.resource.predicate.table.TablePredicate;
 import top.offsetmonkey538.loottablemodifier.api.resource.util.RegexPattern;
-import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.AddPoolAction;
-import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.SetItemAction;
-import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.RemovePoolAction;
-import top.offsetmonkey538.loottablemodifier.api.resource.predicate.entry.ItemEntryPredicate;
-import top.offsetmonkey538.loottablemodifier.api.resource.predicate.table.LootTablePredicate;
+import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.PoolAddAction;
+import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.EntryItemSetAction;
+import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.PoolRemoveAction;
+import top.offsetmonkey538.loottablemodifier.api.resource.predicate.entry.EntryItemPredicate;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
@@ -57,20 +57,20 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     id("replace_ingots_with_command_block"),
                     LootModifier.builder()
                             .conditionally(
-                                    ItemEntryPredicate.builder(RegexPattern.compile("minecraft:.*_ingot"))
+                                    EntryItemPredicate.builder(RegexPattern.compile("minecraft:.*_ingot"))
                             )
                             .action(
-                                    SetItemAction.builder(Items.COMMAND_BLOCK)
+                                    EntryItemSetAction.builder(Items.COMMAND_BLOCK)
                             )
             );
             addModifier(
                     id("sugarcane_drop_tnt"),
                     LootModifier.builder()
                             .conditionally(
-                                    ItemEntryPredicate.builder(Items.SUGAR_CANE)
+                                    EntryItemPredicate.builder(Items.SUGAR_CANE)
                             )
                             .action(
-                                    AddPoolAction.builder()
+                                    PoolAddAction.builder()
                                             .pool(
                                                     LootPool.builder()
                                                             .rolls(ConstantLootNumberProvider.create(1))
@@ -85,12 +85,12 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     id("mobs_drop_tnt"),
                     LootModifier.builder()
                             .conditionally(
-                                    LootTablePredicate.builder()
+                                    TablePredicate.builder()
                                             .name(EntityType.CREEPER)
                                             .name(EntityType.ZOMBIE)
                             )
                             .action(
-                                    AddPoolAction.builder()
+                                    PoolAddAction.builder()
                                             .pool(
                                                     LootPool.builder()
                                                             .rolls(ConstantLootNumberProvider.create(1))
@@ -105,11 +105,11 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     id("empty_table_test"),
                     LootModifier.builder()
                             .conditionally(
-                                    LootTablePredicate.builder()
+                                    TablePredicate.builder()
                                             .name(RegistryKey.of(RegistryKeys.LOOT_TABLE, id("test_empty_table")))
                             )
                             .action(
-                                    AddPoolAction.builder()
+                                    PoolAddAction.builder()
                                             .pool(
                                                     LootPool.builder()
                                                             .rolls(ConstantLootNumberProvider.create(1))
@@ -124,23 +124,23 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     id("remove_pools_with_sticks"),
                     LootModifier.builder()
                             .conditionally(
-                                    ItemEntryPredicate.builder(Items.STICK)
+                                    EntryItemPredicate.builder(Items.STICK)
                                             // Exclude witch to test if AllOf and Inverted work + so I can test RemoveEntry on witch.
-                                            .and(LootTablePredicate.builder().name(EntityType.WITCH).invert())
+                                            .and(TablePredicate.builder().name(EntityType.WITCH).invert())
                             )
                             .action(
-                                    RemovePoolAction.builder()
+                                    PoolRemoveAction.builder()
                             )
             );
             addModifier(
                     id("add_cake_entry_to_dirt_block"),
                     LootModifier.builder()
                             .conditionally(
-                                    LootTablePredicate.builder()
+                                    TablePredicate.builder()
                                             .name(Blocks.DIRT)
                             )
                             .action(
-                                    AddEntryAction.builder()
+                                    EntryAddAction.builder()
                                             .entry(
                                                     ItemEntry.builder(Items.CAKE)
                                                             .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 1)))
@@ -151,11 +151,11 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     id("add_command_block_to_all_blocks"),
                     LootModifier.builder()
                             .conditionally(
-                                    LootTablePredicate.builder()
+                                    TablePredicate.builder()
                                             .type(LootContextTypes.BLOCK)
                             )
                             .action(
-                                    AddEntryAction.builder()
+                                    EntryAddAction.builder()
                                             .entry(
                                                     ItemEntry.builder(Items.CAKE)
                                                             .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 1)))
@@ -166,14 +166,14 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     id("remove_glowstone_and_gunpowder_from_witch"),
                     LootModifier.builder()
                             .conditionally(
-                                    LootTablePredicate.builder().name(EntityType.WITCH)
+                                    TablePredicate.builder().name(EntityType.WITCH)
                                             .and(
-                                                    ItemEntryPredicate.builder(Items.GLOWSTONE_DUST)
-                                                            .or(ItemEntryPredicate.builder(Items.GUNPOWDER))
+                                                    EntryItemPredicate.builder(Items.GLOWSTONE_DUST)
+                                                            .or(EntryItemPredicate.builder(Items.GUNPOWDER))
                                             )
                             )
                             .action(
-                                    RemoveEntryAction.builder()
+                                    EntryRemoveAction.builder()
                             )
             );
         }

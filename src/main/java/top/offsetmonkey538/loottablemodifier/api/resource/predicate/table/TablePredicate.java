@@ -29,14 +29,14 @@ import java.util.Optional;
  * @param identifiers the identifiers to match. List entries are in an {@code OR} relationship
  * @param types the types to match. List entries are in an {@code OR} relationship
  */
-public record LootTablePredicate(@Nullable List<RegexPattern> identifiers, @Nullable List<RegexPattern> types) implements LootModifierPredicate {
-    public static final MapCodec<LootTablePredicate> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            RegexPattern.CODEC.listOf().optionalFieldOf("identifiers").forGetter(LootTablePredicate::optionalIdentifier),
-            RegexPattern.CODEC.listOf().optionalFieldOf("types").forGetter(LootTablePredicate::optionalType)
-    ).apply(instance, LootTablePredicate::new));
+public record TablePredicate(@Nullable List<RegexPattern> identifiers, @Nullable List<RegexPattern> types) implements LootModifierPredicate {
+    public static final MapCodec<TablePredicate> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            RegexPattern.CODEC.listOf().optionalFieldOf("identifiers").forGetter(TablePredicate::optionalIdentifier),
+            RegexPattern.CODEC.listOf().optionalFieldOf("types").forGetter(TablePredicate::optionalType)
+    ).apply(instance, TablePredicate::new));
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // Codec gib it to me
-    private LootTablePredicate(@NotNull Optional<List<RegexPattern>> optionalIdentifier, @NotNull Optional<List<RegexPattern>> optionalType) {
+    private TablePredicate(@NotNull Optional<List<RegexPattern>> optionalIdentifier, @NotNull Optional<List<RegexPattern>> optionalType) {
         this(
                 optionalIdentifier.orElse(null),
                 optionalType.orElse(null)
@@ -81,17 +81,17 @@ public record LootTablePredicate(@Nullable List<RegexPattern> identifiers, @Null
     }
 
     /**
-     * Creates a builder for {@link LootTablePredicate}
+     * Creates a builder for {@link TablePredicate}
      *
-     * @return a new {@link LootTablePredicate.Builder}
+     * @return a new {@link TablePredicate.Builder}
      */
     @Contract("->new")
-    public static LootTablePredicate.Builder builder() {
-        return new LootTablePredicate.Builder();
+    public static TablePredicate.Builder builder() {
+        return new TablePredicate.Builder();
     }
 
     /**
-     * Builder for {@link LootTablePredicate}
+     * Builder for {@link TablePredicate}
      */
     public static class Builder implements LootModifierPredicate.Builder {
         private Builder() {
@@ -108,7 +108,7 @@ public record LootTablePredicate(@Nullable List<RegexPattern> identifiers, @Null
          * @return this
          */
         @Contract("_->this")
-        public LootTablePredicate.Builder name(@NotNull EntityType<?> name) {
+        public TablePredicate.Builder name(@NotNull EntityType<?> name) {
             name(LootTableIdGetter.INSTANCE.get(name));
             return this;
         }
@@ -119,7 +119,7 @@ public record LootTablePredicate(@Nullable List<RegexPattern> identifiers, @Null
          * @return this
          */
         @Contract("_->this")
-        public LootTablePredicate.Builder name(@NotNull Block name) {
+        public TablePredicate.Builder name(@NotNull Block name) {
             name(LootTableIdGetter.INSTANCE.get(name));
             return this;
         }
@@ -130,7 +130,7 @@ public record LootTablePredicate(@Nullable List<RegexPattern> identifiers, @Null
          * @return this
          */
         @Contract("_->this")
-        public LootTablePredicate.Builder name(@NotNull RegistryKey<LootTable> name) {
+        public TablePredicate.Builder name(@NotNull RegistryKey<LootTable> name) {
             name(name.getValue());
             return this;
         }
@@ -141,7 +141,7 @@ public record LootTablePredicate(@Nullable List<RegexPattern> identifiers, @Null
          * @return this
          */
         @Contract("_->this")
-        public LootTablePredicate.Builder name(@NotNull Identifier name) {
+        public TablePredicate.Builder name(@NotNull Identifier name) {
             name(RegexPattern.literal(name));
             return this;
         }
@@ -152,7 +152,7 @@ public record LootTablePredicate(@Nullable List<RegexPattern> identifiers, @Null
          * @return this
          */
         @Contract("_->this")
-        public LootTablePredicate.Builder name(@NotNull RegexPattern name) {
+        public TablePredicate.Builder name(@NotNull RegexPattern name) {
             this.names.add(name);
             return this;
         }
@@ -164,7 +164,7 @@ public record LootTablePredicate(@Nullable List<RegexPattern> identifiers, @Null
          * @return this
          */
         @Contract("_->this")
-        public LootTablePredicate.Builder type(@NotNull ContextType type) {
+        public TablePredicate.Builder type(@NotNull ContextType type) {
             type(LootContextTypes.MAP.inverse().get(type));
             return this;
         }
@@ -175,7 +175,7 @@ public record LootTablePredicate(@Nullable List<RegexPattern> identifiers, @Null
          * @return this
          */
         @Contract("_->this")
-        public LootTablePredicate.Builder type(@NotNull Identifier type) {
+        public TablePredicate.Builder type(@NotNull Identifier type) {
             type(RegexPattern.literal(type));
             return this;
         }
@@ -186,14 +186,14 @@ public record LootTablePredicate(@Nullable List<RegexPattern> identifiers, @Null
          * @return this
          */
         @Contract("_->this")
-        public LootTablePredicate.Builder type(@NotNull RegexPattern type) {
+        public TablePredicate.Builder type(@NotNull RegexPattern type) {
             this.types.add(type);
             return this;
         }
 
         @Override
-        public LootTablePredicate build() {
-            return new LootTablePredicate(names.build(), types.build());
+        public TablePredicate build() {
+            return new TablePredicate(names.build(), types.build());
         }
     }
 }

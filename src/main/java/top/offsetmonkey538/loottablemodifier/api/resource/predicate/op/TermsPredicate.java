@@ -14,14 +14,14 @@ import java.util.function.Predicate;
 /**
  * An abstract predicate for predicates that take other predicates as terms.
  */
-abstract class TermsLootPredicate implements LootModifierPredicate {
+abstract class TermsPredicate implements LootModifierPredicate {
     /**
      * The terms of this predicate
      */
     protected final List<LootModifierPredicate> terms;
     private final Predicate<LootModifierContext> builtPredicate;
 
-    protected TermsLootPredicate(final List<LootModifierPredicate> terms, final Predicate<LootModifierContext> builtPredicate) {
+    protected TermsPredicate(final List<LootModifierPredicate> terms, final Predicate<LootModifierContext> builtPredicate) {
         this.terms = terms;
         this.builtPredicate = builtPredicate;
     }
@@ -33,9 +33,9 @@ abstract class TermsLootPredicate implements LootModifierPredicate {
      * @return a codec for the terms predicate using the provided constructor
      * @param <T> the terms predicate
      */
-    protected static <T extends TermsLootPredicate> MapCodec<T> createCodec(final Function<List<LootModifierPredicate>, T> constructor) {
+    protected static <T extends TermsPredicate> MapCodec<T> createCodec(final Function<List<LootModifierPredicate>, T> constructor) {
         return RecordCodecBuilder.mapCodec(
-                instance -> instance.group(LootModifierPredicate.CODEC.listOf().fieldOf("terms").forGetter(TermsLootPredicate::getTerms)).apply(instance, constructor)
+                instance -> instance.group(LootModifierPredicate.CODEC.listOf().fieldOf("terms").forGetter(TermsPredicate::getTerms)).apply(instance, constructor)
         );
     }
 
@@ -49,7 +49,7 @@ abstract class TermsLootPredicate implements LootModifierPredicate {
     }
 
     /**
-     * Abstract builder for {@link TermsLootPredicate}
+     * Abstract builder for {@link TermsPredicate}
      */
     public abstract static class Builder implements LootModifierPredicate.Builder {
         private final ImmutableList.Builder<LootModifierPredicate> terms = ImmutableList.builder();

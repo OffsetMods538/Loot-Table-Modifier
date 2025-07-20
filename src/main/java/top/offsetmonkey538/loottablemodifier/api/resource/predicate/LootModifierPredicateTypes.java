@@ -5,11 +5,11 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import top.offsetmonkey538.loottablemodifier.api.resource.predicate.entry.ItemEntryPredicate;
-import top.offsetmonkey538.loottablemodifier.api.resource.predicate.op.AllOfLootPredicate;
-import top.offsetmonkey538.loottablemodifier.api.resource.predicate.op.AnyOfLootPredicate;
-import top.offsetmonkey538.loottablemodifier.api.resource.predicate.op.InvertedLootPredicate;
-import top.offsetmonkey538.loottablemodifier.api.resource.predicate.table.LootTablePredicate;
+import top.offsetmonkey538.loottablemodifier.api.resource.predicate.entry.EntryItemPredicate;
+import top.offsetmonkey538.loottablemodifier.api.resource.predicate.op.AllOfPredicate;
+import top.offsetmonkey538.loottablemodifier.api.resource.predicate.op.AnyOfPredicate;
+import top.offsetmonkey538.loottablemodifier.api.resource.predicate.op.InvertedPredicate;
+import top.offsetmonkey538.loottablemodifier.api.resource.predicate.table.TablePredicate;
 
 import static top.offsetmonkey538.loottablemodifier.LootTableModifier.id;
 
@@ -24,27 +24,27 @@ public final class LootModifierPredicateTypes {
     }
 
     /**
-     * Type of {@link InvertedLootPredicate}
+     * Type of {@link InvertedPredicate}
      */
-    public static final LootModifierPredicateType INVERTED = register(id("inverted"), InvertedLootPredicate.CODEC);
+    public static final LootModifierPredicateType INVERTED = register(id("inverted"), InvertedPredicate.CODEC);
     /**
-     * Type of {@link AnyOfLootPredicate}
+     * Type of {@link AnyOfPredicate}
      */
-    public static final LootModifierPredicateType ANY_OF = register(id("any_of"), AnyOfLootPredicate.CODEC);
+    public static final LootModifierPredicateType ANY_OF = register(id("any_of"), AnyOfPredicate.CODEC);
     /**
-     * Type of {@link AllOfLootPredicate}
+     * Type of {@link AllOfPredicate}
      */
-    public static final LootModifierPredicateType ALL_OF = register(id("all_of"), AllOfLootPredicate.CODEC);
+    public static final LootModifierPredicateType ALL_OF = register(id("all_of"), AllOfPredicate.CODEC);
 
     /**
-     * Type of {@link ItemEntryPredicate}
+     * Type of {@link EntryItemPredicate}
      */
-    public static final LootModifierPredicateType ENTRY_ITEM = register(id("entry_item"), ItemEntryPredicate.CODEC);
+    public static final LootModifierPredicateType ENTRY_ITEM = register(id("entry_item"), EntryItemPredicate.CODEC);
 
     /**
-     * Type of {@link LootTablePredicate}
+     * Type of {@link TablePredicate}
      */
-    public static final LootModifierPredicateType TABLE = register(id("table"), LootTablePredicate.CODEC);
+    public static final LootModifierPredicateType TABLE = register(id("table"), TablePredicate.CODEC);
 
     //public static final LootModifierPredicateType LOOT_POOL = register(id("loot_pool"), LootPoolPredicate.CODEC);
 

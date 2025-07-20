@@ -26,11 +26,11 @@ import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierAct
  * @param item the new item to replace the existing one with
  * @param canReplaceEntry if other types of entries can be replaced with a basic item entry containing the target item
  */
-public record SetItemAction(RegistryEntry<Item> item, boolean canReplaceEntry) implements LootModifierAction {
-    public static final MapCodec<SetItemAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Item.ENTRY_CODEC.fieldOf("name").forGetter(SetItemAction::item),
-            Codec.BOOL.optionalFieldOf("canReplaceEntry", false).forGetter(SetItemAction::canReplaceEntry)
-    ).apply(instance, SetItemAction::new));
+public record EntryItemSetAction(RegistryEntry<Item> item, boolean canReplaceEntry) implements LootModifierAction {
+    public static final MapCodec<EntryItemSetAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Item.ENTRY_CODEC.fieldOf("name").forGetter(EntryItemSetAction::item),
+            Codec.BOOL.optionalFieldOf("canReplaceEntry", false).forGetter(EntryItemSetAction::canReplaceEntry)
+    ).apply(instance, EntryItemSetAction::new));
 
     @Override
     public LootModifierActionType getType() {
@@ -64,18 +64,18 @@ public record SetItemAction(RegistryEntry<Item> item, boolean canReplaceEntry) i
     }
 
     /**
-     * Creates a builder for {@link SetItemAction}
+     * Creates a builder for {@link EntryItemSetAction}
      *
      * @param item the new item to replace the existing one with
-     * @return a new {@link SetItemAction.Builder}
+     * @return a new {@link EntryItemSetAction.Builder}
      */
     @Contract("_->new")
-    public static SetItemAction.Builder builder(@NotNull ItemConvertible item) {
-        return new SetItemAction.Builder(item);
+    public static EntryItemSetAction.Builder builder(@NotNull ItemConvertible item) {
+        return new EntryItemSetAction.Builder(item);
     }
 
     /**
-     * Builder for {@link SetItemAction}
+     * Builder for {@link EntryItemSetAction}
      */
     public static class Builder implements LootModifierAction.Builder {
         private final RegistryEntry<Item> item;
@@ -92,14 +92,14 @@ public record SetItemAction(RegistryEntry<Item> item, boolean canReplaceEntry) i
          * @return this
          */
         @Contract("_->this")
-        public SetItemAction.Builder setCanReplaceEntry(boolean canReplaceEntry) {
+        public EntryItemSetAction.Builder setCanReplaceEntry(boolean canReplaceEntry) {
             this.canReplaceEntry = canReplaceEntry;
             return this;
         }
 
         @Override
-        public SetItemAction build() {
-            return new SetItemAction(item, canReplaceEntry);
+        public EntryItemSetAction build() {
+            return new EntryItemSetAction(item, canReplaceEntry);
         }
     }
 }

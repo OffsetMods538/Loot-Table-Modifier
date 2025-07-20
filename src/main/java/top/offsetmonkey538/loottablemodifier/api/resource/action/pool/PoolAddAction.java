@@ -19,10 +19,10 @@ import java.util.List;
  *
  * @param pools the pools to add
  */
-public record AddPoolAction(List<LootPool> pools) implements LootModifierAction {
-    public static final MapCodec<AddPoolAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            LootPool.CODEC.listOf().fieldOf("pools").forGetter(AddPoolAction::pools)
-    ).apply(instance, AddPoolAction::new));
+public record PoolAddAction(List<LootPool> pools) implements LootModifierAction {
+    public static final MapCodec<PoolAddAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            LootPool.CODEC.listOf().fieldOf("pools").forGetter(PoolAddAction::pools)
+    ).apply(instance, PoolAddAction::new));
 
     @Override
     public LootModifierActionType getType() {
@@ -44,17 +44,17 @@ public record AddPoolAction(List<LootPool> pools) implements LootModifierAction 
     }
 
     /**
-     * Creates a builder for {@link AddPoolAction}
+     * Creates a builder for {@link PoolAddAction}
      *
-     * @return a new {@link AddPoolAction.Builder}
+     * @return a new {@link PoolAddAction.Builder}
      */
     @Contract("->new")
-    public static AddPoolAction.Builder builder() {
-        return new AddPoolAction.Builder();
+    public static PoolAddAction.Builder builder() {
+        return new PoolAddAction.Builder();
     }
 
     /**
-     * Builder for {@link AddPoolAction}
+     * Builder for {@link PoolAddAction}
      */
     public static class Builder implements LootModifierAction.Builder {
         private Builder() {
@@ -70,14 +70,14 @@ public record AddPoolAction(List<LootPool> pools) implements LootModifierAction 
          * @return this
          */
         @Contract("_->this")
-        public AddPoolAction.Builder pool(LootPool.Builder poolBuilder) {
+        public PoolAddAction.Builder pool(LootPool.Builder poolBuilder) {
             this.pools.add(poolBuilder.build());
             return this;
         }
 
         @Override
-        public AddPoolAction build() {
-            return new AddPoolAction(pools.build());
+        public PoolAddAction build() {
+            return new PoolAddAction(pools.build());
         }
     }
 }

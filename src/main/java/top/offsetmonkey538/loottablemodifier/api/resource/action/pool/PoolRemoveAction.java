@@ -18,8 +18,8 @@ import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierAct
 /**
  * Removes the matched pools from their tables
  */
-public record RemovePoolAction() implements LootModifierAction {
-    public static final MapCodec<RemovePoolAction> CODEC = Codec.of(Encoder.empty(), Decoder.unit(RemovePoolAction::new));
+public record PoolRemoveAction() implements LootModifierAction {
+    public static final MapCodec<PoolRemoveAction> CODEC = Codec.of(Encoder.empty(), Decoder.unit(PoolRemoveAction::new));
 
     @Override
     public LootModifierActionType getType() {
@@ -45,12 +45,12 @@ public record RemovePoolAction() implements LootModifierAction {
     }
 
     /**
-     * Creates a builder for {@link RemovePoolAction}
+     * Creates a builder for {@link PoolRemoveAction}
      *
-     * @return a new {@link RemovePoolAction.Builder}
+     * @return a new {@link PoolRemoveAction.Builder}
      */
     @Contract("->new")
-    public static RemovePoolAction.Builder builder() {
-        return RemovePoolAction::new;
+    public static PoolRemoveAction.Builder builder() {
+        return PoolRemoveAction::new;
     }
 }

@@ -13,13 +13,13 @@ import java.util.List;
 /**
  * Matches when all the provided predicates match
  */
-public class AllOfLootPredicate extends TermsLootPredicate {
+public class AllOfPredicate extends TermsPredicate {
     /**
      * The codec
      */
-    public static final MapCodec<AllOfLootPredicate> CODEC = createCodec(AllOfLootPredicate::new);
+    public static final MapCodec<AllOfPredicate> CODEC = createCodec(AllOfPredicate::new);
 
-    private AllOfLootPredicate(final List<LootModifierPredicate> terms) {
+    private AllOfPredicate(final List<LootModifierPredicate> terms) {
         super(terms, Util.allOf(terms));
     }
 
@@ -29,32 +29,32 @@ public class AllOfLootPredicate extends TermsLootPredicate {
     }
 
     /**
-     * Creates a builder for {@link AllOfLootPredicate}
+     * Creates a builder for {@link AllOfPredicate}
      *
-     * @return a new {@link AllOfLootPredicate.Builder}
+     * @return a new {@link AllOfPredicate.Builder}
      */
-    public static AllOfLootPredicate.Builder builder() {
-        return new AllOfLootPredicate.Builder();
+    public static AllOfPredicate.Builder builder() {
+        return new AllOfPredicate.Builder();
     }
 
     /**
-     * Builder for {@link AllOfLootPredicate}
+     * Builder for {@link AllOfPredicate}
      */
-    public static class Builder extends TermsLootPredicate.Builder {
+    public static class Builder extends TermsPredicate.Builder {
         private Builder() {
 
         }
 
         @Override
         @Contract("_->this")
-        public AllOfLootPredicate.Builder and(LootModifierPredicate.@NotNull Builder builder) {
+        public AllOfPredicate.Builder and(LootModifierPredicate.@NotNull Builder builder) {
             this.add(builder);
             return this;
         }
 
         @Override
-        protected AllOfLootPredicate build(List<LootModifierPredicate> terms) {
-            return new AllOfLootPredicate(terms);
+        protected AllOfPredicate build(List<LootModifierPredicate> terms) {
+            return new AllOfPredicate(terms);
         }
     }
 }
