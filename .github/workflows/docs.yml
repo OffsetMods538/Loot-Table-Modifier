@@ -16,7 +16,7 @@ jobs:
 
       - name: Set url prefix
         run: |
-          if [[ "${{ github.event.release.prerelease }}" == "true" ]]; then
+          if [[ "${{ github.event_name }}" == "push" || "${{ github.event.release.prerelease }}" == "true" ]]; then
             echo "url_prefix=staging-" >> "$GITHUB_ENV"
           else
             echo "url_prefix=" >> "$GITHUB_ENV"
