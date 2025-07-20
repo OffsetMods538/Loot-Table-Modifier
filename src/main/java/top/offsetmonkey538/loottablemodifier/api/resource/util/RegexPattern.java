@@ -10,20 +10,20 @@ import org.jetbrains.annotations.NotNull;
 import java.util.regex.Pattern;
 
 /**
- * {@link OptionalIdentifierPattern}s allow either matching {@link Identifier}s directly or using regex to do so.
+ * {@link RegexPattern}s allow either matching {@link Identifier}s directly or using regex to do so.
  * <br />
  * Use {@link #literal(Identifier)} for creating literal patterns and {@link #compile(String)} for creating regex patterns.
  *
- * @param isRegex if this {@link OptionalIdentifierPattern} is using regex or not
+ * @param isRegex if this {@link RegexPattern} is using regex or not
  * @param patternString the pattern as a plain string
  * @param pattern the compiled pattern
  */
-public record OptionalIdentifierPattern(boolean isRegex, @NotNull String patternString, @NotNull Pattern pattern) {
-    private static final Codec<OptionalIdentifierPattern> INLINE_CODEC = Identifier.CODEC.xmap(OptionalIdentifierPattern::literal, instance -> Identifier.of(instance.patternString()));
-    private static final Codec<OptionalIdentifierPattern> FULL_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.STRING.fieldOf("regexPattern").forGetter(OptionalIdentifierPattern::patternString)
-    ).apply(instance, OptionalIdentifierPattern::compile));
-    public static final Codec<OptionalIdentifierPattern> CODEC = Codec.either(
+public record RegexPattern(boolean isRegex, @NotNull String patternString, @NotNull Pattern pattern) {
+    private static final Codec<RegexPattern> INLINE_CODEC = Identifier.CODEC.xmap(RegexPattern::literal, instance -> Identifier.of(instance.patternString()));
+    private static final Codec<RegexPattern> FULL_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.STRING.fieldOf("regexPattern").forGetter(RegexPattern::patternString)
+    ).apply(instance, RegexPattern::compile));
+    public static final Codec<RegexPattern> CODEC = Codec.either(
             INLINE_CODEC,
             FULL_CODEC
     ).xmap(
@@ -32,14 +32,14 @@ public record OptionalIdentifierPattern(boolean isRegex, @NotNull String pattern
     );
 
     /**
-     * Creates a literal {@link OptionalIdentifierPattern} from the provided {@link Identifier}.
+     * Creates a literal {@link RegexPattern} from the provided {@link Identifier}.
      *
      * @param identifier the {@link Identifier} to match
-     * @return a new {@link OptionalIdentifierPattern} matching the provided {@link Identifier}
+     * @return a new {@link RegexPattern} matching the provided {@link Identifier}
      */
     @Contract("_->new")
-    public static OptionalIdentifierPattern literal(final Identifier identifier) {
-        return new OptionalIdentifierPattern(
+    public static RegexPattern literal(final Identifier identifier) {
+        return new RegexPattern(
                 false,
                 identifier.toString(),
                 Pattern.compile(Pattern.quote(identifier.toString()))
@@ -47,14 +47,14 @@ public record OptionalIdentifierPattern(boolean isRegex, @NotNull String pattern
     }
 
     /**
-     * Compiles a {@link OptionalIdentifierPattern} from the provided regex pattern.
+     * Compiles a {@link RegexPattern} from the provided regex pattern.
      *
      * @param regexPattern the pattern to use
-     * @return a new {@link OptionalIdentifierPattern} compiled from the provided regex pattern
+     * @return a new {@link RegexPattern} compiled from the provided regex pattern
      * @see Pattern#compile(String)
      */
-    public static OptionalIdentifierPattern compile(final String regexPattern) {
-        return new OptionalIdentifierPattern(
+    public static RegexPattern compile(final String regexPattern) {
+        return new RegexPattern(
                 true,
                 regexPattern,
                 Pattern.compile(regexPattern)

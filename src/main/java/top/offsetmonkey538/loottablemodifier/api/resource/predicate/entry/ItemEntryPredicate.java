@@ -10,18 +10,18 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicateTypes;
 import top.offsetmonkey538.loottablemodifier.api.resource.util.LootModifierContext;
-import top.offsetmonkey538.loottablemodifier.api.resource.util.OptionalIdentifierPattern;
+import top.offsetmonkey538.loottablemodifier.api.resource.util.RegexPattern;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicateType;
 
 /**
  * Matches an item entry based on its item
  *
- * @param name the {@link OptionalIdentifierPattern} matching the item identifier
+ * @param name the {@link RegexPattern} matching the item identifier
  */
-public record ItemEntryPredicate(OptionalIdentifierPattern name) implements LootModifierPredicate {
+public record ItemEntryPredicate(RegexPattern name) implements LootModifierPredicate {
     public static final MapCodec<ItemEntryPredicate> CODEC = RecordCodecBuilder.mapCodec(
-            instance -> instance.group(OptionalIdentifierPattern.CODEC.fieldOf("name").forGetter(ItemEntryPredicate::name)).apply(instance, ItemEntryPredicate::new)
+            instance -> instance.group(RegexPattern.CODEC.fieldOf("name").forGetter(ItemEntryPredicate::name)).apply(instance, ItemEntryPredicate::new)
     );
 
     @Override
@@ -55,16 +55,16 @@ public record ItemEntryPredicate(OptionalIdentifierPattern name) implements Loot
      */
     @Contract("_->new")
     public static ItemEntryPredicate.Builder builder(Identifier name) {
-        return builder(OptionalIdentifierPattern.literal(name));
+        return builder(RegexPattern.literal(name));
     }
     /**
      * Creates a builder for {@link ItemEntryPredicate} matching the provided item
      *
-     * @param name the {@link OptionalIdentifierPattern} to match the item id with
+     * @param name the {@link RegexPattern} to match the item id with
      * @return a new {@link ItemEntryPredicate.Builder}
      */
     @Contract("_->new")
-    public static ItemEntryPredicate.Builder builder(OptionalIdentifierPattern name) {
+    public static ItemEntryPredicate.Builder builder(RegexPattern name) {
         return () -> new ItemEntryPredicate(name);
     }
 }

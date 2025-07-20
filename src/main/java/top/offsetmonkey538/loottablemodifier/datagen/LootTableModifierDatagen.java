@@ -21,7 +21,7 @@ import top.offsetmonkey538.loottablemodifier.api.datagen.LootModifierProvider;
 import top.offsetmonkey538.loottablemodifier.api.resource.LootModifier;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.AddEntryAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.RemoveEntryAction;
-import top.offsetmonkey538.loottablemodifier.api.resource.util.OptionalIdentifierPattern;
+import top.offsetmonkey538.loottablemodifier.api.resource.util.RegexPattern;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.AddPoolAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.SetItemAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.RemovePoolAction;
@@ -57,7 +57,7 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     id("replace_ingots_with_command_block"),
                     LootModifier.builder()
                             .conditionally(
-                                    ItemEntryPredicate.builder(OptionalIdentifierPattern.compile("minecraft:.*_ingot"))
+                                    ItemEntryPredicate.builder(RegexPattern.compile("minecraft:.*_ingot"))
                             )
                             .action(
                                     SetItemAction.builder(Items.COMMAND_BLOCK)
