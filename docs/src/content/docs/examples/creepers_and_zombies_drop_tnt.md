@@ -75,7 +75,7 @@ The action [`entry_add`](/reference/actions#add-entry) adds the entry to a pool.
 
 The predicate [`table`](/reference/predicates#loot-table) matches either the creeper or zombie loot tables.
 
-The action will only be applied on the first pool it finds in the target table, so you may want to use a predicate like this to specify which pool it should be added to:
+The action will only be applied on the first pool it finds in the target table, so you may want to use a predicate like below to specify which pool it should be added to.  
 (Also, if adding some configuration to how many pools it would try matching or whatever would be useful for your use case, hit me up on [discord](https://discord.offsetmonkey538.top))
 ```json {"Creeper predicate, matches the pool dropping gunpowder":5-20} {"Zombie predicate, matches the pool dropping rotten flesh":22-37}
 {

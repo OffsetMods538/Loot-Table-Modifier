@@ -2,9 +2,9 @@
 title: Loot Modifier
 ---
 The mod uses loot modifiers to figure out how and what it should modify.  
-Loot modifiers are JSON files located in datapacks at `data/namespace/loot-table-modifier/loot_modifier`.
+Loot modifiers are JSON files located in datapacks at `data/namespace/loot-table-modifier/loot_modifier/modifier_name.json`.
 
-Loot modifiers consist of two parts: the actions and a predicate.
+Loot modifiers consist of two parts: the [actions](/reference/actions) and a [predicate](/reference/predicates).
 
 During data loading, the mod looks through every existing loot table and its pools and entries.  
 For every entry, pool and table, it will try matching the predicates of loot modifiers.  

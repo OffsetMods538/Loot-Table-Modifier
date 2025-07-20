@@ -11,7 +11,7 @@ To use Loot Table Modifier, you first gotta have it installed (I am so damn good
 
 When developing a plain datapack, all you need to do is download it from [modrinth](https://modrinth.com/mod/loot-table-modifier) and put it in your mods folder.  
 
-You may also want to show the `Requires` badge in your readme, see below for example and [here](#badges) for more info.  
+You may also want to show the `Requires` badge in your readme, see below for an example and [here](#badges) for more info.  
 [![This project requires Loot Table Modifier to be installed](https://raw.githubusercontent.com/OffsetMods538/Loot-Table-Modifier/master/images/requires_badge.svg)](https://modrinth.com/mod/loot-table-modifier)
 
 ### Mod developers
@@ -34,7 +34,8 @@ dependencies {
     implementation "top.offsetmonkey538.loottablemodifier:loot-table-modifier:VERSION_HERE"
 }
 ```
-Make sure to replace `VERSION_HERE` with the actual version you want to use!
+Make sure to replace `VERSION_HERE` with the actual version you want to use!  
+See my maven page [here](https://maven.offsetmonkey538.top/#/releases/top/offsetmonkey538/loottablemodifier/loot-table-modifier) for all available versions and their javadocs.
 
 Also add this to your `fabric.mod.json` file:
 ```json {"      This matches the major version of 2":3-4}
@@ -48,7 +49,8 @@ Also add this to your `fabric.mod.json` file:
 
 ## Development Mode
 
-Development mode enables exporting modified loot tables for debugging and additional logging.  
+Development mode enables additional logging and the ability to export modified loot tables.
+
 Dev mode will automatically be enabled when Minecraft is launched from an IDE or can be enabled by setting the JVM property `lootTableModifierDev` to `true`.  
 That can be done with Prism Launcher by going to `Settings`, selecting `Java` and then adding `-DlootTableModifierDev=true` into `JVM arguments`.
 
