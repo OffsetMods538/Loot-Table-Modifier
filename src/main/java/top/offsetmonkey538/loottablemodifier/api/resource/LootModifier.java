@@ -43,9 +43,9 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
     ).apply(instance, LootModifier::new));
 
     public static final Codec<LootModifier> CODEC = Codec.either(
-            LEGACY_CODEC,
-            CURRENT_CODEC
-    ).xmap(either -> either.map(it -> it, it -> it), Either::right); // Always encode as current codec, which is on the right.
+            CURRENT_CODEC,
+            LEGACY_CODEC
+    ).xmap(either -> either.map(it -> it, it -> it), Either::left); // Always encode as current codec, which is on the left.
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // from the codec
     private static @NotNull List<LootModifierAction> getActionsFromLegacyCodec(@NotNull Optional<List<LootPool>> pools, @NotNull Optional<List<LootPool>> lootPools) {
