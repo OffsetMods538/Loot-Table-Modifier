@@ -194,7 +194,7 @@ public class LootTableModifier implements ModInitializer {
 				final Path exportDir = FabricLoader.getInstance().getGameDir().resolve(".loot-table-modifier").resolve("export");
 				if (Files.exists(exportDir)) PathUtils.deleteDirectory(exportDir);
 
-				source.sendFeedback(() -> Text.literal("Exporting modified tables to ").append(Text.literal(exportDir.toString()).setStyle(Style.EMPTY.withUnderline(true).withColor(Formatting.WHITE).withHoverEvent(new HoverEvent.ShowText(Text.literal("Click to copy"))).withClickEvent(new ClickEvent.CopyToClipboard(exportDir.toAbsolutePath().toString())))), true);
+				source.sendFeedback(() -> Text.literal("Exporting modified tables to ").append(Text.literal(exportDir.toString()).setStyle(Style.EMPTY.withUnderline(true).withColor(Formatting.WHITE).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click to copy"))).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, exportDir.toAbsolutePath().toString())))), true);
 				final Stopwatch stopwatch = Stopwatch.createStarted();
 
 				for (Identifier id : MODIFIED_TABLE_IDs) {

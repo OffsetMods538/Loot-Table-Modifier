@@ -28,7 +28,7 @@ import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierAct
  */
 public record EntryItemSetAction(RegistryEntry<Item> item, boolean canReplaceEntry) implements LootModifierAction {
     public static final MapCodec<EntryItemSetAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Item.ENTRY_CODEC.fieldOf("name").forGetter(EntryItemSetAction::item),
+            Registries.ITEM.getEntryCodec().fieldOf("name").forGetter(EntryItemSetAction::item),
             Codec.BOOL.optionalFieldOf("canReplaceEntry", false).forGetter(EntryItemSetAction::canReplaceEntry)
     ).apply(instance, EntryItemSetAction::new));
 

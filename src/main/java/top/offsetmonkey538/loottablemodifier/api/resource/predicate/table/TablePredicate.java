@@ -6,10 +6,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
 import net.minecraft.loot.LootTable;
+import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.context.ContextType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -158,13 +158,13 @@ public record TablePredicate(@Nullable List<RegexPattern> identifiers, @Nullable
         }
 
         /**
-         * Adds a {@link ContextType type} to match.
+         * Adds a {@link LootContextType type} to match.
          *
-         * @param type the {@link ContextType type} to match
+         * @param type the {@link LootContextType type} to match
          * @return this
          */
         @Contract("_->this")
-        public TablePredicate.Builder type(@NotNull ContextType type) {
+        public TablePredicate.Builder type(@NotNull LootContextType type) {
             type(LootContextTypes.MAP.inverse().get(type));
             return this;
         }
