@@ -13,7 +13,7 @@ hero:
       link: https://modrinth.com/mod/loot-table-modifier
       icon: external
       variant: minimal
-    - text: Chat with me on Dicord
+    - text: Chat with me on Discord
       link: https://discord.offsetmonkey538.top
       icon: discord
       variant: minimal
