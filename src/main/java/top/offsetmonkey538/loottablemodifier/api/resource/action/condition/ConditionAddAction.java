@@ -18,7 +18,7 @@ import top.offsetmonkey538.loottablemodifier.duck.LootElementWithConditions;
 import java.util.List;
 
 /**
- * Adds the provided conditions to matched pools/
+ * Adds the provided conditions to matched pools/entries
  *
  * @param conditions the conditions to add
  * @param includePools whether the conditions should be added to matched pools
