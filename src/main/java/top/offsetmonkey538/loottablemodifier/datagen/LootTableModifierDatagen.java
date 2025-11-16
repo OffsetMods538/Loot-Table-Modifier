@@ -9,6 +9,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
+import net.minecraft.loot.condition.KilledByPlayerLootCondition;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.SetCountLootFunction;
@@ -19,6 +20,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import top.offsetmonkey538.loottablemodifier.api.datagen.LootModifierProvider;
 import top.offsetmonkey538.loottablemodifier.api.resource.LootModifier;
+import top.offsetmonkey538.loottablemodifier.api.resource.action.condition.ConditionAddAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.EntryAddAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.EntryRemoveAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.table.TablePredicate;
@@ -174,6 +176,22 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                             )
                             .action(
                                     EntryRemoveAction.builder()
+                            )
+            );
+            addModifier(
+                    id("squid_ink_sac_only_from_player"),
+                    LootModifier.builder()
+                            .conditionally(
+                                    TablePredicate.builder()
+                                            .name(EntityType.SQUID)
+                                            .and(EntryItemPredicate.builder(Items.INK_SAC))
+                            )
+                            .action(
+                                    ConditionAddAction.builder()
+                                            .onlyPools()
+                                            .condition(
+                                                    KilledByPlayerLootCondition.builder()
+                                            )
                             )
             );
         }

@@ -5,6 +5,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import top.offsetmonkey538.loottablemodifier.api.resource.action.condition.ConditionAddAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.EntryAddAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.EntryRemoveAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.PoolAddAction;
@@ -44,6 +45,11 @@ public final class LootModifierActionTypes {
      * Type of {@link EntryItemSetAction}
      */
     public static final LootModifierActionType ENTRY_ITEM_SET = register(id("entry_item_set"), EntryItemSetAction.CODEC);
+
+    /**
+     * Type of {@link ConditionAddAction}
+     */
+    public static final LootModifierActionType CONDITION_ADD = register(id("condition_add"), ConditionAddAction.CODEC);
 
     private static LootModifierActionType register(final @NotNull Identifier id, final @NotNull MapCodec<? extends LootModifierAction> codec) {
         return Registry.register(LootModifierActionType.REGISTRY, id, new LootModifierActionType(codec));
