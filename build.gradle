@@ -1,5 +1,7 @@
 import dex.plugins.outlet.v2.util.ReleaseType
 
+import java.nio.file.Files
+
 plugins {
 	id 'fabric-loom' version '1.11-SNAPSHOT'
 	id 'io.github.dexman545.outlet' version '1.6.1'
@@ -7,31 +9,39 @@ plugins {
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+ext {
+    versionPrefix = rootProject.mod_version
+    if (!Boolean.parseBoolean(System.getenv("IS_RELEASE"))) {
+        String preReleaseVersion = System.currentTimeMillis()
 
-archivesBaseName = "loot-table-modifier"
-group = "top.offsetmonkey538.loottablemodifier"
+        if (Boolean.parseBoolean(System.getenv("PRESERVE_PRERELEASE_VERSION"))) {
+            var preReleaseVersionFile = file("preReleaseVersion.txt").toPath()
+            if (Files.exists(preReleaseVersionFile)) preReleaseVersion = Files.readString(preReleaseVersionFile)
+            Files.writeString(preReleaseVersionFile, preReleaseVersion)
+        }
 
+        var separator = "-"
+        if (versionPrefix.contains("-")) separator = "."
+        versionPrefix = "${versionPrefix}${separator}${preReleaseVersion}"
+    }
+    final String versionSuffix = System.getenv("VERSION_SUFFIX")
+    if (versionSuffix != null && !versionSuffix.isEmpty()) {
+        versionPrefix = "${versionPrefix}+${versionSuffix}"
+    }
 
-version = project.mod_version
-
-if ("true".equalsIgnoreCase(System.getenv("IS_DEBUG"))) {
-	version = "${version}-${System.currentTimeMillis()}"
+    System.out.println("Version Prefix: " + versionPrefix)
 }
 
-final String customVersion = System.getenv("CUSTOM_VERSION")
-if (customVersion != null && !customVersion.isEmpty()) {
-	version = "${version}-${customVersion}"
+allprojects {
+    group = "top.offsetmonkey538.loottablemodifier"
+    base.archivesName = "mesh-lib" // todo: move to subprojects and give em different suffixes
+    version = "${rootProject.versionPrefix}+${project.property("minecraft_version")}" // todo: again, move to subprojects
 }
-
-version = "${project.version}+${project.minecraft_version}"
-println "Version: ${version}"
 
 outlet {
 	maintainPropertiesFile = System.getenv("DISABLE_PROPERTIES_UPDATE") == null
 	mcVersionRange = project.supported_minecraft_versions
-	allowedReleaseTypes = Set.of(ReleaseType.RELEASE)
+	allowedReleaseTypes = [ReleaseType.RELEASE]
 	propertiesData = [
 			'fapi_version': outlet.fapiVersion(project.minecraft_version),
 			'yarn_version': outlet.yarnVersion(project.minecraft_version),
@@ -168,8 +178,8 @@ tasks.named("javadoc", Javadoc) {
 }
 
 jar {
-	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}" }
+	from("${rootProject.projectDir}/LICENSE") {
+		rename { "${it}" }
 	}
 }
 
@@ -178,6 +188,7 @@ modrinth {
 	token = System.getenv("MODRINTH_TOKEN")
 	projectId = "loot-table-modifier"
 	gameVersions = outlet.mcVersions()
+    loaders = ["fabric"]
 
 	// Version stuff
 	def customVersionName = System.getenv("VERSION_NAME")
@@ -185,19 +196,18 @@ modrinth {
 
 	versionNumber = "${project.version}"
 
-	def isPreRelease = System.getenv("VERSION_IS_PRERELEASE")
-	versionType = "true".equalsIgnoreCase(isPreRelease) ? "beta" : "release"
+    versionType = Boolean.parseBoolean(System.getenv("VERSION_IS_PRERELEASE")) ? "beta" : "release"
 
-	if (project.mod_version.contains("beta")) versionType = "beta"
-	else if (project.mod_version.contains("alpha")) versionType = "alpha"
+    if (rootProject.mod_version.contains("beta")) versionType = "beta"
+    if (rootProject.mod_version.contains("alpha")) versionType = "alpha"
 
 
 	// Files
 	uploadFile = remapJar.archiveFile
-	//additionalFiles = [sourcesJar.archiveFile, javadocJar.archiveFile]
 	additionalFiles = [sourcesJar.archiveFile]
 
 
+    // Project info
 	syncBodyFrom = rootProject.file("README.md").text
 	def changelogEnv = System.getenv("VERSION_CHANGELOG")
 	if (changelogEnv != null) changelog = changelogEnv
@@ -227,7 +237,7 @@ publishing {
 	}
 	publications {
 		maven(MavenPublication) {
-			artifactId = "loot-table-modifier"
+			artifactId = base.archivesName.get()
 
 			from(components["java"])
 		}

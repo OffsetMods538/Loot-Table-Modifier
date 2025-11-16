@@ -29,7 +29,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import org.apache.commons.io.file.PathUtils;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierActionTypes;
@@ -94,19 +93,18 @@ public class LootTableModifier implements ModInitializer {
 
 			tableModified = false;
 
-			final List<LootPool> poolsCopy = new LinkedList<>(table.pools);
-			int poolsSize = Math.max(1, poolsCopy.size());
+            final LootPool[] poolsCopy = table.pools.toArray(LootPool[]::new);
+			int poolsSize = Math.max(1, poolsCopy.length); // Run loop at least once
 			for (int i = 0; i < poolsSize; i++) {
-				final @Nullable LootPool pool = poolsCopy.isEmpty() ? null : poolsCopy.get(i);
+				final LootPool pool = poolsCopy.length == 0 ? null : poolsCopy[i];
 				poolModified = false;
 
-				final List<LootPoolEntry> entriesCopy = pool == null ? List.of() : new LinkedList<>(pool.entries);
-				int entriesSize = Math.max(1, entriesCopy.size());
+				final LootPoolEntry[] entriesCopy = pool == null ? new LootPoolEntry[]{} : pool.entries.toArray(LootPoolEntry[]::new);
+				int entriesSize = Math.max(1, entriesCopy.length); // Run loop at least once
 				for (int j = 0; j < entriesSize; j++) {
-					final @Nullable LootPoolEntry entry = entriesCopy.isEmpty() ? null : entriesCopy.get(j);
+					final LootPoolEntry entry = entriesCopy.length == 0 ? null : entriesCopy[j];
 
 					for (Map.Entry<Identifier, LootModifier> modifierEntry : modifiers.entrySet()) {
-						// Everything is so fast anyway that there's probably no point in doing what the to-do here said
 						final LootModifierContext context = new LootModifierContext(table, tableId, pool, entry, tableModified, poolModified);
 
 						final LootModifier modifier = modifierEntry.getValue();
@@ -229,7 +227,7 @@ public class LootTableModifier implements ModInitializer {
 	}
 
 	/*
-    In 1.21.4, the 'Registry' class extends 'RegistryWrapper' and inherits the 'streamEntries' method from *it*.
+    In 1.21.4, the 'Registry' class extends 'RegistryWrapper' and inherits the 'streamEntries' method from it.
     In 1.20.5, the 'Registry' class *doesn't* extend the 'RegistryWrapper' and implements its own 'streamEntries' method.
     Compiling on both versions works, because the names of the methods are the same, but they compile to different intermediary names, thus a jar compiled for 1.20.5 doesn't work on 1.21.4 and vice versa.
     Solution: Turn the 'Registry' into a 'RegistryWrapper' as its 'streamEntries' retains the same intermediary on both versions.

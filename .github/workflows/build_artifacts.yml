@@ -14,13 +14,13 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '21'
           distribution: 'temurin'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
         with:
           cache-read-only: false
 
@@ -30,20 +30,23 @@ jobs:
       - name: Generate resources with Gradle
         run: ./gradlew runDatagenClient
         env:
-          CUSTOM_VERSION: ${{ env.short_commit_hash }}
+          PRESERVE_PRERELEASE_VERSION: true
           DISABLE_PROPERTIES_UPDATE: true
+          VERSION_SUFFIX: ${{ env.short_commit_hash }}
 
       - name: Build with Gradle
         run: ./gradlew build
         env:
-          CUSTOM_VERSION: ${{ env.short_commit_hash }}
+          PRESERVE_PRERELEASE_VERSION: true
           DISABLE_PROPERTIES_UPDATE: true
+          VERSION_SUFFIX: ${{ env.short_commit_hash }}
 
       - name: Publish to Maven
         run: ./gradlew publishMavenPublicationToOffsetMonkey538Repository
         env:
-          CUSTOM_VERSION: ${{ env.short_commit_hash }}
+          PRESERVE_PRERELEASE_VERSION: true
           DISABLE_PROPERTIES_UPDATE: true
+          VERSION_SUFFIX: ${{ env.short_commit_hash }}
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
 

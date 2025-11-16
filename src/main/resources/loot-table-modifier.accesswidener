@@ -1,5 +1,7 @@
 accessWidener    v1    named
 
+# TODO: get rid of these and use mixin insteadddd
+
 accessible field net/minecraft/loot/LootTable pools Ljava/util/List;
 accessible field net/minecraft/loot/LootTable functions Ljava/util/List;
 
