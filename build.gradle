@@ -178,8 +178,8 @@ tasks.named("javadoc", Javadoc) {
 }
 
 jar {
-	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}" }
+	from("${rootProject.projectDir}/LICENSE") {
+		rename { "${it}" }
 	}
 }
 
@@ -237,7 +237,7 @@ publishing {
 	}
 	publications {
 		maven(MavenPublication) {
-			artifactId = "loot-table-modifier"
+			artifactId = base.archivesName.get()
 
 			from(components["java"])
 		}
