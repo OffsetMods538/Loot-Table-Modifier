@@ -1,6 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import starlightSocialIcons from './src/utils/socialIcons';
+import starlightSocialIcons from './src/utils/socialIcons.ts';
 import starlight from '@astrojs/starlight';
 
 // https://astro.build/config
