@@ -19,3 +19,21 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+
+## Mod related stuff. Checking out between branches will leave mod stuff at the root level
+# Gradle
+.gradle/
+build
+out
+classes
+
+# Fabric
+run/
+src/main/generated/*
+
+# Java
+hs_err_*.log
+replay_*.log
+*.hprof
+*.jfr
