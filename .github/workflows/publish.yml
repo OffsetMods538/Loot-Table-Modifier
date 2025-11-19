@@ -58,5 +58,5 @@ jobs:
         if: ${{ github.ref_name == 'docs' }}
         uses: actions/upload-artifact@v4
         with:
-          name: Commit
+          name: Latest
           path: dist/
