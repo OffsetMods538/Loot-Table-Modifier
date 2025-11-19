@@ -5,6 +5,8 @@ import starlight from '@astrojs/starlight';
 
 // https://astro.build/config
 export default defineConfig({
+    site: process.env.CUSTOM_SITE_ENV || undefined,
+    base: process.env.CUSTOM_BASE_ENV || undefined,
     integrations: [
         starlightSocialIcons({
             modrinth: "https://modrinth.com/mod/loot-table-modifier"
