@@ -37,7 +37,7 @@ jobs:
           CUSTOM_BASE_ENV: "/commit/${{ env.short_commit_hash }}"
 
       - name: Upload docs for commit to actions
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: Commit
           path: dist/
@@ -56,7 +56,7 @@ jobs:
 
       - name: Upload docs for latest to actions
         if: ${{ github.ref_name == 'docs' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: Latest
           path: dist/
