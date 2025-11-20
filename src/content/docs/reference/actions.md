@@ -35,7 +35,7 @@ Below is a list of all currently supported actions:
 ```
 This action adds the provided loot pools to matched tables.
 
-See: [Make Creepers and Zombies drop tnt](/examples/creepers_and_zombies_drop_tnt)
+See: [Make Creepers and Zombies drop tnt](../../examples/creepers_and_zombies_drop_tnt)
 
 ### Remove pool
 ```json
@@ -61,7 +61,7 @@ This action removes all matched pools.
 ```
 This action adds the provided loot entries to matched pools.
 
-See: [Make Creepers and Zombies drop tnt](/examples/creepers_and_zombies_drop_tnt)
+See: [Make Creepers and Zombies drop tnt](../../examples/creepers_and_zombies_drop_tnt)
 
 ### Remove entry
 ```json
@@ -71,7 +71,7 @@ See: [Make Creepers and Zombies drop tnt](/examples/creepers_and_zombies_drop_tn
 ```
 This action removes all matched entries.
 
-See: [Remove sticks](/examples/remove_sticks), [Remove glowstone and gunpowder from witches](/examples/remove_glowstone_and_gunpowder_witches)
+See: [Remove sticks](../../examples/remove_sticks), [Remove glowstone and gunpowder from witches](../../examples/remove_glowstone_and_gunpowder_witches)
 
 ### Set item in item entry
 ```json {"    Optional":4-5}
@@ -86,4 +86,4 @@ This action will replace the item in a matched item entry with the provided item
 If `canReplaceEntry` is enabled, any other matched entry will be replaced with an item entry containing the provided item.
 By default, it will not replace other types of entries, but that can be enabled by setting `canReplaceEntry` to true.
 
-See: [Replace any Minecraft ingot with a diamond](/examples/replace_ingot_w_diamond)
+See: [Replace any Minecraft ingot with a diamond](../../examples/replace_ingot_w_diamond)

@@ -11,7 +11,7 @@ To use Loot Table Modifier, you first gotta have it installed (I am so damn good
 
 When developing a plain datapack, all you need to do is download it from [modrinth](https://modrinth.com/mod/loot-table-modifier) and put it in your mods folder.  
 
-You may also want to show the `Requires` badge in your readme, see below for an example of what it looks like and [here](/reference/badges) for more info.  
+You may also want to show the `Requires` badge in your readme, see below for an example of what it looks like and [here](../reference/badges) for more info.  
 [![This project requires Loot Table Modifier to be installed](https://raw.githubusercontent.com/OffsetMods538/Loot-Table-Modifier/master/images/requires_badge.svg)](https://modrinth.com/mod/loot-table-modifier)
 
 ### Mod developers
@@ -59,4 +59,4 @@ Mod developers who, for some weird reason, *don't* want their logs to be spammed
 Modified loot tables can then be exported using the command `/loot-table-modifier debug export`.
 
 ## Next Up
-Take a look at how loot modifiers work [here](/reference/loot_modifier) and then take a look at the examples.
+Take a look at how loot modifiers work [here](../reference/loot_modifier) and then take a look at the examples.

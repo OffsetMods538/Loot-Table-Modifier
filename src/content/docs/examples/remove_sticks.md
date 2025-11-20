@@ -2,8 +2,8 @@
 title: Remove sticks
 ---
 
-For removing an item from a loot table, the [`entry_remove`](/reference/actions#remove-entry) action should be used in most cases.  
-Using [`pool_remove`](/reference/actions#remove-pool) would remove the whole pool, including all the other entries in there.
+For removing an item from a loot table, the [`entry_remove`](../../reference/actions#remove-entry) action should be used in most cases.  
+Using [`pool_remove`](../../reference/actions#remove-pool) would remove the whole pool, including all the other entries in there.
 
 ```json
 {
