@@ -42,16 +42,17 @@ jobs:
           name: Commit
           path: dist/
 
-      - name: Test
-        uses: appleboy/ssh-action@v1
+      - name: Upload docs for commit to docs host
+        uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.ORACLE_DOCS_HOST }}
           username: ${{ secrets.ORACLE_DOCS_USER }}
           port: ${{ secrets.ORACLE_DOCS_PORT }}
           key: ${{ secrets.ORACLE_DOCS_SSH_KEY }}
           passphrase: ${{ secrets.ORACLE_DOCS_SSH_KEY_PASSPHRASE }}
-          script: |
-            echo "hello" >> ~/actionsTest
+          source: "dist"
+          target: "~/docs/loot-table-modifier/commit/${{ env.short_commit_hash }}"
+          rm: true
 
 
       - name: Delete built docs before building again
@@ -71,3 +72,16 @@ jobs:
         with:
           name: Latest
           path: dist/
+      
+      - name: Upload docs for latest to docs host
+        if: ${{ github.ref_name == 'docs' }}
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.ORACLE_DOCS_HOST }}
+          username: ${{ secrets.ORACLE_DOCS_USER }}
+          port: ${{ secrets.ORACLE_DOCS_PORT }}
+          key: ${{ secrets.ORACLE_DOCS_SSH_KEY }}
+          passphrase: ${{ secrets.ORACLE_DOCS_SSH_KEY_PASSPHRASE }}
+          source: "dist"
+          target: "~/docs/loot-table-modifier/latest"
+          rm: true
