@@ -3,7 +3,7 @@ title: Predicates
 ---
 
 :::note
-Predicates may use this thing I call a `RegexIdentifier`, which you can read about [here](../regex_identifier).
+Predicates may use this thing I call a `RegexIdentifier`, which you can read about [here](/reference/regex_identifier).
 :::
 
 Predicates tell the mod which loot tables, pools or entries should be modified.  
