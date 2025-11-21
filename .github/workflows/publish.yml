@@ -46,11 +46,10 @@ jobs:
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.ORACLE_DOCS_HOST }}
-          username: ubuntu
-          port: 22
+          username: ${{ secrets.ORACLE_DOCS_USER }}
+          port: ${{ secrets.ORACLE_DOCS_PORT }}
           key: ${{ secrets.ORACLE_DOCS_SSH_KEY }}
           passphrase: ${{ secrets.ORACLE_DOCS_SSH_KEY_PASSPHRASE }}
-          fingerprint: ${{ secrets.ORACLE_DOCS_SSH_FINGERPRINT }}
           script: |
             echo "hello" >> ~/actionsTest
 
