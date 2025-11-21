@@ -42,6 +42,18 @@ jobs:
           name: Commit
           path: dist/
 
+      - name: Test
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.ORACLE_DOCS_HOST }}
+          username: ubuntu
+          port: 22
+          key: ${{ secrets.ORACLE_DOCS_SSH_KEY }}
+          passphrase: ${{ secrets.ORACLE_DOCS_SSH_KEY_PASSPHRASE }}
+          fingerprint: ${{ secrets.ORACLE_DOCS_SSH_FINGERPRINT }}
+          script: |
+            echo "hello" >> ~/actionsTest
+
 
       - name: Delete built docs before building again
         run: rm -rf dist
