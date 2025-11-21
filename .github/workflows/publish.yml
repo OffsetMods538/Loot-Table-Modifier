@@ -52,6 +52,7 @@ jobs:
           passphrase: ${{ secrets.ORACLE_DOCS_SSH_KEY_PASSPHRASE }}
           source: "dist/*"
           target: "~/docs/loot-table-modifier/commit/${{ env.short_commit_hash }}"
+          strip_components: 1
           rm: true
 
 
@@ -84,4 +85,5 @@ jobs:
           passphrase: ${{ secrets.ORACLE_DOCS_SSH_KEY_PASSPHRASE }}
           source: "dist/*"
           target: "~/docs/loot-table-modifier/latest"
+          strip_components: 1
           rm: true
