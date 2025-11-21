@@ -50,7 +50,7 @@ jobs:
           port: ${{ secrets.ORACLE_DOCS_PORT }}
           key: ${{ secrets.ORACLE_DOCS_SSH_KEY }}
           passphrase: ${{ secrets.ORACLE_DOCS_SSH_KEY_PASSPHRASE }}
-          source: "dist"
+          source: "dist/*"
           target: "~/docs/loot-table-modifier/commit/${{ env.short_commit_hash }}"
           rm: true
 
@@ -82,6 +82,6 @@ jobs:
           port: ${{ secrets.ORACLE_DOCS_PORT }}
           key: ${{ secrets.ORACLE_DOCS_SSH_KEY }}
           passphrase: ${{ secrets.ORACLE_DOCS_SSH_KEY_PASSPHRASE }}
-          source: "dist"
+          source: "dist/*"
           target: "~/docs/loot-table-modifier/latest"
           rm: true
