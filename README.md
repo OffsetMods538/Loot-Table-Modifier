@@ -1,1 +1,1 @@
-This branch contains documentation for loot table modifier. Hosted at TODO
+This contains documentation for loot table modifier. Latest version of docs (last commit on docs/master) hosted at https://loot-table-modifier.docs.offsetmonkey538.top and all commits available at https://commits.loot-table-modifier.docs.offsetmonkey538.top
