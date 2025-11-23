@@ -60,20 +60,20 @@ jobs:
 
 
       - name: Build docs for latest
-        if: ${{ github.ref_name == 'docs' }}
+        if: ${{ github.ref_name == 'docs/master' }}
         run: pnpm run build
         env:
           CUSTOM_SITE_ENV: "https://loot-table-modifier.docs.offsetmonkey538.top/"
 
       - name: Upload docs for latest to actions
-        if: ${{ github.ref_name == 'docs' }}
+        if: ${{ github.ref_name == 'docs/master' }}
         uses: actions/upload-artifact@v5
         with:
           name: Latest
           path: dist/
       
       - name: Upload docs for latest to docs host
-        if: ${{ github.ref_name == 'docs' }}
+        if: ${{ github.ref_name == 'docs/master' }}
         uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.ORACLE_DOCS_HOST }}
