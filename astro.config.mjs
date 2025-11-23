@@ -47,6 +47,7 @@ export default defineConfig({
                         {label: 'Make Creepers and Zombies drop tnt', slug: 'examples/creepers_and_zombies_drop_tnt'},
                         {label: 'Remove sticks', slug: 'examples/remove_sticks'},
                         {label: 'Remove glowstone and gunpowder from witches', slug: 'examples/remove_glowstone_and_gunpowder_witches'},
+                        {label: 'Make squid drop ink only when killed by player', slug: 'examples/squid_drop_ink_from_player'},
                     ],
                 },
             ],

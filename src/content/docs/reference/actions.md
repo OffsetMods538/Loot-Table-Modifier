@@ -11,13 +11,14 @@ Actions tell the mod how a matched loot table, pool or entry should be modified.
 Actions are json objects that consist of their identifier `type` and then any other fields specific to each action.  
 Below is a list of all currently supported actions:
 
-|                                                                 |                                            |
-|-----------------------------------------------------------------|--------------------------------------------|
-| [`loot-table-modifier:pool_add`](#add-pool)                     | Adds the provided pools to matched tables  |
-| [`loot-table-modifier:pool_remove`](#remove-pool)               | Removes matched pools                      |
-| [`loot-table-modifier:entry_add`](#add-entry)                   | Adds the provided entries to matched pools |
-| [`loot-table-modifier:entry_remove`](#remove-entry)             | Removes matched entries                    |
-| [`loot-table-modifier:entry_item_set`](#set-item-in-item-entry) | Sets the item in matched item entries      |
+|                                                                 |                                                       |
+|-----------------------------------------------------------------|-------------------------------------------------------|
+| [`loot-table-modifier:pool_add`](#add-pool)                     | Adds the provided pools to matched tables             |
+| [`loot-table-modifier:pool_remove`](#remove-pool)               | Removes matched pools                                 |
+| [`loot-table-modifier:entry_add`](#add-entry)                   | Adds the provided entries to matched pools            |
+| [`loot-table-modifier:entry_remove`](#remove-entry)             | Removes matched entries                               |
+| [`loot-table-modifier:entry_item_set`](#set-item-in-item-entry) | Sets the item in matched item entries                 |
+| [`loot-table-modifier:condition_add`](#add-condition)           | Adds the provided conditions to matched pools/entries |
 
 ### Add pool
 ```json
@@ -78,7 +79,7 @@ See: [Remove sticks](/examples/remove_sticks), [Remove glowstone and gunpowder f
 {
   "type": "loot-table-modifier:entry_item_set",
   "name": /* Identifier of an item */,
-  
+
   "canReplaceEntry": false
 }
 ```
@@ -87,3 +88,28 @@ If `canReplaceEntry` is enabled, any other matched entry will be replaced with a
 By default, it will not replace other types of entries, but that can be enabled by setting `canReplaceEntry` to true.
 
 See: [Replace any Minecraft ingot with a diamond](/examples/replace_ingot_w_diamond)
+
+### Add condition
+```json {"    Optional":11-12} {"    Optional":13-14}
+{
+  "type": "loot-table-modifier:condition_add",
+  "conditions": [
+    {
+      /* Loot condition */
+    },
+    {
+      /* Loot condition */
+    }
+  ],
+  
+  "includePools": true,
+  
+  "includeEntries": true
+}
+```
+This action adds the provided loot conditions to matched pools and/or entries.  
+If `includePools` is false, the condition won't be added to matched pools.  
+If `includeEntries` is false, the condition won't be added to matched entries.  
+By default, both `includePools` and `includeEntries` are true.
+
+See: [Make squid drop ink only when killed by player](/examples/squid_drop_ink_from_player)
