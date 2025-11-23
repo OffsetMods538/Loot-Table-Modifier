@@ -31,15 +31,6 @@ export default defineConfig({
             sidebar: [
                 {label: 'Getting Started', slug: 'getting_started'},
                 {
-                    label: 'Examples',
-                    items: [
-                        {label: 'Replace any ingot with a diamond', slug: 'examples/replace_ingot_w_diamond'},
-                        {label: 'Make Creepers and Zombies drop tnt', slug: 'examples/creepers_and_zombies_drop_tnt'},
-                        {label: 'Remove sticks', slug: 'examples/remove_sticks'},
-                        {label: 'Remove glowstone and gunpowder from witches', slug: 'examples/remove_glowstone_and_gunpowder_witches'},
-                    ],
-                },
-                {
                     label: 'Reference',
                     items: [
                         {label: 'Loot Modifier', slug: 'reference/loot_modifier'},
@@ -47,6 +38,15 @@ export default defineConfig({
                         {label: 'Regex Identifier', slug: 'reference/regex_identifier'},
                         {label: 'Predicates', slug: 'reference/predicates'},
                         {label: 'Badges', slug: 'reference/badges'},
+                    ],
+                },
+                {
+                    label: 'Examples',
+                    items: [
+                        {label: 'Replace any ingot with a diamond', slug: 'examples/replace_ingot_w_diamond'},
+                        {label: 'Make Creepers and Zombies drop tnt', slug: 'examples/creepers_and_zombies_drop_tnt'},
+                        {label: 'Remove sticks', slug: 'examples/remove_sticks'},
+                        {label: 'Remove glowstone and gunpowder from witches', slug: 'examples/remove_glowstone_and_gunpowder_witches'},
                     ],
                 },
             ],

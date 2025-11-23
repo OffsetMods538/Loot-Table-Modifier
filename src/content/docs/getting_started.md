@@ -57,6 +57,3 @@ That can be done with Prism Launcher by going to `Settings`, selecting `Java` an
 Mod developers who, for some weird reason, *don't* want their logs to be spammed with random unnecessary stuff can set the property to `false` to override the IDE check.
 
 Modified loot tables can then be exported using the command `/loot-table-modifier debug export`.
-
-## Next Up
-Take a look at how loot modifiers work [here](/reference/loot_modifier) and then take a look at the examples.
