@@ -6,7 +6,7 @@ updates:
       interval: "daily"
     target-branch: "master"
     groups:
-      actions:
+      master-actions:
         patterns:
           - "*"
 
@@ -16,6 +16,6 @@ updates:
       interval: "daily"
     target-branch: "docs/master"
     groups:
-      actions:
+      docs-actions:
         patterns:
           - "*"
