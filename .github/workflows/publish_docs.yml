@@ -16,13 +16,13 @@ jobs:
         run: echo "short_commit_hash=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
 
       - name: Set up pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v3
         with:
           version: latest
           run_install: false
 
       - name: Set up NodeJS
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v5
         with:
           node-version: latest
           cache: pnpm
@@ -36,7 +36,7 @@ jobs:
           CUSTOM_SITE_ENV: "https://${{ env.short_commit_hash }}.loot-table-modifier.docs.offsetmonkey538.top/"
 
       - name: Upload docs for commit to actions
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v2
         with:
           name: Commit
           path: dist/
@@ -67,7 +67,7 @@ jobs:
 
       - name: Upload docs for latest to actions
         if: ${{ github.ref_name == 'docs/master' }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v4
         with:
           name: Latest
           path: dist/
