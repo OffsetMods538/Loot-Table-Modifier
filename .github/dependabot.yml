@@ -5,9 +5,17 @@ updates:
     schedule:
       interval: "daily"
     target-branch: "master"
+    groups:
+      actions:
+        patterns:
+          - "*"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "daily"
-    target-branch: "docs"
+    target-branch: "docs/master"
+    groups:
+      actions:
+        patterns:
+          - "*"
