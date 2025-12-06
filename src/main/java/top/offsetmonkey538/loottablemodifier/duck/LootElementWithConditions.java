@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface LootElementWithConditions {
     void loot_table_modifier$setConditions(List<LootCondition> conditions);
+    List<LootCondition> loot_table_modifier$getConditions();
 }

@@ -4,17 +4,17 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.condition.LootCondition;
-import net.minecraft.loot.entry.LootPoolEntry;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierActionType;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierActionTypes;
 import top.offsetmonkey538.loottablemodifier.api.resource.util.LootModifierContext;
-import top.offsetmonkey538.loottablemodifier.duck.LootElementWithConditions;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootCondition;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootPool;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.entry.LootPoolEntry;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,7 +26,7 @@ import java.util.List;
  */
 public record ConditionAddAction(List<LootCondition> conditions, boolean includePools, boolean includeEntries) implements LootModifierAction {
     public static final MapCodec<ConditionAddAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            LootCondition.CODEC.listOf().fieldOf("conditions").forGetter(ConditionAddAction::conditions),
+            LootCondition.CODEC_PROVIDER.get().listOf().fieldOf("conditions").forGetter(ConditionAddAction::conditions),
             Codec.BOOL.optionalFieldOf("includePools", true).forGetter(ConditionAddAction::includePools),
             Codec.BOOL.optionalFieldOf("includeEntries", true).forGetter(ConditionAddAction::includeEntries)
     ).apply(instance, ConditionAddAction::new));
@@ -44,12 +44,10 @@ public record ConditionAddAction(List<LootCondition> conditions, boolean include
         int returnValue = MODIFIED_NONE;
 
         if (includePools && !context.poolAlreadyModified()) {
-            final List<LootCondition> newConditions = ImmutableList.<LootCondition>builder()
-                    .addAll(pool.conditions)
-                    .addAll(conditions)
-                    .build();
+            final ArrayList<LootCondition> poolConditions = pool.getConditions();
+            poolConditions.addAll(conditions);
+            pool.setConditions(poolConditions);
 
-            ((LootElementWithConditions) pool).loot_table_modifier$setConditions(newConditions);
             returnValue |= MODIFIED_POOL;
         }
 
@@ -59,12 +57,9 @@ public record ConditionAddAction(List<LootCondition> conditions, boolean include
         final LootPoolEntry entry = context.entry();
         if (entry == null) return returnValue | MODIFIED_NONE;
 
-        final List<LootCondition> newConditions = ImmutableList.<LootCondition>builder()
-                .addAll(entry.conditions)
-                .addAll(conditions)
-                .build();
-
-        ((LootElementWithConditions) entry).loot_table_modifier$setConditions(newConditions);
+        final ArrayList<LootCondition> entryConditions = entry.getConditions();
+        entryConditions.addAll(conditions);
+        entry.setConditions(entryConditions);
 
         return MODIFIED_ENTRY;
     }
@@ -93,12 +88,12 @@ public record ConditionAddAction(List<LootCondition> conditions, boolean include
         /**
          * Adds a condition
          *
-         * @param conditionBuilder The condition to add
+         * @param condition The condition to add
          * @return this
          */
         @Contract("_->this")
-        public ConditionAddAction.Builder condition(LootCondition.Builder conditionBuilder) {
-            this.conditions.add(conditionBuilder.build());
+        public ConditionAddAction.Builder condition(LootCondition condition) {
+            this.conditions.add(condition);
             return this;
         }
 

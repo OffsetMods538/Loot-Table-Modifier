@@ -15,6 +15,7 @@ import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.SetCountLootFunction;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.loot.provider.number.UniformLootNumberProvider;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
@@ -24,11 +25,17 @@ import top.offsetmonkey538.loottablemodifier.api.resource.action.condition.Condi
 import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.EntryAddAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.EntryRemoveAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.table.TablePredicate;
+import top.offsetmonkey538.loottablemodifier.api.resource.util.LootTableIdGetter;
 import top.offsetmonkey538.loottablemodifier.api.resource.util.RegexPattern;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.PoolAddAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.EntryItemSetAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.PoolRemoveAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.entry.EntryItemPredicate;
+import top.offsetmonkey538.loottablemodifier.impl.wrapper.ItemWrapper;
+import top.offsetmonkey538.loottablemodifier.impl.wrapper.loot.LootConditionWrapper;
+import top.offsetmonkey538.loottablemodifier.impl.wrapper.loot.LootPoolWrapper;
+import top.offsetmonkey538.loottablemodifier.impl.wrapper.loot.entry.LootPoolEntryWrapper;
+import top.offsetmonkey538.loottablemodifier.mixin.LootContextTypesAccessor;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
@@ -62,24 +69,24 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                                     EntryItemPredicate.builder(RegexPattern.compile("minecraft:.*_ingot"))
                             )
                             .action(
-                                    EntryItemSetAction.builder(Items.COMMAND_BLOCK)
+                                    EntryItemSetAction.builder(new ItemWrapper(Registries.ITEM.getEntry(Items.COMMAND_BLOCK)))
                             )
             );
             addModifier(
                     id("sugarcane_drop_tnt"),
                     LootModifier.builder()
                             .conditionally(
-                                    EntryItemPredicate.builder(Items.SUGAR_CANE)
+                                    EntryItemPredicate.builder(new ItemWrapper(Registries.ITEM.getEntry(Items.SUGAR_CANE)))
                             )
                             .action(
                                     PoolAddAction.builder()
                                             .pool(
-                                                    LootPool.builder()
+                                                    new LootPoolWrapper(LootPool.builder()
                                                             .rolls(ConstantLootNumberProvider.create(1))
                                                             .with(
                                                                     ItemEntry.builder(Items.TNT)
                                                                             .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 1)))
-                                                            )
+                                                            ).build())
                                             )
                             )
             );
@@ -88,18 +95,18 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     LootModifier.builder()
                             .conditionally(
                                     TablePredicate.builder()
-                                            .name(EntityType.CREEPER)
-                                            .name(EntityType.ZOMBIE)
+                                            .name(LootTableIdGetter.INSTANCE.get(EntityType.CREEPER).toString())
+                                            .name(LootTableIdGetter.INSTANCE.get(EntityType.ZOMBIE).toString())
                             )
                             .action(
                                     PoolAddAction.builder()
                                             .pool(
-                                                    LootPool.builder()
+                                                    new LootPoolWrapper(LootPool.builder()
                                                             .rolls(ConstantLootNumberProvider.create(1))
                                                             .with(
                                                                     ItemEntry.builder(Items.TNT)
                                                                             .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 1)))
-                                                            )
+                                                            ).build())
                                             )
                             )
             );
@@ -108,17 +115,17 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     LootModifier.builder()
                             .conditionally(
                                     TablePredicate.builder()
-                                            .name(RegistryKey.of(RegistryKeys.LOOT_TABLE, id("test_empty_table")))
+                                            .name(RegistryKey.of(RegistryKeys.LOOT_TABLE, id("test_empty_table")).getValue().toString())
                             )
                             .action(
                                     PoolAddAction.builder()
                                             .pool(
-                                                    LootPool.builder()
+                                                    new LootPoolWrapper(LootPool.builder()
                                                             .rolls(ConstantLootNumberProvider.create(1))
                                                             .with(
                                                                     ItemEntry.builder(Items.TNT)
                                                                             .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 1)))
-                                                            )
+                                                            ).build())
                                             )
                             )
             );
@@ -126,9 +133,9 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     id("remove_pools_with_sticks"),
                     LootModifier.builder()
                             .conditionally(
-                                    EntryItemPredicate.builder(Items.STICK)
+                                    EntryItemPredicate.builder(new ItemWrapper(Registries.ITEM.getEntry(Items.STICK)))
                                             // Exclude witch to test if AllOf and Inverted work + so I can test RemoveEntry on witch.
-                                            .and(TablePredicate.builder().name(EntityType.WITCH).invert())
+                                            .and(TablePredicate.builder().name(LootTableIdGetter.INSTANCE.get(EntityType.WITCH).toString()).invert())
                             )
                             .action(
                                     PoolRemoveAction.builder()
@@ -139,13 +146,13 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     LootModifier.builder()
                             .conditionally(
                                     TablePredicate.builder()
-                                            .name(Blocks.DIRT)
+                                            .name(LootTableIdGetter.INSTANCE.get(Blocks.DIRT).toString())
                             )
                             .action(
                                     EntryAddAction.builder()
                                             .entry(
-                                                    ItemEntry.builder(Items.CAKE)
-                                                            .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 1)))
+                                                    LootPoolEntryWrapper.create(ItemEntry.builder(Items.CAKE)
+                                                            .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 1))).build())
                                             )
                             )
             );
@@ -154,13 +161,13 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     LootModifier.builder()
                             .conditionally(
                                     TablePredicate.builder()
-                                            .type(LootContextTypes.BLOCK)
+                                            .type(LootContextTypesAccessor.getMAP().inverse().get(LootContextTypes.BLOCK).toString())
                             )
                             .action(
                                     EntryAddAction.builder()
                                             .entry(
-                                                    ItemEntry.builder(Items.CAKE)
-                                                            .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 1)))
+                                                    LootPoolEntryWrapper.create(ItemEntry.builder(Items.CAKE)
+                                                            .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 1))).build())
                                             )
                             )
             );
@@ -168,10 +175,10 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     id("remove_glowstone_and_gunpowder_from_witch"),
                     LootModifier.builder()
                             .conditionally(
-                                    TablePredicate.builder().name(EntityType.WITCH)
+                                    TablePredicate.builder().name(LootTableIdGetter.INSTANCE.get(EntityType.WITCH).toString())
                                             .and(
-                                                    EntryItemPredicate.builder(Items.GLOWSTONE_DUST)
-                                                            .or(EntryItemPredicate.builder(Items.GUNPOWDER))
+                                                    EntryItemPredicate.builder(new ItemWrapper(Registries.ITEM.getEntry(Items.GLOWSTONE_DUST)))
+                                                            .or(EntryItemPredicate.builder(new ItemWrapper(Registries.ITEM.getEntry(Items.GUNPOWDER))))
                                             )
                             )
                             .action(
@@ -183,14 +190,14 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     LootModifier.builder()
                             .conditionally(
                                     TablePredicate.builder()
-                                            .name(EntityType.SQUID)
-                                            .and(EntryItemPredicate.builder(Items.INK_SAC))
+                                            .name(LootTableIdGetter.INSTANCE.get(EntityType.SQUID).toString())
+                                            .and(EntryItemPredicate.builder(new ItemWrapper(Registries.ITEM.getEntry(Items.INK_SAC))))
                             )
                             .action(
                                     ConditionAddAction.builder()
                                             .onlyPools()
                                             .condition(
-                                                    KilledByPlayerLootCondition.builder()
+                                                    new LootConditionWrapper(KilledByPlayerLootCondition.builder().build())
                                             )
                             )
             );

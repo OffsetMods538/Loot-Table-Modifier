@@ -3,17 +3,16 @@ package top.offsetmonkey538.loottablemodifier.api.resource.action.entry;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.entry.LootPoolEntry;
-import net.minecraft.loot.entry.LootPoolEntryTypes;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierActionType;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierActionTypes;
 import top.offsetmonkey538.loottablemodifier.api.resource.util.LootModifierContext;
-import top.offsetmonkey538.loottablemodifier.mixin.LootPoolAccessor;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootPool;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.entry.LootPoolEntry;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +22,7 @@ import java.util.List;
  */
 public record EntryAddAction(List<LootPoolEntry> entries) implements LootModifierAction {
     public static final MapCodec<EntryAddAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            LootPoolEntryTypes.CODEC.listOf().fieldOf("entries").forGetter(EntryAddAction::entries)
+            LootPoolEntry.CODEC_PROVIDER.get().listOf().fieldOf("entries").forGetter(EntryAddAction::entries)
     ).apply(instance, EntryAddAction::new));
 
     @Override
@@ -38,12 +37,9 @@ public record EntryAddAction(List<LootPoolEntry> entries) implements LootModifie
         final LootPool pool = context.pool();
         if (pool == null) return MODIFIED_NONE;
 
-        final List<LootPoolEntry> newEntries = ImmutableList.<LootPoolEntry>builder()
-                .addAll(pool.entries)
-                .addAll(this.entries)
-                .build();
-
-        ((LootPoolAccessor) pool).setEntries(newEntries);
+        final ArrayList<LootPoolEntry> poolEntries = pool.getEntries();
+        poolEntries.addAll(this.entries);
+        pool.setEntries(poolEntries);
 
         return MODIFIED_ENTRY;
     }
@@ -71,12 +67,12 @@ public record EntryAddAction(List<LootPoolEntry> entries) implements LootModifie
         /**
          * Adds an entry
          *
-         * @param entryBuilder The entry to add
+         * @param entry The entry to add
          * @return this
          */
         @Contract("_->this")
-        public EntryAddAction.Builder entry(LootPoolEntry.Builder<?> entryBuilder) {
-            this.entries.add(entryBuilder.build());
+        public EntryAddAction.Builder entry(LootPoolEntry entry) {
+            this.entries.add(entry);
             return this;
         }
 

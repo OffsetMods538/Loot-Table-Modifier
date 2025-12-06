@@ -3,15 +3,15 @@ package top.offsetmonkey538.loottablemodifier.api.resource.action.pool;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.loot.LootPool;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierActionTypes;
-import top.offsetmonkey538.loottablemodifier.mixin.LootTableAccessor;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootPool;
 import top.offsetmonkey538.loottablemodifier.api.resource.util.LootModifierContext;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierActionType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +21,7 @@ import java.util.List;
  */
 public record PoolAddAction(List<LootPool> pools) implements LootModifierAction {
     public static final MapCodec<PoolAddAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            LootPool.CODEC.listOf().fieldOf("pools").forGetter(PoolAddAction::pools)
+            LootPool.CODEC_PROVIDER.get().listOf().fieldOf("pools").forGetter(PoolAddAction::pools)
     ).apply(instance, PoolAddAction::new));
 
     @Override
@@ -33,12 +33,9 @@ public record PoolAddAction(List<LootPool> pools) implements LootModifierAction 
     public int apply(@NotNull LootModifierContext context) {
         if (context.tableAlreadyModified()) return MODIFIED_NONE;
 
-        final List<LootPool> newPools = ImmutableList.<LootPool>builder()
-                .addAll(context.table().pools)
-                .addAll(this.pools)
-                .build();
-
-        ((LootTableAccessor) context.table()).setPools(newPools);
+        final ArrayList<LootPool> tablePools = context.table().getPools();
+        tablePools.addAll(pools);
+        context.table().setPools(tablePools);
 
         return MODIFIED_POOL;
     }
@@ -70,8 +67,8 @@ public record PoolAddAction(List<LootPool> pools) implements LootModifierAction 
          * @return this
          */
         @Contract("_->this")
-        public PoolAddAction.Builder pool(LootPool.Builder poolBuilder) {
-            this.pools.add(poolBuilder.build());
+        public PoolAddAction.Builder pool(LootPool poolBuilder) {
+            this.pools.add(poolBuilder);
             return this;
         }
 

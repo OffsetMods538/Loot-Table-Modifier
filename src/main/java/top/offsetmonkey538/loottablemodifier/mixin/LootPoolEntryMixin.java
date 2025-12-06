@@ -16,7 +16,7 @@ public class LootPoolEntryMixin implements LootElementWithConditions {
     @Shadow
     @Final
     @Mutable
-    public List<LootCondition> conditions;
+    protected List<LootCondition> conditions;
 
     @Shadow
     @Final
@@ -28,5 +28,10 @@ public class LootPoolEntryMixin implements LootElementWithConditions {
     public void loot_table_modifier$setConditions(List<LootCondition> conditions) {
         this.conditions = conditions;
         this.conditionPredicate = Util.allOf(conditions);
+    }
+
+    @Override
+    public List<LootCondition> loot_table_modifier$getConditions() {
+        return this.conditions;
     }
 }

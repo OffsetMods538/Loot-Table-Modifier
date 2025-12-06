@@ -14,9 +14,7 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.data.DataProvider;
-import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.registry.*;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.resource.Resource;
@@ -35,6 +33,9 @@ import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierAct
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicateTypes;
 import top.offsetmonkey538.loottablemodifier.api.resource.LootModifier;
 import top.offsetmonkey538.loottablemodifier.api.resource.util.LootModifierContext;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootPool;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.entry.LootPoolEntry;
+import top.offsetmonkey538.loottablemodifier.impl.wrapper.loot.LootTableWrapper;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -87,19 +88,20 @@ public class LootTableModifier implements ModInitializer {
 			final RegistryEntry.Reference<LootTable> registryEntry = it.next();
 			final RegistryKey<LootTable> key = registryEntry.registryKey();
 
-			final LootTable table = lootRegistry.get(key);
+			final LootTable vanillaTable = lootRegistry.get(key);
 			final Identifier tableId = key.getValue();
-			if (table == null) throw new IllegalStateException("Loot table with id '%s' is null!".formatted(key));
+			if (vanillaTable == null) throw new IllegalStateException("Loot table with id '%s' is null!".formatted(key));
+            final top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootTable table = new LootTableWrapper(lootRegistry.get(key));
 
 			tableModified = false;
 
-            final LootPool[] poolsCopy = table.pools.toArray(LootPool[]::new);
+            final LootPool[] poolsCopy = table.getPools().toArray(LootPool[]::new);
 			int poolsSize = Math.max(1, poolsCopy.length); // Run loop at least once
 			for (int i = 0; i < poolsSize; i++) {
 				final LootPool pool = poolsCopy.length == 0 ? null : poolsCopy[i];
 				poolModified = false;
 
-				final LootPoolEntry[] entriesCopy = pool == null ? new LootPoolEntry[]{} : pool.entries.toArray(LootPoolEntry[]::new);
+				final LootPoolEntry[] entriesCopy = pool == null ? new LootPoolEntry[]{} : pool.getEntries().toArray(LootPoolEntry[]::new);
 				int entriesSize = Math.max(1, entriesCopy.length); // Run loop at least once
 				for (int j = 0; j < entriesSize; j++) {
 					final LootPoolEntry entry = entriesCopy.length == 0 ? null : entriesCopy[j];

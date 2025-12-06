@@ -3,19 +3,11 @@ package top.offsetmonkey538.loottablemodifier.api.resource.predicate.table;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.block.Block;
-import net.minecraft.entity.EntityType;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.context.LootContextTypes;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.context.ContextType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicateTypes;
 import top.offsetmonkey538.loottablemodifier.api.resource.util.LootModifierContext;
-import top.offsetmonkey538.loottablemodifier.api.resource.util.LootTableIdGetter;
 import top.offsetmonkey538.loottablemodifier.api.resource.util.RegexPattern;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicateType;
@@ -72,7 +64,7 @@ public record TablePredicate(@Nullable List<RegexPattern> identifiers, @Nullable
 
         if (types != null && !types.isEmpty()) {
             boolean typeResult = false;
-            final String tableTypeString = LootContextTypes.MAP.inverse().get(context.table().getType()).toString();
+            final String tableTypeString = context.table().getType();
             for (RegexPattern pattern : types) typeResult = typeResult || pattern.matches(tableTypeString);
             result = result && typeResult;
         }
@@ -102,46 +94,13 @@ public record TablePredicate(@Nullable List<RegexPattern> identifiers, @Nullable
         private final ImmutableList.Builder<RegexPattern> types = ImmutableList.builder();
 
         /**
-         * Adds an entity type to match
-         *
-         * @param name the {@link EntityType} to match
-         * @return this
-         */
-        @Contract("_->this")
-        public TablePredicate.Builder name(@NotNull EntityType<?> name) {
-            name(LootTableIdGetter.INSTANCE.get(name));
-            return this;
-        }
-        /**
-         * Adds a block to match
-         *
-         * @param name the {@link Block} to match
-         * @return this
-         */
-        @Contract("_->this")
-        public TablePredicate.Builder name(@NotNull Block name) {
-            name(LootTableIdGetter.INSTANCE.get(name));
-            return this;
-        }
-        /**
          * Adds a loot table to match
          *
-         * @param name the {@link RegistryKey} of the loot table to match
+         * @param name the identifier of the loot table to match
          * @return this
          */
         @Contract("_->this")
-        public TablePredicate.Builder name(@NotNull RegistryKey<LootTable> name) {
-            name(name.getValue());
-            return this;
-        }
-        /**
-         * Adds a loot table to match
-         *
-         * @param name the {@link Identifier} of the loot table to match
-         * @return this
-         */
-        @Contract("_->this")
-        public TablePredicate.Builder name(@NotNull Identifier name) {
+        public TablePredicate.Builder name(@NotNull String name) {
             name(RegexPattern.literal(name));
             return this;
         }
@@ -158,24 +117,13 @@ public record TablePredicate(@Nullable List<RegexPattern> identifiers, @Nullable
         }
 
         /**
-         * Adds a {@link ContextType type} to match.
-         *
-         * @param type the {@link ContextType type} to match
-         * @return this
-         */
-        @Contract("_->this")
-        public TablePredicate.Builder type(@NotNull ContextType type) {
-            type(LootContextTypes.MAP.inverse().get(type));
-            return this;
-        }
-        /**
          * Adds a type to match.
          *
-         * @param type the {@link Identifier} of the type to match
+         * @param type the identifier of the type to match
          * @return this
          */
         @Contract("_->this")
-        public TablePredicate.Builder type(@NotNull Identifier type) {
+        public TablePredicate.Builder type(@NotNull String type) {
             type(RegexPattern.literal(type));
             return this;
         }

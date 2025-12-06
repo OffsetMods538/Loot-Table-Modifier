@@ -1,35 +1,28 @@
 package top.offsetmonkey538.loottablemodifier.api.resource.action.entry;
 
-import com.google.common.collect.ImmutableList;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.entry.ItemEntry;
-import net.minecraft.loot.entry.LootPoolEntry;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.entry.RegistryEntry;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierActionTypes;
-import top.offsetmonkey538.loottablemodifier.mixin.ItemEntryAccessor;
-import top.offsetmonkey538.loottablemodifier.mixin.LootPoolAccessor;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.Item;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.entry.ItemEntry;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.entry.LootPoolEntry;
 import top.offsetmonkey538.loottablemodifier.api.resource.util.LootModifierContext;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierActionType;
+
+import static top.offsetmonkey538.loottablemodifier.LootTableModifier.IS_DEV;
+import static top.offsetmonkey538.loottablemodifier.LootTableModifier.LOGGER;
 
 /**
  * Sets the item in matched item entries
  *
  * @param item the new item to replace the existing one with
- * @param canReplaceEntry if other types of entries can be replaced with a basic item entry containing the target item
  */
-public record EntryItemSetAction(RegistryEntry<Item> item, boolean canReplaceEntry) implements LootModifierAction {
+public record EntryItemSetAction(Item item) implements LootModifierAction {
     public static final MapCodec<EntryItemSetAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Item.ENTRY_CODEC.fieldOf("name").forGetter(EntryItemSetAction::item),
-            Codec.BOOL.optionalFieldOf("canReplaceEntry", false).forGetter(EntryItemSetAction::canReplaceEntry)
+            Item.CODEC_PROVIDER.get().fieldOf("name").forGetter(EntryItemSetAction::item)
     ).apply(instance, EntryItemSetAction::new));
 
     @Override
@@ -43,24 +36,15 @@ public record EntryItemSetAction(RegistryEntry<Item> item, boolean canReplaceEnt
         if (entry == null) return MODIFIED_NONE;
 
         if (entry instanceof ItemEntry itemEntry) {
-            ((ItemEntryAccessor) itemEntry).setItem(item);
+            itemEntry.setItem(item);
             return MODIFIED_ENTRY;
         }
-        // Matched entry is not an ItemEntry, check if entry replacing is on
-        if (!canReplaceEntry) return MODIFIED_NONE;
 
-        final LootPool pool = context.pool();
-        if (pool == null) return MODIFIED_NONE;
+        // Matched entry is not an ItemEntry
+        LOGGER.error("loot-table-modifier:entry_item_set action matched for non-item entry!");
+        if (IS_DEV) throw new IllegalStateException("loot-table-modifier:entry_item_set action matched for non-item entry!");
 
-        final ImmutableList.Builder<LootPoolEntry> newEntriesBuilder = ImmutableList.builder();
-
-        for (LootPoolEntry originalEntry : pool.entries) {
-            if (originalEntry == entry) continue; // I think we do want '==' here as the references should be the same?
-            newEntriesBuilder.add(originalEntry);
-        }
-        ((LootPoolAccessor) pool).setEntries(newEntriesBuilder.build());
-
-        return MODIFIED_ENTRY;
+        return MODIFIED_NONE;
     }
 
     /**
@@ -70,36 +54,7 @@ public record EntryItemSetAction(RegistryEntry<Item> item, boolean canReplaceEnt
      * @return a new {@link EntryItemSetAction.Builder}
      */
     @Contract("_->new")
-    public static EntryItemSetAction.Builder builder(@NotNull ItemConvertible item) {
-        return new EntryItemSetAction.Builder(item);
-    }
-
-    /**
-     * Builder for {@link EntryItemSetAction}
-     */
-    public static class Builder implements LootModifierAction.Builder {
-        private final RegistryEntry<Item> item;
-        private boolean canReplaceEntry;
-
-        private Builder(@NotNull ItemConvertible item) {
-            this.item = Registries.ITEM.getEntry(item.asItem());
-        }
-
-        /**
-         * Sets if other types of entries can be replaced with a basic item entry containing the target item
-         *
-         * @param canReplaceEntry if other types of entries can be replaced with a basic item entry containing the target item
-         * @return this
-         */
-        @Contract("_->this")
-        public EntryItemSetAction.Builder setCanReplaceEntry(boolean canReplaceEntry) {
-            this.canReplaceEntry = canReplaceEntry;
-            return this;
-        }
-
-        @Override
-        public EntryItemSetAction build() {
-            return new EntryItemSetAction(item, canReplaceEntry);
-        }
+    public static EntryItemSetAction.Builder builder(@NotNull Item item) {
+        return () -> new EntryItemSetAction(item);
     }
 }
