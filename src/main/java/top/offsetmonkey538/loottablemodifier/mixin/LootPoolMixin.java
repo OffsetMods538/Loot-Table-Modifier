@@ -29,4 +29,9 @@ public class LootPoolMixin implements LootElementWithConditions {
         this.conditions = conditions;
         this.predicate = Util.allOf(conditions);
     }
+
+    @Override
+    public List<LootCondition> loot_table_modifier$getConditions() {
+        return this.conditions;
+    }
 }

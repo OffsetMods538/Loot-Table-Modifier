@@ -60,8 +60,6 @@ loom {
 		}
 	}
 
-	accessWidenerPath = file("src/main/resources/loot-table-modifier.accesswidener")
-
 	runs {
 		server {
 			runDir "run/server"

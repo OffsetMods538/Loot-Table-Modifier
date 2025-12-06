@@ -1,0 +1,8 @@
+package top.offsetmonkey538.loottablemodifier.impl.wrapper.loot;
+
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootFunction;
+
+public record LootFunctionWrapper(net.minecraft.loot.function.LootFunction vanillaFunction) implements LootFunction {
+
+}
+

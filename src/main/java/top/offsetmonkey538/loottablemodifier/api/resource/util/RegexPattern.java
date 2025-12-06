@@ -12,14 +12,14 @@ import java.util.regex.Pattern;
 /**
  * {@link RegexPattern}s allow either matching {@link Identifier}s directly or using regex to do so.
  * <br />
- * Use {@link #literal(Identifier)} for creating literal patterns and {@link #compile(String)} for creating regex patterns.
+ * Use {@link #literal(String)} for creating literal patterns and {@link #compile(String)} for creating regex patterns.
  *
  * @param isRegex if this {@link RegexPattern} is using regex or not
  * @param patternString the pattern as a plain string
  * @param pattern the compiled pattern
  */
 public record RegexPattern(boolean isRegex, @NotNull String patternString, @NotNull Pattern pattern) {
-    private static final Codec<RegexPattern> INLINE_CODEC = Identifier.CODEC.xmap(RegexPattern::literal, instance -> Identifier.of(instance.patternString()));
+    private static final Codec<RegexPattern> INLINE_CODEC = Identifier.CODEC.xmap(identifier -> RegexPattern.literal(identifier.toString()), instance -> Identifier.of(instance.patternString()));
     private static final Codec<RegexPattern> FULL_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("regexPattern").forGetter(RegexPattern::patternString)
     ).apply(instance, RegexPattern::compile));
@@ -32,17 +32,17 @@ public record RegexPattern(boolean isRegex, @NotNull String patternString, @NotN
     );
 
     /**
-     * Creates a literal {@link RegexPattern} from the provided {@link Identifier}.
+     * Creates a literal {@link RegexPattern} from the provided string.
      *
-     * @param identifier the {@link Identifier} to match
-     * @return a new {@link RegexPattern} matching the provided {@link Identifier}
+     * @param literal the literal String to match
+     * @return a new {@link RegexPattern} matching the provided string
      */
     @Contract("_->new")
-    public static RegexPattern literal(final Identifier identifier) {
+    public static RegexPattern literal(final String literal) {
         return new RegexPattern(
                 false,
-                identifier.toString(),
-                Pattern.compile(Pattern.quote(identifier.toString()))
+                literal,
+                Pattern.compile(Pattern.quote(literal))
         );
     }
 

@@ -2,10 +2,6 @@ package top.offsetmonkey538.loottablemodifier.api.resource.predicate.entry;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.loot.entry.ItemEntry;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicateTypes;
@@ -13,6 +9,8 @@ import top.offsetmonkey538.loottablemodifier.api.resource.util.LootModifierConte
 import top.offsetmonkey538.loottablemodifier.api.resource.util.RegexPattern;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicateType;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.Item;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.entry.ItemEntry;
 
 /**
  * Matches an item entry based on its item
@@ -34,7 +32,7 @@ public record EntryItemPredicate(RegexPattern name) implements LootModifierPredi
         // No need for a separate null check of entry as null isn't an instance of ItemEntry
         if (!(context.entry() instanceof ItemEntry itemEntry)) return false;
 
-        return name.matches(itemEntry.item.getIdAsString());
+        return name.matches(itemEntry.getId());
     }
 
     /**
@@ -44,8 +42,8 @@ public record EntryItemPredicate(RegexPattern name) implements LootModifierPredi
      * @return a new {@link EntryItemPredicate.Builder}
      */
     @Contract("_->new")
-    public static EntryItemPredicate.Builder builder(ItemConvertible name) {
-        return builder(Registries.ITEM.getId(name.asItem()));
+    public static EntryItemPredicate.Builder builder(Item name) {
+        return builder(name.getId());
     }
     /**
      * Creates a builder for {@link EntryItemPredicate} matching the item based on the provided identifier
@@ -54,7 +52,7 @@ public record EntryItemPredicate(RegexPattern name) implements LootModifierPredi
      * @return a new {@link EntryItemPredicate.Builder}
      */
     @Contract("_->new")
-    public static EntryItemPredicate.Builder builder(Identifier name) {
+    public static EntryItemPredicate.Builder builder(String name) {
         return builder(RegexPattern.literal(name));
     }
     /**

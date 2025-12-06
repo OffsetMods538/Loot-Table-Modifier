@@ -33,7 +33,6 @@
 			"environment": "client"
 		}
 	],
-	"accessWidener": "loot-table-modifier.accesswidener",
 	"depends": {
 		"fabric-api": "*",
 		"minecraft": "${supportedMinecraftVersions}"

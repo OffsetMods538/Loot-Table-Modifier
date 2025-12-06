@@ -2,6 +2,7 @@ package top.offsetmonkey538.loottablemodifier.mixin;
 
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.entry.LootPoolEntry;
+import net.minecraft.loot.function.LootFunction;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -14,4 +15,8 @@ public interface LootPoolAccessor {
     @Mutable
     @Accessor
     void setEntries(List<LootPoolEntry> entries);
+
+    @Mutable
+    @Accessor
+    void setFunctions(List<LootFunction> functions);
 }

@@ -32,7 +32,7 @@ import static top.offsetmonkey538.loottablemodifier.LootTableModifier.MOD_ID;
  *                  .action(
  *                      PoolAddAction.builder()
  *                          .pool(
- *                              LootPool.builder()
+ *                              LootPoolWrapper.builder()
  *                                  .rolls(ConstantLootNumberProvider.create(1))
  *                                  .with(
  *                                      ItemEntry.builder(Items.TNT)
