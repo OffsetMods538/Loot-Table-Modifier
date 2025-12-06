@@ -78,14 +78,11 @@ See: [Remove sticks](/examples/remove_sticks), [Remove glowstone and gunpowder f
 ```json {"    Optional":4-5}
 {
   "type": "loot-table-modifier:entry_item_set",
-  "name": /* Identifier of an item */,
-
-  "canReplaceEntry": false
+  "name": /* Identifier of an item */
 }
 ```
 This action will replace the item in a matched item entry with the provided item.  
-If `canReplaceEntry` is enabled, any other matched entry will be replaced with an item entry containing the provided item.
-By default, it will not replace other types of entries, but that can be enabled by setting `canReplaceEntry` to true.
+If the matched entry is not an item entry, an error will be raised at runtime. When development mode is enabled, the error also crashes the game.
 
 See: [Replace any Minecraft ingot with a diamond](/examples/replace_ingot_w_diamond)
 
