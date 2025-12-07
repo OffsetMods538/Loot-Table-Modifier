@@ -5,8 +5,8 @@ out
 classes
 
 # Fabric
-run/
-src/main/generated/*
+**/run/
+**/src/main/generated/*
 
 # Java
 hs_err_*.log

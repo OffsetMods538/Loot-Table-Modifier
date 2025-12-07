@@ -1,0 +1,28 @@
+plugins {
+    id 'java-library'
+}
+
+repositories {
+    maven {
+        name = "Mojang Libraries"
+        url = "https://libraries.minecraft.net"
+        content {
+            includeGroup "com.mojang"
+        }
+    }
+}
+
+dependencies {
+    compileOnly "com.mojang:datafixerupper:${rootProject.datafixerupper_version}"
+}
+
+processResources {
+    final Map properties = Map.of(
+            "modVersion",                 project.version
+    )
+    inputs.properties(properties)
+
+    filesMatching(["fabric.mod.json", "META-INF/neoforge.mods.toml"]) {
+        expand(properties)
+    }
+}

@@ -44,6 +44,7 @@ import static top.offsetmonkey538.loottablemodifier.LootTableModifier.MOD_ID;
  * }
  * }</pre>
  */
+// TODO: FIXME: Datagen part of api should be platform specific and probably include helper methods for turning vanilla things into wrappers cause calling the constructors seems annoying
 public abstract class LootModifierProvider extends FabricCodecDataProvider<LootModifier> {
     private BiConsumer<Identifier, LootModifier> provider;
 
