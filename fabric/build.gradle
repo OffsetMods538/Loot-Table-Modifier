@@ -110,15 +110,15 @@ subprojects {
 
         runs {
             server {
-                name = "${project.name} Client"
+                name = "${project.project_name} Server"
                 runDir "run/server"
             }
             client {
-                name = "${project.name} Server"
+                name = "${project.project_name} Client"
                 runDir "run/client"
             }
             datagenClient {
-                name = "${project.name} Datagen"
+                name = "${project.project_name} Datagen"
                 inherit client
                 name "Data Generation"
                 vmArg "-Dfabric-api.datagen"
