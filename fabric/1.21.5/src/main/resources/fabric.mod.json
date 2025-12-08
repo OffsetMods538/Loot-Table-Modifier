@@ -20,7 +20,7 @@
 			"top.offsetmonkey538.loottablemodifier.datagen.LootTableModifierDatagen"
 		],
 		"main": [
-			"top.offsetmonkey538.loottablemodifier.LootTableModifier"
+          "top.offsetmonkey538.loottablemodifier.fabric.v1215.LootTableModifier"
 		],
 		"client": [
 			"top.offsetmonkey538.loottablemodifier.LootTableModifierClient"
