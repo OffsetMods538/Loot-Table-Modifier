@@ -4,7 +4,7 @@
 [![Requires Fabric API](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/requires/fabric-api_vector.svg)](https://modrinth.com/mod/fabric-api)
 
 todo: good readme for alpha version
-
+b
 Allows datapacks to modify loot tables, instead of just overwriting them.  
 Version 2 of the mod is currently in alpha. v2 adds more ways to modify loot tables than just adding to them  
 v2 will be backwards-compatible with v1 modifiers, so no need to worry about them breaking.
