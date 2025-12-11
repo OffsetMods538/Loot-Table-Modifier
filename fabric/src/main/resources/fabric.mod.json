@@ -16,8 +16,14 @@
   "icon": "assets/loot-table-modifier/icon.png",
   "environment": "*",
   "entrypoints": {
+    "fabric-datagen": [
+      "top.offsetmonkey538.loottablemodifier.fabric.datagen.LootTableModifierDatagen"
+    ],
     "main": [
-
+      "top.offsetmonkey538.loottablemodifier.fabric.LootTableModifier"
+    ],
+    "client": [
+      "top.offsetmonkey538.loottablemodifier.LootTableModifierClient"
     ]
   },
   "depends": {
