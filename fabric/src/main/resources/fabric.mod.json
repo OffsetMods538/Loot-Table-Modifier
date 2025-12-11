@@ -16,16 +16,13 @@
   "icon": "assets/loot-table-modifier/icon.png",
   "environment": "*",
   "entrypoints": {
-    "fabric-datagen": [
-      "top.offsetmonkey538.loottablemodifier.fabric.datagen.LootTableModifierDatagen"
-    ],
     "main": [
       "top.offsetmonkey538.loottablemodifier.fabric.LootTableModifier"
-    ],
-    "client": [
-      "top.offsetmonkey538.loottablemodifier.LootTableModifierClient"
     ]
   },
+  "mixins": [
+    "loot-table-modifier.fabric.mixins.json"
+  ],
   "depends": {
     "loot-table-modifier-common": "${commonVersion}",
     "java": ">=21"
