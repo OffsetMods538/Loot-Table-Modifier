@@ -36,7 +36,7 @@ jobs:
           CUSTOM_SITE_ENV: "https://${{ env.short_commit_hash }}.loot-table-modifier.docs.offsetmonkey538.top/"
 
       - name: Upload docs for commit to actions
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: Commit
           path: dist/
@@ -67,7 +67,7 @@ jobs:
 
       - name: Upload docs for latest to actions
         if: ${{ github.ref_name == 'docs/master' }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: Latest
           path: dist/
