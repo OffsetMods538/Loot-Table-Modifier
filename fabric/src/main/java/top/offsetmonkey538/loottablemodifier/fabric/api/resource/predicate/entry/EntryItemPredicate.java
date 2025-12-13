@@ -9,8 +9,8 @@ import top.offsetmonkey538.loottablemodifier.fabric.api.resource.util.LootModifi
 import top.offsetmonkey538.loottablemodifier.fabric.api.resource.util.RegexPattern;
 import top.offsetmonkey538.loottablemodifier.fabric.api.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.fabric.api.resource.predicate.LootModifierPredicateType;
-import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.Item;
-import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.loot.entry.ItemEntry;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.Item;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.entry.ItemEntry;
 
 /**
  * Matches an item entry based on its item

@@ -13,8 +13,8 @@ import top.offsetmonkey538.loottablemodifier.fabric.api.resource.action.LootModi
 import top.offsetmonkey538.loottablemodifier.fabric.api.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.fabric.api.resource.predicate.table.TablePredicate;
 import top.offsetmonkey538.loottablemodifier.fabric.api.resource.util.LootModifierContext;
-import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.Identifier;
-import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.loot.LootPool;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.Identifier;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootPool;
 
 import java.util.*;
 import java.util.function.Predicate;

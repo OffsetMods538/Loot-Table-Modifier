@@ -1,13 +1,14 @@
-package top.offsetmonkey538.loottablemodifier.fabric.api.wrapper;
+package top.offsetmonkey538.loottablemodifier.api.wrapper;
 
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
-import top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper.IdentifierWrapper;
 
 import java.util.function.Supplier;
 
+import static top.offsetmonkey538.loottablemodifier.ServiceLoader.load;
+
 public interface Identifier {
-    Supplier<Codec<Identifier>> CODEC_PROVIDER = new IdentifierWrapper.CodecProviderImpl();
+    Supplier<Codec<Identifier>> CODEC_PROVIDER = load(CodecProvider.class);
 
     String asString();
 

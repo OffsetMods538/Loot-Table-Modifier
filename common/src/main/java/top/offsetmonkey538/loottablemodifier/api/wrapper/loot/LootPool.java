@@ -1,16 +1,17 @@
-package top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.loot;
+package top.offsetmonkey538.loottablemodifier.api.wrapper.loot;
 
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
-import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.loot.entry.LootPoolEntry;
-import top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper.loot.LootPoolWrapper;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.entry.LootPoolEntry;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static top.offsetmonkey538.loottablemodifier.ServiceLoader.load;
+
 public interface LootPool {
-    Supplier<Codec<LootPool>> CODEC_PROVIDER = new LootPoolWrapper.CodecProviderImpl();
+    Supplier<Codec<LootPool>> CODEC_PROVIDER = load(CodecProvider.class);
 
     ArrayList<LootPoolEntry> getEntries();
     void setEntries(List<LootPoolEntry> entries);

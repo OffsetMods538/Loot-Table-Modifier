@@ -30,8 +30,8 @@ import top.offsetmonkey538.loottablemodifier.fabric.api.resource.action.LootModi
 import top.offsetmonkey538.loottablemodifier.fabric.api.resource.predicate.LootModifierPredicateTypes;
 import top.offsetmonkey538.loottablemodifier.fabric.api.resource.LootModifier;
 import top.offsetmonkey538.loottablemodifier.fabric.api.resource.util.LootModifierContext;
-import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.loot.LootPool;
-import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.loot.entry.LootPoolEntry;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootPool;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.entry.LootPoolEntry;
 import top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper.loot.LootTableWrapper;
 import top.offsetmonkey538.monkeylib538.api.command.CommandRegistrationApi;
 import top.offsetmonkey538.monkeylib538.api.log.MonkeyLibLogger;
@@ -91,7 +91,7 @@ public class LootTableModifier implements ModInitializer {
 			final LootTable vanillaTable = lootRegistry.get(key);
 			final Identifier tableId = key.getValue();
 			if (vanillaTable == null) throw new IllegalStateException("Loot table with id '%s' is null!".formatted(key));
-            final top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.loot.LootTable table = new LootTableWrapper(lootRegistry.get(key));
+            final top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootTable table = new LootTableWrapper(lootRegistry.get(key));
 
 			tableModified = false;
 

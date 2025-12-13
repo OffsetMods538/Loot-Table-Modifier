@@ -10,9 +10,9 @@ import top.offsetmonkey538.loottablemodifier.fabric.api.resource.action.LootModi
 import top.offsetmonkey538.loottablemodifier.fabric.api.resource.action.LootModifierActionType;
 import top.offsetmonkey538.loottablemodifier.fabric.api.resource.action.LootModifierActionTypes;
 import top.offsetmonkey538.loottablemodifier.fabric.api.resource.util.LootModifierContext;
-import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.loot.LootCondition;
-import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.loot.LootPool;
-import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.loot.entry.LootPoolEntry;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootCondition;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootPool;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.entry.LootPoolEntry;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,8 +4,8 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.entry.LootPoolEntryTypes;
-import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.loot.LootCondition;
-import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.loot.entry.LootPoolEntry;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootCondition;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.entry.LootPoolEntry;
 import top.offsetmonkey538.loottablemodifier.fabric.duck.LootElementWithConditions;
 import top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper.loot.LootConditionWrapper;
 

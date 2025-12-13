@@ -1,4 +1,4 @@
-package top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.loot;
+package top.offsetmonkey538.loottablemodifier.api.wrapper.loot;
 
 import java.util.ArrayList;
 import java.util.List;

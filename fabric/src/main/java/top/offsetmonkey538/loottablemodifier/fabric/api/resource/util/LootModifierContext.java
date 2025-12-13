@@ -1,8 +1,8 @@
 package top.offsetmonkey538.loottablemodifier.fabric.api.resource.util;
 
-import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.loot.LootPool;
-import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.loot.LootTable;
-import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.loot.entry.LootPoolEntry;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootPool;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootTable;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.entry.LootPoolEntry;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

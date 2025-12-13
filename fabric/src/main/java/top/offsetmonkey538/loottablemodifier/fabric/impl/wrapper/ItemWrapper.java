@@ -3,7 +3,7 @@ package top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper;
 import com.mojang.serialization.Codec;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
-import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.Item;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.Item;
 
 public record ItemWrapper(RegistryEntry<net.minecraft.item.Item> vanillaItem) implements Item {
 

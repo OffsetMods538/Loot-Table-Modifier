@@ -1,7 +1,7 @@
 package top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper;
 
 import com.mojang.serialization.Codec;
-import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.Identifier;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.Identifier;
 
 public record IdentifierWrapper(net.minecraft.util.Identifier vanillaIdentifier) implements Identifier {
 

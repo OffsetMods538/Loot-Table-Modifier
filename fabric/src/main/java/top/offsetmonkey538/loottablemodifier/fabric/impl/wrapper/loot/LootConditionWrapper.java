@@ -1,7 +1,7 @@
 package top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper.loot;
 
 import com.mojang.serialization.Codec;
-import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.loot.LootCondition;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootCondition;
 
 public record LootConditionWrapper(net.minecraft.loot.condition.LootCondition vanillaCondition) implements LootCondition {
 

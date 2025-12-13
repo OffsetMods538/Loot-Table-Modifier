@@ -1,9 +1,9 @@
 package top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper.loot;
 
 import com.google.common.collect.ImmutableList;
-import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.loot.LootFunction;
-import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.loot.LootPool;
-import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.loot.LootTable;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootFunction;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootPool;
+import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootTable;
 import top.offsetmonkey538.loottablemodifier.fabric.mixin.LootContextTypesAccessor;
 import top.offsetmonkey538.loottablemodifier.fabric.mixin.LootTableAccessor;
 
