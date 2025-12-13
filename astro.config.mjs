@@ -3,6 +3,8 @@ import { defineConfig } from 'astro/config';
 import starlightSocialIcons from './src/utils/socialIcons.ts';
 import starlight from '@astrojs/starlight';
 
+import aiRobotsTxt from 'astro-ai-robots-txt';
+
 // https://astro.build/config
 export default defineConfig({
     site: process.env.CUSTOM_SITE_ENV || undefined,
@@ -33,6 +35,7 @@ export default defineConfig({
                 {
                     label: 'Reference',
                     items: [
+
                         {label: 'Loot Modifier', slug: 'reference/loot_modifier'},
                         {label: 'Actions', slug: 'reference/actions'},
                         {label: 'Regex Identifier', slug: 'reference/regex_identifier'},
@@ -51,5 +54,6 @@ export default defineConfig({
                 },
             ],
         }),
+        aiRobotsTxt()
     ]
 });
