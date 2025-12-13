@@ -9,7 +9,6 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -27,8 +26,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import org.apache.commons.io.file.PathUtils;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import top.offsetmonkey538.loottablemodifier.fabric.api.resource.action.LootModifierActionTypes;
 import top.offsetmonkey538.loottablemodifier.fabric.api.resource.predicate.LootModifierPredicateTypes;
 import top.offsetmonkey538.loottablemodifier.fabric.api.resource.LootModifier;
@@ -36,6 +33,9 @@ import top.offsetmonkey538.loottablemodifier.fabric.api.resource.util.LootModifi
 import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.loot.LootPool;
 import top.offsetmonkey538.loottablemodifier.fabric.api.wrapper.loot.entry.LootPoolEntry;
 import top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper.loot.LootTableWrapper;
+import top.offsetmonkey538.monkeylib538.api.command.CommandRegistrationApi;
+import top.offsetmonkey538.monkeylib538.api.log.MonkeyLibLogger;
+import top.offsetmonkey538.monkeylib538.fabric.api.command.FabricCommandAbstractionApi;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -44,12 +44,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-import static net.minecraft.server.command.CommandManager.literal;
 import static top.offsetmonkey538.loottablemodifier.fabric.api.resource.action.LootModifierAction.*;
+import static top.offsetmonkey538.monkeylib538.api.command.CommandAbstractionApi.literal;
 
 public class LootTableModifier implements ModInitializer {
 	public static final String MOD_ID = "loot-table-modifier";
-	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	public static final MonkeyLibLogger LOGGER = MonkeyLibLogger.create(MOD_ID);
 
 	public static final boolean IS_DEV;
 	static {
@@ -112,12 +112,12 @@ public class LootTableModifier implements ModInitializer {
 						final LootModifier modifier = modifierEntry.getValue();
 						if (!modifier.test(context)) continue;
 
-						if (IS_DEV) LOGGER.warn("Modifier {} can modify table {}", modifierEntry.getKey(), tableId);
+						if (IS_DEV) LOGGER.warn("Modifier %s can modify table %s", modifierEntry.getKey(), tableId);
 
 
 						int result = modifier.apply(context);
 
-						if (IS_DEV && result != MODIFIED_NONE) LOGGER.warn("Modifier {} modified table {} with modified mask {}", modifierEntry.getKey(), tableId, Integer.toUnsignedString(result, 2));
+						if (IS_DEV && result != MODIFIED_NONE) LOGGER.warn("Modifier %s modified table %s with modified mask %s", modifierEntry.getKey(), tableId, Integer.toUnsignedString(result, 2));
 
 						if ((result & MODIFIED_TABLE) == MODIFIED_TABLE) tableModified = true;
 						if ((result & MODIFIED_POOL) == MODIFIED_POOL) poolModified = true;
@@ -131,7 +131,7 @@ public class LootTableModifier implements ModInitializer {
 		}
 
 
-		LOGGER.info("Applied {} modifiers and modified {} entries, {} pools and {} loot tables in {}!", modifiers.size(), entriesModified, poolsModified, modifiedTableIds.size(), stopwatch.stop());
+		LOGGER.info("Applied %s modifiers and modified %s entries, %s pools and %s loot tables in %s!", modifiers.size(), entriesModified, poolsModified, modifiedTableIds.size(), stopwatch.stop());
 
 		if (!IS_DEV) return;
 
@@ -152,25 +152,25 @@ public class LootTableModifier implements ModInitializer {
 			final Identifier id = entry.getKey();
 
 			try {
-				LOGGER.debug("Loading load loot table modifier from '{}'", id);
+				LOGGER.debug("Loading load loot table modifier from '%s'", id);
 				result.put(
 						id,
 						LootModifier.CODEC.decode(registryOps, JsonParser.parseReader(entry.getValue().getReader())).getOrThrow().getFirst()
 				);
 			} catch (Exception e) {
-				//noinspection StringConcatenationArgumentToLogCall
-				LOGGER.error("Failed to load loot table modifier from '%s'!".formatted(id), e);
+                LOGGER.error("Failed to load loot table modifier from '%s'!", e, id);
 			}
 		}
 
-		LOGGER.info("Loaded {} loot modifiers in {}!", result.size(), stopwatch.stop());
+		LOGGER.info("Loaded %s loot modifiers in %s!", result.size(), stopwatch.stop());
 
 		return result;
 	}
 
 	private static void enableDebug() {
 		ResourceManagerHelper.registerBuiltinResourcePack(id("example_pack"), FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow(), Text.of("Example Pack"), ResourcePackActivationType.NORMAL);
-		CommandRegistrationCallback.EVENT.register((dispatcher, commandRegistryAccess, registrationEnvironment) -> dispatcher.register(
+
+        CommandRegistrationApi.registerCommand(
                 literal(MOD_ID)
                         .then(
                                 literal("debug")
@@ -181,12 +181,13 @@ public class LootTableModifier implements ModInitializer {
                                                         )
                                         )
                         )
-        ));
+        );
 	}
 
-	private static int executeExportCommand(CommandContext<ServerCommandSource> context) {
+    // TODO: abstraction
+	private static int executeExportCommand(CommandContext<Object> context) {
 		synchronized (MODIFIED_TABLE_IDs) {
-			final ServerCommandSource source = context.getSource();
+			final ServerCommandSource source = FabricCommandAbstractionApi.get(context);
 			final MinecraftServer server = source.getServer();
 
 			final DynamicOps<JsonElement> ops = RegistryOps.of(JsonOps.INSTANCE, server.getRegistryManager());
@@ -202,12 +203,12 @@ public class LootTableModifier implements ModInitializer {
 					final Path file = exportDir.resolve(id.getNamespace()).resolve(id.getPath() + ".json");
 					Files.createDirectories(file.getParent());
 
-					LOGGER.warn("Exporting loot table to {}", file);
+					LOGGER.warn("Exporting loot table to %s", file);
 					DataResult<JsonElement> dataResult = LootTable.CODEC.encodeStart(ops, table);
 					final Optional<JsonElement> optionalResult = dataResult.resultOrPartial(LOGGER::error);
 					final JsonElement result = optionalResult.orElseThrow();
 
-					LOGGER.warn("Writing loot table to {}", file);
+					LOGGER.warn("Writing loot table to %s", file);
 
 					try (JsonWriter jsonWriter = new JsonWriter(Files.newBufferedWriter(file, StandardCharsets.UTF_8))) {
 						jsonWriter.setSerializeNulls(false);
@@ -228,7 +229,7 @@ public class LootTableModifier implements ModInitializer {
 		return Identifier.of(MOD_ID, path);
 	}
 
-	/*
+	/* TODO: separate modules implementing this?
     In 1.21.4, the 'Registry' class extends 'RegistryWrapper' and inherits the 'streamEntries' method from it.
     In 1.20.5, the 'Registry' class *doesn't* extend the 'RegistryWrapper' and implements its own 'streamEntries' method.
     Compiling on both versions works, because the names of the methods are the same, but they compile to different intermediary names, thus a jar compiled for 1.20.5 doesn't work on 1.21.4 and vice versa.

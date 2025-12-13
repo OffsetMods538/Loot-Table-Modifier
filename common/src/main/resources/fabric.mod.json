@@ -12,5 +12,8 @@
     "issues": "https://github.com/OffsetMods538/Loot-Table-Modifier/issues",
     "homepage": "https://modrinth.com/mod/loot-table-modifier"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "depends": {
+    "monkeylib538-common": ">=${monkeylibVersion}"
+  }
 }

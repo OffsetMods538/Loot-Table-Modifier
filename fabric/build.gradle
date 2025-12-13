@@ -24,6 +24,11 @@ loom {
 dependencies {
     api project(":common")
     include project(":common")
+
+    modCompileOnlyApi("top.offsetmonkey538.monkeylib538:monkeylib538-fabric:${rootProject.monkeylib538_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+        exclude(group: "top.offsetmonkey538.offsetconfig538")
+    }
 }
 
 allprojects {
@@ -93,6 +98,11 @@ subprojects {
         common project(path: ":fabric", configuration: "namedElements")
         include project(path: ":fabric")
 
+        modRuntimeOnly("top.offsetmonkey538.monkeylib538:monkeylib538-fabric-${project.monkeylib538_suffix}:${rootProject.monkeylib538_version}+${project.monkeylib538_suffix}") {
+            exclude(group: "net.fabricmc.fabric-api")
+            exclude(group: "top.offsetmonkey538.monkeylib538:monkeylib538-fabric")
+            exclude(group: "top.offsetmonkey538.offsetconfig538")
+        }
 
         // DevAuth
         modLocalRuntime "me.djtheredstoner:DevAuth-fabric:${devauth_version}"

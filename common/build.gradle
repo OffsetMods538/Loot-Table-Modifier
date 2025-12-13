@@ -13,13 +13,17 @@ repositories {
 }
 
 dependencies {
+    compileOnlyApi("top.offsetmonkey538.monkeylib538:monkeylib538-common:${rootProject.monkeylib538_version}") {
+        exclude(group: "top.offsetmonkey538.offsetconfig538")
+    }
     compileOnly "com.mojang:datafixerupper:${rootProject.datafixerupper_version}"
 }
 
 processResources {
-    final Map properties = Map.of(
-            "modVersion",                 project.version
-    )
+    final Map properties = [
+            "modVersion":       project.version,
+            'monkeylibVersion': rootProject.monkeylib538_version
+    ]
     inputs.properties(properties)
 
     filesMatching(["fabric.mod.json", "META-INF/neoforge.mods.toml"]) {
