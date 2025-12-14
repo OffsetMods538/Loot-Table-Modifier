@@ -5,18 +5,20 @@ import com.mojang.serialization.Codec;
 import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootFunction;
 import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootPool;
 import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootTable;
-import top.offsetmonkey538.loottablemodifier.fabric.mixin.LootContextTypesAccessor;
 import top.offsetmonkey538.loottablemodifier.fabric.mixin.LootTableAccessor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static top.offsetmonkey538.loottablemodifier.LootTableModifierCommon.load;
 
 public record LootTableWrapper(net.minecraft.loot.LootTable vanillaTable) implements LootTable {
 
     @Override
     public String getType() {
-        return LootContextTypesAccessor.getMAP().inverse().get(vanillaTable.getType()).toString();
+        return TypeGetter.INSTANCE.apply(vanillaTable);
     }
 
     @Override
@@ -52,6 +54,10 @@ public record LootTableWrapper(net.minecraft.loot.LootTable vanillaTable) implem
         public Codec<LootTable> get() {
             return net.minecraft.loot.LootTable.CODEC.xmap(LootTableWrapper::new, wrappedPool -> ((LootTableWrapper) wrappedPool).vanillaTable());
         }
+    }
+
+    public interface TypeGetter extends Function<net.minecraft.loot.LootTable, String> {
+        TypeGetter INSTANCE = load(TypeGetter.class);
     }
 }
 

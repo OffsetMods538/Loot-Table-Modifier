@@ -32,12 +32,5 @@ public record IdentifierWrapper(net.minecraft.util.Identifier vanillaIdentifier)
             return net.minecraft.util.Identifier.CODEC.xmap(IdentifierWrapper::new, wrappedIdentifier -> ((IdentifierWrapper) wrappedIdentifier).vanillaIdentifier());
         }
     }
-
-    public static final class InstantiatorImpl implements Instantiator {
-        @Override
-        public Identifier apply(String s) {
-            return new IdentifierWrapper(net.minecraft.util.Identifier.of(s));
-        }
-    }
 }
 

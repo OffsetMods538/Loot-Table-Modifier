@@ -15,7 +15,9 @@ rootProject.name = "loottablemodifier"
 include "common"
 
 include "fabric"
-include "fabric:1.21.5"
+include "fabric:1.20.5"
+include "fabric:1.21"
+include "fabric:1.21.2"
 
 // TODO: neo: include "neoforge"
 // TODO: neo:include "neoforge:1.20.6"
