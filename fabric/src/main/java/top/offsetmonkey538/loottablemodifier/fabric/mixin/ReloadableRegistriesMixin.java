@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import top.offsetmonkey538.loottablemodifier.fabric.LootTableModifier;
+import top.offsetmonkey538.loottablemodifier.fabric.platform.FabricPlatformMain;
 
 @Mixin(
         value = ReloadableRegistries.class,
@@ -41,6 +41,6 @@ public abstract class ReloadableRegistriesMixin {
     private static <T> void loottablemodifier$modifyLootTables(LootDataType<T> lootDataType, ResourceManager resourceManager, RegistryOps<JsonElement> registryOps, CallbackInfoReturnable<MutableRegistry<?>> cir) {
         if (lootDataType != LootDataType.LOOT_TABLES) return;
         //noinspection unchecked
-        LootTableModifier.runModification(resourceManager, (Registry<LootTable>) cir.getReturnValue(), registryOps);
+        FabricPlatformMain.runModification(resourceManager, (Registry<LootTable>) cir.getReturnValue(), registryOps);
     }
 }

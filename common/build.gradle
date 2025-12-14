@@ -17,6 +17,8 @@ dependencies {
         exclude(group: "top.offsetmonkey538.offsetconfig538")
     }
     compileOnly "com.mojang:datafixerupper:${rootProject.datafixerupper_version}"
+    compileOnly "com.mojang:brigadier:${rootProject.brigadier_version}"
+    compileOnly "commons-io:commons-io:${rootProject.commonsio_version}"
 }
 
 processResources {

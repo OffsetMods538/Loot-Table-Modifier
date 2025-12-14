@@ -11,14 +11,15 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import top.offsetmonkey538.loottablemodifier.fabric.api.resource.util.LootTableIdGetter;
+import top.offsetmonkey538.loottablemodifier.fabric.api.LootTableIdGetter;
+import top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper.IdentifierWrapper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static top.offsetmonkey538.loottablemodifier.fabric.LootTableModifier.LOGGER;
+import static top.offsetmonkey538.loottablemodifier.LootTableModifierCommon.LOGGER;
 
 // TODO: Seems like this should be something to split up and move to different modules?
 //  That *would* mean multiple jars and this is cool, but the maintainability of this probably won't be that great as
@@ -30,13 +31,13 @@ import static top.offsetmonkey538.loottablemodifier.fabric.LootTableModifier.LOG
 public class LootTableIdGetterImpl implements LootTableIdGetter {
 
     @Override
-    public Identifier get(@NotNull EntityType<?> entityType) {
-        return VersionSpecific.Entity.get.apply(entityType);
+    public top.offsetmonkey538.loottablemodifier.api.wrapper.Identifier get(@NotNull EntityType<?> entityType) {
+        return new IdentifierWrapper(VersionSpecific.Entity.get.apply(entityType));
     }
 
     @Override
-    public Identifier get(@NotNull Block block) {
-        return VersionSpecific.Block.get.apply(block);
+    public top.offsetmonkey538.loottablemodifier.api.wrapper.Identifier get(@NotNull Block block) {
+        return new IdentifierWrapper(VersionSpecific.Block.get.apply(block));
     }
 
 

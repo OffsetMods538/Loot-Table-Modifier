@@ -20,17 +20,17 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import top.offsetmonkey538.loottablemodifier.fabric.api.datagen.LootModifierProvider;
-import top.offsetmonkey538.loottablemodifier.fabric.api.resource.LootModifier;
-import top.offsetmonkey538.loottablemodifier.fabric.api.resource.action.condition.ConditionAddAction;
-import top.offsetmonkey538.loottablemodifier.fabric.api.resource.action.entry.EntryAddAction;
-import top.offsetmonkey538.loottablemodifier.fabric.api.resource.action.entry.EntryRemoveAction;
-import top.offsetmonkey538.loottablemodifier.fabric.api.resource.predicate.table.TablePredicate;
-import top.offsetmonkey538.loottablemodifier.fabric.api.resource.util.LootTableIdGetter;
-import top.offsetmonkey538.loottablemodifier.fabric.api.resource.util.RegexPattern;
-import top.offsetmonkey538.loottablemodifier.fabric.api.resource.action.pool.PoolAddAction;
-import top.offsetmonkey538.loottablemodifier.fabric.api.resource.action.entry.EntryItemSetAction;
-import top.offsetmonkey538.loottablemodifier.fabric.api.resource.action.pool.PoolRemoveAction;
-import top.offsetmonkey538.loottablemodifier.fabric.api.resource.predicate.entry.EntryItemPredicate;
+import top.offsetmonkey538.loottablemodifier.api.resource.LootModifier;
+import top.offsetmonkey538.loottablemodifier.api.resource.action.condition.ConditionAddAction;
+import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.EntryAddAction;
+import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.EntryRemoveAction;
+import top.offsetmonkey538.loottablemodifier.api.resource.predicate.table.TablePredicate;
+import top.offsetmonkey538.loottablemodifier.fabric.api.LootTableIdGetter;
+import top.offsetmonkey538.loottablemodifier.api.resource.util.RegexPattern;
+import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.PoolAddAction;
+import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.EntryItemSetAction;
+import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.PoolRemoveAction;
+import top.offsetmonkey538.loottablemodifier.api.resource.predicate.entry.EntryItemPredicate;
 import top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper.ItemWrapper;
 import top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper.loot.LootConditionWrapper;
 import top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper.loot.LootPoolWrapper;
@@ -40,7 +40,7 @@ import top.offsetmonkey538.loottablemodifier.fabric.mixin.LootContextTypesAccess
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
-import static top.offsetmonkey538.loottablemodifier.fabric.LootTableModifier.id;
+import static top.offsetmonkey538.loottablemodifier.fabric.platform.FabricPlatformMain.id;
 
 /**
  * Datagen for loot modifiers used for testing.

@@ -17,7 +17,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "top.offsetmonkey538.loottablemodifier.fabric.LootTableModifier"
+      "top.offsetmonkey538.loottablemodifier.fabric.platform.FabricPlatformMain"
     ]
   },
   "mixins": [

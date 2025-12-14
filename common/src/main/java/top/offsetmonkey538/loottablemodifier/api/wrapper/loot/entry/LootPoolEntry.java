@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static top.offsetmonkey538.loottablemodifier.ServiceLoader.load;
+import static top.offsetmonkey538.loottablemodifier.LootTableModifierCommon.load;
 
 public interface LootPoolEntry {
     Supplier<Codec<LootPoolEntry>> CODEC_PROVIDER = load(CodecProvider.class);

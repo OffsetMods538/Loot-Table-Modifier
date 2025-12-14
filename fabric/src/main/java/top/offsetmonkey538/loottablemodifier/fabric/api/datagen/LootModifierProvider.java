@@ -6,12 +6,12 @@ import net.minecraft.data.DataOutput;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
-import top.offsetmonkey538.loottablemodifier.fabric.api.resource.LootModifier;
+import top.offsetmonkey538.loottablemodifier.api.resource.LootModifier;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
-import static top.offsetmonkey538.loottablemodifier.fabric.LootTableModifier.MOD_ID;
+import static top.offsetmonkey538.loottablemodifier.LootTableModifierCommon.MOD_ID;
 
 /**
  * A datagen provider for creating loot modifiers.

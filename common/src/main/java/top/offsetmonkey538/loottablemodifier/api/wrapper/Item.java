@@ -5,7 +5,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Supplier;
 
-import static top.offsetmonkey538.loottablemodifier.ServiceLoader.load;
+import static top.offsetmonkey538.loottablemodifier.LootTableModifierCommon.load;
 
 public interface Item {
     Supplier<Codec<Item>> CODEC_PROVIDER = load(CodecProvider.class);
