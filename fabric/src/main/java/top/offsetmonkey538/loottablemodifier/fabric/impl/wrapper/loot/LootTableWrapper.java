@@ -1,6 +1,7 @@
 package top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper.loot;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.serialization.Codec;
 import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootFunction;
 import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootPool;
 import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootTable;
@@ -44,6 +45,13 @@ public record LootTableWrapper(net.minecraft.loot.LootTable vanillaTable) implem
         newFunctions.addAll(functions.stream().map(wrapperEntry -> ((LootFunctionWrapper) wrapperEntry).vanillaFunction()).toList());
 
         ((LootTableAccessor) vanillaTable).setFunctions(newFunctions.build());
+    }
+
+    public static final class CodecProviderImpl implements LootTable.CodecProvider {
+        @Override
+        public Codec<LootTable> get() {
+            return net.minecraft.loot.LootTable.CODEC.xmap(LootTableWrapper::new, wrappedPool -> ((LootTableWrapper) wrappedPool).vanillaTable());
+        }
     }
 }
 
