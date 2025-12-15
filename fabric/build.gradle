@@ -16,8 +16,9 @@ loom {
         }
     }
 
-    runs {
-
+    afterEvaluate {
+        runClient.setEnabled(false)
+        runServer.setEnabled(false)
     }
 }
 
@@ -122,26 +123,26 @@ subprojects {
             server {
                 name = "${project.project_name} Server"
                 runDir "run/server"
+                ideConfigGenerated(true)
             }
             client {
                 name = "${project.project_name} Client"
                 runDir "run/client"
+                vmArg "-Ddevauth.enabled=true"
+                ideConfigGenerated(true)
             }
             datagenClient {
                 name = "${project.project_name} Datagen"
                 inherit client
+                runDir "build/datagen"
                 name "Data Generation"
                 vmArg "-Dfabric-api.datagen"
                 vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
                 vmArg "-Dfabric-api.datagen.modid=loot-table-modifier"
                 vmArg "-Ddevauth.enabled=false"
 
-                runDir "build/datagen"
+                ideConfigGenerated(true)
             }
-        }
-
-        runConfigs.configureEach {
-            ideConfigGenerated(true)
         }
     }
 
