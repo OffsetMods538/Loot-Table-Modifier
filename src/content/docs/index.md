@@ -22,7 +22,7 @@ hero:
 # About
 
 :::caution
-This documentation is written for Loot Table Modifier v2 alpha 1.  
+This documentation is written for Loot Table Modifier v2 beta 1.  
 Both the mod and this wiki are in development.  
 If you encounter any issues or have suggestions, please *please* **please** come join my [discord](https://discord.offsetmonkey538.top) and yell at me about them.
 :::
