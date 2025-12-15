@@ -75,6 +75,8 @@ subprojects {
     apply plugin: "io.github.dexman545.outlet"
     apply plugin: "com.modrinth.minotaur"
 
+    tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
+
     configurations {
         common {
             canBeResolved = true
