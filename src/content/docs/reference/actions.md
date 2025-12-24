@@ -75,7 +75,7 @@ This action removes all matched entries.
 See: [Remove sticks](/examples/remove_sticks), [Remove glowstone and gunpowder from witches](/examples/remove_glowstone_and_gunpowder_witches)
 
 ### Set item in item entry
-```json {"    Optional":4-5}
+```json
 {
   "type": "loot-table-modifier:entry_item_set",
   "name": /* Identifier of an item */
