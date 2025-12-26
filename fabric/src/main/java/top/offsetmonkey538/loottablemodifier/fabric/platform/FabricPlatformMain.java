@@ -44,11 +44,6 @@ public class FabricPlatformMain implements PlatformMain, ModInitializer {
     }
 
     @Override
-    public boolean isDevelopmentEnvironmentImpl() {
-        return FabricLoader.getInstance().isDevelopmentEnvironment();
-    }
-
-    @Override
     public void registerExamplePackImpl() {
         ResourceManagerHelper.registerBuiltinResourcePack(id("example_pack"), FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow(), Text.of("Example Pack"), ResourcePackActivationType.NORMAL);
     }

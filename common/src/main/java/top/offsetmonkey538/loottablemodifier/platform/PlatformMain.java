@@ -15,10 +15,6 @@ public interface PlatformMain {
     @ApiStatus.Internal
     PlatformMain INSTANCE = load(PlatformMain.class);
 
-    static boolean isDevelopmentEnvironment() {
-        return INSTANCE.isDevelopmentEnvironmentImpl();
-    }
-
     static void registerExamplePack() {
         INSTANCE.registerExamplePackImpl();
     }
@@ -39,7 +35,6 @@ public interface PlatformMain {
         return INSTANCE.anyOfImpl(predicates);
     }
 
-    boolean isDevelopmentEnvironmentImpl();
     void registerExamplePackImpl();
     void writeSortedImpl(JsonWriter jsonWriter, JsonElement json) throws IOException;
     Identifier idImpl(String path);

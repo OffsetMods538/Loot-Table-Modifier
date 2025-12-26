@@ -21,6 +21,7 @@ import top.offsetmonkey538.loottablemodifier.platform.PlatformMain;
 import top.offsetmonkey538.monkeylib538.api.command.CommandRegistrationApi;
 import top.offsetmonkey538.monkeylib538.api.log.MonkeyLibLogger;
 import top.offsetmonkey538.monkeylib538.api.platform.PlatformUtil;
+import top.offsetmonkey538.monkeylib538.api.telemetry.TelemetryRegistry;
 import top.offsetmonkey538.monkeylib538.api.text.MonkeyLibStyle;
 import top.offsetmonkey538.monkeylib538.api.text.MonkeyLibText;
 
@@ -41,7 +42,7 @@ public final class LootTableModifierCommon {
 		final String isDev = System.getProperty("lootTableModifierDev", "");
 		if (isDev.equalsIgnoreCase("true")) IS_DEV = true;
 		else if (isDev.equalsIgnoreCase("false")) IS_DEV = false; // This way it can be disabled in devenv too.
-		else IS_DEV = PlatformMain.isDevelopmentEnvironment();
+		else IS_DEV = PlatformUtil.isDevelopmentEnvironment();
 	}
 
 	// Only used when IS_DEV is true
@@ -52,6 +53,8 @@ public final class LootTableModifierCommon {
 	}
 
 	public static void initialize() {
+		TelemetryRegistry.register(MOD_ID);
+
 		LootModifierActionTypes.register();
 		LootModifierPredicateTypes.register();
 

@@ -83,3 +83,5 @@ dependencies {
     modImplementation "top.offsetmonkey538.loottablemodifier:loot-table-modifier:1.0.1+1.21.1"
 }
 ```
+
+###### This mod collects anonymous usage information, read more about what's collected [here](https://github.com/OffsetMods538/MonkeyMetrics-Server). No personal data is collected. This can be disabled by modifying the config at `config/monkeylib538/telemetry.json` or by running the `/monkeylib538 telemetry set isEnabled false` command.

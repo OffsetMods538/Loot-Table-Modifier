@@ -51,11 +51,13 @@ subprojects {
 
     repositories {
         mavenCentral()
+        mavenLocal()
         maven {
             name = "OffsetMods538"
             url = "https://maven.offsetmonkey538.top/releases"
             content {
                 includeGroup "top.offsetmonkey538.monkeylib538"
+                includeGroup "top.offsetmonkey538.offsetconfig538"
             }
         }
     }

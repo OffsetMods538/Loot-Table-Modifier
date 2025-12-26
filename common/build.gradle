@@ -13,9 +13,7 @@ repositories {
 }
 
 dependencies {
-    compileOnlyApi("top.offsetmonkey538.monkeylib538:monkeylib538-common:${rootProject.monkeylib538_version}") {
-        exclude(group: "top.offsetmonkey538.offsetconfig538")
-    }
+    compileOnlyApi("top.offsetmonkey538.monkeylib538:monkeylib538-common:${rootProject.monkeylib538_version}")
     compileOnly "com.mojang:datafixerupper:${rootProject.datafixerupper_version}"
     compileOnly "com.mojang:brigadier:${rootProject.brigadier_version}"
     compileOnly "commons-io:commons-io:${rootProject.commonsio_version}"

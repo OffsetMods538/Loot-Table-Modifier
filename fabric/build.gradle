@@ -28,7 +28,6 @@ dependencies {
 
     modCompileOnlyApi("top.offsetmonkey538.monkeylib538:monkeylib538-fabric:${rootProject.monkeylib538_version}") {
         exclude(group: "net.fabricmc.fabric-api")
-        exclude(group: "top.offsetmonkey538.offsetconfig538")
     }
 }
 
@@ -104,7 +103,6 @@ subprojects {
         modRuntimeOnly("top.offsetmonkey538.monkeylib538:monkeylib538-fabric-${project.monkeylib538_suffix}:${rootProject.monkeylib538_version}+${project.monkeylib538_suffix}") {
             exclude(group: "net.fabricmc.fabric-api")
             exclude(group: "top.offsetmonkey538.monkeylib538:monkeylib538-fabric")
-            exclude(group: "top.offsetmonkey538.offsetconfig538")
         }
 
         // DevAuth
