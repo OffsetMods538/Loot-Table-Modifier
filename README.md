@@ -1,87 +1,31 @@
 # Loot Table Modifier
-[![discord-singular](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-singular_vector.svg)](https://discord.offsetmonkey538.top/)
-[![modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg)](https://modrinth.com/mod/loot-table-modifier)  
-[![requires-monkeylib538](https://raw.githubusercontent.com/OffsetMods538/MonkeyLib538/master/images/requires_monkeylib538.png)](https://modrinth.com/mod/monkeylib538)
+[![Chat with me on Discord](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-singular_vector.svg)](https://discord.offsetmonkey538.top/)
+[![Available on Modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg)](https://modrinth.com/mod/loot-table-modifier)  
+[![Requires MonkeyLib538](https://raw.githubusercontent.com/OffsetMods538/MonkeyLib538/master/images/requires_monkeylib538.png)](https://modrinth.com/mod/monkeylib538)
 [![Requires Fabric API](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/requires/fabric-api_vector.svg)](https://modrinth.com/mod/fabric-api)
 
-todo: good readme for alpha version
+## Why?
+Vanilla datapacks can only replace existing loot tables, which is not good for being compatible with other datapacks that also try to replace the same table.  
+This mod fixes that by implementing a system of *loot modifiers*, which do just that, modify loot (tables)!
 
-Allows datapacks to modify loot tables, instead of just overwriting them.  
-Version 2 of the mod is currently in alpha. v2 adds more ways to modify loot tables than just adding to them  
-v2 will be backwards-compatible with v1 modifiers, so no need to worry about them breaking.
+Unlike some other mods (*ahem* KubeJS) which work by running code at runtime to intercept and change drops, Loot Table Modifier modifies the loot tables as they're loaded from datapacks.  
+This means that the mod will only hurt performance during data loading, but has no performance impact during gameplay!¹
 
-If you want to use v1, then see the original description below.
-If you do decide to try out the alpha version of v2 (please do), then please go ahead and read the documentation [here](https://loot-table-modifier.docs.offsetmonkey538.top/) and if you encounter any problems, have suggestions for new actions/predicates or just want to say literally anything about the mod, please please please join my discord and tell me about it. I want to make this as good as I can and any sort of feedback really helps.  
+###### ¹ Except when you make zombies drop a bajillion stacks of diamonds or something crazy like that, but that's really not the mod's fault 😅
 
+## Usage
+### Players
+This mod does *nothing* when installed on its own. There needs to be some sort of datapack present that uses loot modifiers.  
+If you are using some mod or datapack which depends on Loot Table Modifier, just download the latest version for the Minecraft version you use from the versions page and add it to your mods folder.
 
+List of projects utilizing Loot Table Modifier:
+- I don't know of any yet 😅 Please do hit me up on discord or something if you wanna add your project here :D
 
-## Original Description
+### Mod, Modpack or Datapack developers
+Follow the documentation available [here](https://loot-table-modifier.docs.offsetmonkey538.top).
 
-Allows datapacks (and thus mods as well) to add to loot tables, instead of just overwriting them.
-
-This mod shouldn't impact performance while playing the game, but only when datapacks are reloading (joining a world, starting a server, `/reload` command, whatever else).  
-Performance impact during pack reloading varies depending on the datapacks.  
-The mod writes how long applying modifiers took in the console.
-
-Also provides a datagen provider for creating loot table modifiers in mods.
-
-A modifier json file includes two components:
-1. `"modifies"` - string or array, which defines the loot tables to modify. For example `"minecraft:entities/creeper"` or `"minecraft:chests/abandoned_mineshaft"`
-2. `"pools"` - array of loot pools. This works exactly the same as the `"pools"` in a vanilla loot table, thus you can generate a loot table online with a tool like [misode.github.io](https://misode.github.io/loot-table/) and copy over the `"pools"` from the generated json. (I may fork it and add a generator for specifically this mod in the future™)  
-An example json file:
-```json5
-// example_pack/data/example/loot-table-modifier/loot_modifier/drop_tnt.json
-{
-    // Can also be a single identifier without an array
-    // "modifies": "minecraft:entities/creeper",
-    "modifies": [
-        "minecraft:entities/creeper",
-        "minecraft:entities/zombie"
-    ],
-    "pools": [
-        {
-            "bonus_rolls": 0.0,
-            "entries": [
-                {
-                    "type": "minecraft:item",
-                    "functions": [
-                        {
-                            "add": false,
-                            "count": {
-                                "type": "minecraft:uniform",
-                                "max": 1.0,
-                                "min": 0.0
-                            },
-                            "function": "minecraft:set_count"
-                        }
-                    ],
-                    "name": "minecraft:tnt"
-                }
-            ],
-            "rolls": 1.0
-        }
-    ]
-}
-```
-
-Depend on inside mod:
-```groovy
-repositories {
-    // ...
-    maven {
-        name = "OffsetMods538"
-        url = "https://maven.offsetmonkey538.top/releases"
-        content {
-            includeGroup "top.offsetmonkey538.loottablemodifier"
-        }
-    }
-}
+This mod is allowed to be used in Modrinth modpacks.  
+I don't think I can legally prevent redistribution when using the MIT license, but I'd really appreciate if the mod wouldn't be redistributed as part of a modpack on other platforms.
 
 
-dependencies {
-    // ...
-    modImplementation "top.offsetmonkey538.loottablemodifier:loot-table-modifier:1.0.1+1.21.1"
-}
-```
-
-###### This mod collects anonymous usage information, read more about what's collected [here](https://github.com/OffsetMods538/MonkeyMetrics-Server). No personal data is collected. This can be disabled by modifying the config at `config/monkeylib538/telemetry.json` or by running the `/monkeylib538 telemetry set isEnabled false` command.
+###### This mod collects anonymous usage statistics, read more about what's collected [here](https://github.com/OffsetMods538/MonkeyMetrics-Server). No personal data is collected. This can be disabled by modifying the config at `config/monkeylib538/telemetry.json` or by running the `/monkeylib538 telemetry set isEnabled false` command.
