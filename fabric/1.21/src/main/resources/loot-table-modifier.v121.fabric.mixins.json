@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "top.offsetmonkey538.loottablemodifier.fabric.v121.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "LootContextTypesAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

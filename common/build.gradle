@@ -1,0 +1,32 @@
+plugins {
+    id 'java-library'
+}
+
+repositories {
+    maven {
+        name = "Mojang Libraries"
+        url = "https://libraries.minecraft.net"
+        content {
+            includeGroup "com.mojang"
+        }
+    }
+}
+
+dependencies {
+    compileOnlyApi("top.offsetmonkey538.monkeylib538:monkeylib538-common:${rootProject.monkeylib538_version}")
+    compileOnly "com.mojang:datafixerupper:${rootProject.datafixerupper_version}"
+    compileOnly "com.mojang:brigadier:${rootProject.brigadier_version}"
+    compileOnly "commons-io:commons-io:${rootProject.commonsio_version}"
+}
+
+processResources {
+    final Map properties = [
+            "modVersion":       project.version,
+            'monkeylibVersion': rootProject.monkeylib538_version
+    ]
+    inputs.properties(properties)
+
+    filesMatching(["fabric.mod.json", "META-INF/neoforge.mods.toml"]) {
+        expand(properties)
+    }
+}
