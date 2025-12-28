@@ -6,6 +6,6 @@ import top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper.IdentifierWrapp
 public final class IdentifierInstantiator implements Identifier.Instantiator {
     @Override
     public Identifier apply(String s) {
-        return new IdentifierWrapper(new net.minecraft.util.Identifier(s));
+        return new IdentifierWrapper(new net.minecraft.resources.ResourceLocation(s));
     }
 }

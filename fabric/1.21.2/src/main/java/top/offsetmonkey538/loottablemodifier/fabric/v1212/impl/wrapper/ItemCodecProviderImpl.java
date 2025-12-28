@@ -7,6 +7,6 @@ import top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper.ItemWrapper;
 public final class ItemCodecProviderImpl implements Item.CodecProvider {
     @Override
     public Codec<Item> get() {
-        return net.minecraft.item.Item.ENTRY_CODEC.xmap(ItemWrapper::new, wrappedItem -> ((ItemWrapper) wrappedItem).vanillaItem());
+        return net.minecraft.world.item.Item.CODEC.xmap(ItemWrapper::new, wrappedItem -> ((ItemWrapper) wrappedItem).vanillaItem());
     }
 }

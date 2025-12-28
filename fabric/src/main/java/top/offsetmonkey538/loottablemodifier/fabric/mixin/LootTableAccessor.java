@@ -1,13 +1,13 @@
 package top.offsetmonkey538.loottablemodifier.fabric.mixin;
 
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.function.LootFunction;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.util.List;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 
 @Mixin(LootTable.class)
 public interface LootTableAccessor {
@@ -20,9 +20,9 @@ public interface LootTableAccessor {
     void setPools(List<LootPool> pools);
 
     @Accessor
-    List<LootFunction> getFunctions();
+    List<LootItemFunction> getFunctions();
 
     @Mutable
     @Accessor
-    void setFunctions(List<LootFunction> pools);
+    void setFunctions(List<LootItemFunction> pools);
 }

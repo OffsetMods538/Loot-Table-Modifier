@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public record LootPoolWrapper(net.minecraft.loot.LootPool vanillaPool) implements LootPool {
+public record LootPoolWrapper(net.minecraft.world.level.storage.loot.LootPool vanillaPool) implements LootPool {
     @Override
     public ArrayList<LootPoolEntry> getEntries() {
         return vanillaPool.entries.stream().map(LootPoolEntryWrapper::create).collect(Collectors.toCollection(ArrayList::new));
@@ -22,7 +22,7 @@ public record LootPoolWrapper(net.minecraft.loot.LootPool vanillaPool) implement
 
     @Override
     public void setEntries(List<LootPoolEntry> entries) {
-        final ImmutableList.Builder<net.minecraft.loot.entry.LootPoolEntry> newEntries = ImmutableList.builder();
+        final ImmutableList.Builder<net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer> newEntries = ImmutableList.builder();
 
         newEntries.addAll(entries.stream().map(wrapperEntry -> ((LootPoolEntryWrapper) wrapperEntry).vanillaEntry).toList());
 
@@ -36,7 +36,7 @@ public record LootPoolWrapper(net.minecraft.loot.LootPool vanillaPool) implement
 
     @Override
     public void setConditions(List<LootCondition> conditions) {
-        final ImmutableList.Builder<net.minecraft.loot.condition.LootCondition> newConditions = ImmutableList.builder();
+        final ImmutableList.Builder<net.minecraft.world.level.storage.loot.predicates.LootItemCondition> newConditions = ImmutableList.builder();
 
         newConditions.addAll(conditions.stream().map(wrapperEntry -> ((LootConditionWrapper) wrapperEntry).vanillaCondition()).toList());
 
@@ -50,7 +50,7 @@ public record LootPoolWrapper(net.minecraft.loot.LootPool vanillaPool) implement
 
     @Override
     public void setFunctions(List<LootFunction> functions) {
-        final ImmutableList.Builder<net.minecraft.loot.function.LootFunction> newFunctions = ImmutableList.builder();
+        final ImmutableList.Builder<net.minecraft.world.level.storage.loot.functions.LootItemFunction> newFunctions = ImmutableList.builder();
 
         newFunctions.addAll(functions.stream().map(wrapperEntry -> ((LootFunctionWrapper) wrapperEntry).vanillaFunction()).toList());
 
@@ -60,7 +60,7 @@ public record LootPoolWrapper(net.minecraft.loot.LootPool vanillaPool) implement
     public static final class CodecProviderImpl implements LootPool.CodecProvider {
         @Override
         public Codec<LootPool> get() {
-            return net.minecraft.loot.LootPool.CODEC.xmap(LootPoolWrapper::new, wrappedPool -> ((LootPoolWrapper) wrappedPool).vanillaPool());
+            return net.minecraft.world.level.storage.loot.LootPool.CODEC.xmap(LootPoolWrapper::new, wrappedPool -> ((LootPoolWrapper) wrappedPool).vanillaPool());
         }
     }
 }

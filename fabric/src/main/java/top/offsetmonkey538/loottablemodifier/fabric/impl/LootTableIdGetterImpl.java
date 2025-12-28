@@ -2,12 +2,12 @@ package top.offsetmonkey538.loottablemodifier.fabric.impl;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.MappingResolver;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.entity.EntityType;
-import net.minecraft.loot.LootTable;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,7 +51,7 @@ public class LootTableIdGetterImpl implements LootTableIdGetter {
 
             // mod only supports down to 1.20.5 soo: private static final String V1d14d0 = RESOLVER.mapMethodName("intermediary", "net.minecraft.class_1299", "method_16351", "()Lnet/minecraft/util/Identifier;");
 
-            private static final Function<EntityType<?>, Identifier> get;
+            private static final Function<EntityType<?>, ResourceLocation> get;
 
             static {
                 // TODO: I had the below statement commented out, maybe it doesnt work? use this then: final Class<?> entityType = Class.forName(RESOLVER.mapClassName("intermediary", "net.minecraft.class_1299"));
@@ -65,8 +65,8 @@ public class LootTableIdGetterImpl implements LootTableIdGetter {
                     finalMethod = method;
                     get = entity -> {
                         try {
-                            @SuppressWarnings("unchecked") final Optional<RegistryKey<LootTable>> optional = (Optional<RegistryKey<LootTable>>) finalMethod.invoke(entity);
-                            if (optional.isPresent()) return optional.get().getValue();
+                            @SuppressWarnings("unchecked") final Optional<ResourceKey<LootTable>> optional = (Optional<ResourceKey<LootTable>>) finalMethod.invoke(entity);
+                            if (optional.isPresent()) return optional.get().location();
                             throw new IllegalStateException("Entity '" + entity + "' has no loot table! (It is created with 'builder.dropsNothing()')");
                         } catch (IllegalAccessException | InvocationTargetException e) {
                             throw new RuntimeException(e);
@@ -80,7 +80,7 @@ public class LootTableIdGetterImpl implements LootTableIdGetter {
                     finalMethod = method;
                     get = entity -> {
                         try {
-                            return ((RegistryKey<?>) finalMethod.invoke(entity)).getValue();
+                            return ((ResourceKey<?>) finalMethod.invoke(entity)).location();
                         } catch (IllegalAccessException | InvocationTargetException e) {
                             throw new RuntimeException(e);
                         }
@@ -94,10 +94,10 @@ public class LootTableIdGetterImpl implements LootTableIdGetter {
             private static final String V1d21d2 = RESOLVER.mapMethodName("intermediary", "net.minecraft.class_4970", "method_26162", "()Ljava/util/Optional;");
             private static final String V1d20d5 = RESOLVER.mapMethodName("intermediary", "net.minecraft.class_4970", "method_26162", "()Lnet/minecraft/class_5321;");
 
-            private static final Function<AbstractBlock, Identifier> get;
+            private static final Function<BlockBehaviour, ResourceLocation> get;
 
             static {
-                final Class<?> abstractBlock = AbstractBlock.class;
+                final Class<?> abstractBlock = BlockBehaviour.class;
                 final Method finalMethod;
                 Method method;
 
@@ -107,8 +107,8 @@ public class LootTableIdGetterImpl implements LootTableIdGetter {
                     finalMethod = method;
                     get = entity -> {
                         try {
-                            @SuppressWarnings("unchecked") final Optional<RegistryKey<LootTable>> optional = (Optional<RegistryKey<LootTable>>) finalMethod.invoke(entity);
-                            if (optional.isPresent()) return optional.get().getValue();
+                            @SuppressWarnings("unchecked") final Optional<ResourceKey<LootTable>> optional = (Optional<ResourceKey<LootTable>>) finalMethod.invoke(entity);
+                            if (optional.isPresent()) return optional.get().location();
                             throw new IllegalStateException("Entity '" + entity + "' has no loot table! (It is created with 'builder.dropsNothing()')");
                         } catch (IllegalAccessException | InvocationTargetException e) {
                             throw new RuntimeException(e);
@@ -122,7 +122,7 @@ public class LootTableIdGetterImpl implements LootTableIdGetter {
                     finalMethod = method;
                     get = entity -> {
                         try {
-                            return ((RegistryKey<?>) finalMethod.invoke(entity)).getValue();
+                            return ((ResourceKey<?>) finalMethod.invoke(entity)).location();
                         } catch (IllegalAccessException | InvocationTargetException e) {
                             throw new RuntimeException(e);
                         }

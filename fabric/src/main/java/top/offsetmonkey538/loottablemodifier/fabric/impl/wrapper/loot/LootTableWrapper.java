@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 import static top.offsetmonkey538.loottablemodifier.LootTableModifierCommon.load;
 
-public record LootTableWrapper(net.minecraft.loot.LootTable vanillaTable) implements LootTable {
+public record LootTableWrapper(net.minecraft.world.level.storage.loot.LootTable vanillaTable) implements LootTable {
 
     @Override
     public String getType() {
@@ -28,7 +28,7 @@ public record LootTableWrapper(net.minecraft.loot.LootTable vanillaTable) implem
 
     @Override
     public void setPools(List<LootPool> entries) {
-        final ImmutableList.Builder<net.minecraft.loot.LootPool> newPools = ImmutableList.builder();
+        final ImmutableList.Builder<net.minecraft.world.level.storage.loot.LootPool> newPools = ImmutableList.builder();
 
         newPools.addAll(entries.stream().map(wrapperEntry -> ((LootPoolWrapper) wrapperEntry).vanillaPool()).toList());
 
@@ -42,7 +42,7 @@ public record LootTableWrapper(net.minecraft.loot.LootTable vanillaTable) implem
 
     @Override
     public void setFunctions(List<LootFunction> functions) {
-        final ImmutableList.Builder<net.minecraft.loot.function.LootFunction> newFunctions = ImmutableList.builder();
+        final ImmutableList.Builder<net.minecraft.world.level.storage.loot.functions.LootItemFunction> newFunctions = ImmutableList.builder();
 
         newFunctions.addAll(functions.stream().map(wrapperEntry -> ((LootFunctionWrapper) wrapperEntry).vanillaFunction()).toList());
 
@@ -52,11 +52,11 @@ public record LootTableWrapper(net.minecraft.loot.LootTable vanillaTable) implem
     public static final class CodecProviderImpl implements LootTable.CodecProvider {
         @Override
         public Codec<LootTable> get() {
-            return net.minecraft.loot.LootTable.CODEC.xmap(LootTableWrapper::new, wrappedPool -> ((LootTableWrapper) wrappedPool).vanillaTable());
+            return net.minecraft.world.level.storage.loot.LootTable.DIRECT_CODEC.xmap(LootTableWrapper::new, wrappedPool -> ((LootTableWrapper) wrappedPool).vanillaTable());
         }
     }
 
-    public interface TypeGetter extends Function<net.minecraft.loot.LootTable, String> {
+    public interface TypeGetter extends Function<net.minecraft.world.level.storage.loot.LootTable, String> {
         TypeGetter INSTANCE = load(TypeGetter.class);
     }
 }

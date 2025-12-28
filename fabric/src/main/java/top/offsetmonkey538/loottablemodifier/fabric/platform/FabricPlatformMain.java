@@ -8,16 +8,16 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.Util;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.data.DataProvider;
-import net.minecraft.loot.LootTable;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryOps;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.text.Text;
-import net.minecraft.util.JsonHelper;
-import net.minecraft.util.Util;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.LootTableModifierCommon;
 import top.offsetmonkey538.loottablemodifier.api.resource.LootModifier;
@@ -45,12 +45,12 @@ public class FabricPlatformMain implements PlatformMain, ModInitializer {
 
     @Override
     public void registerExamplePackImpl() {
-        ResourceManagerHelper.registerBuiltinResourcePack(id("example_pack"), FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow(), Text.of("Example Pack"), ResourcePackActivationType.NORMAL);
+        ResourceManagerHelper.registerBuiltinResourcePack(id("example_pack"), FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow(), Component.nullToEmpty("Example Pack"), ResourcePackActivationType.NORMAL);
     }
 
     @Override
     public void writeSortedImpl(JsonWriter jsonWriter, JsonElement json) throws IOException {
-        JsonHelper.writeSorted(jsonWriter, json, DataProvider.JSON_KEY_SORTING_COMPARATOR);
+        GsonHelper.writeValue(jsonWriter, json, DataProvider.KEY_COMPARATOR);
     }
 
     @Override
@@ -73,10 +73,10 @@ public class FabricPlatformMain implements PlatformMain, ModInitializer {
         final Stopwatch stopwatch = Stopwatch.createStarted();
 
         final Map<Identifier, top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootTable> tables = getRegistryAsWrapper(lootRegistry)
-                .streamEntries()
+                .listElements()
                 .collect(Collectors.toMap(
-                        registryEntry -> new IdentifierWrapper(registryEntry.registryKey().getValue()),
-                        registryEntry -> new LootTableWrapper(lootRegistry.get(registryEntry.registryKey()))
+                        registryEntry -> new IdentifierWrapper(registryEntry.key().location()),
+                        registryEntry -> new LootTableWrapper(lootRegistry.getValue(registryEntry.key()))
                 ));
 
         LOGGER.info("Gathered %s loot tables in %s", tables.size(), stopwatch.stop());
@@ -90,14 +90,14 @@ public class FabricPlatformMain implements PlatformMain, ModInitializer {
 
         final Map<top.offsetmonkey538.loottablemodifier.api.wrapper.Identifier, LootModifier> result = new HashMap<>();
 
-        for (Map.Entry<net.minecraft.util.Identifier, Resource> entry : resourceManager.findResources(MOD_ID + "/loot_modifier", path -> path.toString().endsWith(".json")).entrySet()) {
-            final net.minecraft.util.Identifier id = entry.getKey();
+        for (Map.Entry<net.minecraft.resources.ResourceLocation, Resource> entry : resourceManager.listResources(MOD_ID + "/loot_modifier", path -> path.toString().endsWith(".json")).entrySet()) {
+            final net.minecraft.resources.ResourceLocation id = entry.getKey();
 
             try {
                 LOGGER.debug("Loading load loot table modifier from '%s'", id);
                 result.put(
                         new IdentifierWrapper(id),
-                        LootModifier.CODEC.decode(registryOps, JsonParser.parseReader(entry.getValue().getReader())).getOrThrow().getFirst()
+                        LootModifier.CODEC.decode(registryOps, JsonParser.parseReader(entry.getValue().openAsReader())).getOrThrow().getFirst()
                 );
             } catch (Exception e) {
                 LOGGER.error("Failed to load loot table modifier from '%s'!", e, id);
@@ -109,8 +109,8 @@ public class FabricPlatformMain implements PlatformMain, ModInitializer {
         return result;
     }
 
-    public static net.minecraft.util.Identifier id(String path) {
-        return net.minecraft.util.Identifier.of(MOD_ID, path);
+    public static net.minecraft.resources.ResourceLocation id(String path) {
+        return net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 
     /* TODO: separate modules implementing this?
@@ -121,15 +121,15 @@ public class FabricPlatformMain implements PlatformMain, ModInitializer {
     If 'Registry' implements 'RegistryWrapper': cast it
     Else: call 'getReadOnlyWrapper' on the registry (doesn't exist on 1.21.4, otherwise would've used 'registry.getReadOnlyWrapper().streamEntries()')
      */
-    private static <T> RegistryWrapper<T> getRegistryAsWrapper(@NotNull Registry<T> registry) {
+    private static <T> HolderLookup<T> getRegistryAsWrapper(@NotNull Registry<T> registry) {
         //noinspection ConstantValue,RedundantSuppression: On lower versions, Registry doesn't extend RegistryWrapper and thus the 'isAssignableFrom' check can be false. The redundant supression is for the unchecked cast below.
-        if (RegistryWrapper.class.isAssignableFrom(registry.getClass()))
+        if (HolderLookup.class.isAssignableFrom(registry.getClass()))
             //noinspection unchecked,RedundantCast: I swear it casts 🤞
-            return (RegistryWrapper<T>) registry;
+            return (HolderLookup<T>) registry;
 
         try {
             //noinspection unchecked: Seriously I swear 🤞🤞
-            return (RegistryWrapper<T>) registry.getClass().getDeclaredMethod(FabricLoader.getInstance().getMappingResolver().mapMethodName("intermediary", "net.minecraft.class_2378", "method_46771", "()Lnet/minecraft/class_7225$class_7226;")).invoke(registry);
+            return (HolderLookup<T>) registry.getClass().getDeclaredMethod(FabricLoader.getInstance().getMappingResolver().mapMethodName("intermediary", "net.minecraft.class_2378", "method_46771", "()Lnet/minecraft/class_7225$class_7226;")).invoke(registry);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

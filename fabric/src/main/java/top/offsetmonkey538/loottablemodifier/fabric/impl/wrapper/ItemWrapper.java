@@ -1,14 +1,14 @@
 package top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper;
 
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import top.offsetmonkey538.loottablemodifier.api.wrapper.Item;
 
-public record ItemWrapper(RegistryEntry<net.minecraft.item.Item> vanillaItem) implements Item {
+public record ItemWrapper(Holder<net.minecraft.world.item.Item> vanillaItem) implements Item {
 
     @Override
     public String getId() {
-        return Registries.ITEM.getId(vanillaItem.value()).toString();
+        return BuiltInRegistries.ITEM.getKey(vanillaItem.value()).toString();
     }
 }
 

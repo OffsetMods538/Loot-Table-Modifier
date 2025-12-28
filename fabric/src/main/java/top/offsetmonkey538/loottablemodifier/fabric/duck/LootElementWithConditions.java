@@ -1,10 +1,9 @@
 package top.offsetmonkey538.loottablemodifier.fabric.duck;
 
-import net.minecraft.loot.condition.LootCondition;
-
 import java.util.List;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 public interface LootElementWithConditions {
-    void loot_table_modifier$setConditions(List<LootCondition> conditions);
-    List<LootCondition> loot_table_modifier$getConditions();
+    void loot_table_modifier$setConditions(List<LootItemCondition> conditions);
+    List<LootItemCondition> loot_table_modifier$getConditions();
 }

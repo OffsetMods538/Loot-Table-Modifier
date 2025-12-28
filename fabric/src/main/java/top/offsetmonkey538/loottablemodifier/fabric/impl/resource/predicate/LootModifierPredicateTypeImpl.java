@@ -2,9 +2,9 @@ package top.offsetmonkey538.loottablemodifier.fabric.impl.resource.predicate;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Lifecycle;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.SimpleRegistry;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicateType;
@@ -19,8 +19,8 @@ public final class LootModifierPredicateTypeImpl {
     }
 
     public static final class RegistryImpl implements LootModifierPredicateType.Registry {
-        private static final Registry<LootModifierPredicateType> REGISTRY = new SimpleRegistry<>(
-                RegistryKey.ofRegistry(id("loot_modifier_predicate_types")), Lifecycle.stable()
+        private static final Registry<LootModifierPredicateType> REGISTRY = new MappedRegistry<>(
+                ResourceKey.createRegistryKey(id("loot_modifier_predicate_types")), Lifecycle.stable()
         );
 
         @Override
@@ -30,7 +30,7 @@ public final class LootModifierPredicateTypeImpl {
     }
 
     public static final class CodecProviderImpl implements LootModifierPredicateType.CodecProvider {
-        private static final Codec<LootModifierPredicate> CODEC = RegistryImpl.REGISTRY.getCodec().dispatch(LootModifierPredicate::getType, LootModifierPredicateType::codec);
+        private static final Codec<LootModifierPredicate> CODEC = RegistryImpl.REGISTRY.byNameCodec().dispatch(LootModifierPredicate::getType, LootModifierPredicateType::codec);
 
         @Override
         public Codec<LootModifierPredicate> get() {

@@ -7,6 +7,6 @@ import top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper.loot.LootCondit
 public final class LootConditionCodecProviderImpl implements LootCondition.CodecProvider {
     @Override
     public Codec<LootCondition> get() {
-        return net.minecraft.loot.condition.LootCondition.CODEC.xmap(LootConditionWrapper::new, wrappedCondition -> ((LootConditionWrapper) wrappedCondition).vanillaCondition());
+        return net.minecraft.world.level.storage.loot.predicates.LootItemCondition.DIRECT_CODEC.xmap(LootConditionWrapper::new, wrappedCondition -> ((LootConditionWrapper) wrappedCondition).vanillaCondition());
     }
 }

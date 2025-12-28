@@ -2,8 +2,6 @@ package top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper.loot.entry;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
-import net.minecraft.loot.entry.ItemEntry;
-import net.minecraft.loot.entry.LootPoolEntryTypes;
 import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootCondition;
 import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.entry.LootPoolEntry;
 import top.offsetmonkey538.loottablemodifier.fabric.duck.LootElementWithConditions;
@@ -12,19 +10,21 @@ import top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper.loot.LootCondit
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.entries.LootPoolEntries;
 
 /**
- * Don't initialize using canonical constructor. Use {@link #create(net.minecraft.loot.entry.LootPoolEntry)} instead
+ * Don't initialize using canonical constructor. Use {@link #create(net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer)} instead
  */
 public class LootPoolEntryWrapper implements LootPoolEntry {
-    public final net.minecraft.loot.entry.LootPoolEntry vanillaEntry;
+    public final net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer vanillaEntry;
 
-    protected LootPoolEntryWrapper(net.minecraft.loot.entry.LootPoolEntry vanillaEntry) {
+    protected LootPoolEntryWrapper(net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer vanillaEntry) {
         this.vanillaEntry = vanillaEntry;
     }
 
-    public static LootPoolEntryWrapper create(net.minecraft.loot.entry.LootPoolEntry vanillaEntry) {
-        if (vanillaEntry instanceof ItemEntry itemEntry) return new ItemEntryWrapper(itemEntry);
+    public static LootPoolEntryWrapper create(net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer vanillaEntry) {
+        if (vanillaEntry instanceof LootItem itemEntry) return new ItemEntryWrapper(itemEntry);
         return new LootPoolEntryWrapper(vanillaEntry);
     }
 
@@ -35,7 +35,7 @@ public class LootPoolEntryWrapper implements LootPoolEntry {
 
     @Override
     public void setConditions(List<LootCondition> conditions) {
-        final ImmutableList.Builder<net.minecraft.loot.condition.LootCondition> newConditions = ImmutableList.builder();
+        final ImmutableList.Builder<net.minecraft.world.level.storage.loot.predicates.LootItemCondition> newConditions = ImmutableList.builder();
 
         newConditions.addAll(conditions.stream().map(wrapperCondition -> ((LootConditionWrapper) wrapperCondition).vanillaCondition()).toList());
 
@@ -57,7 +57,7 @@ public class LootPoolEntryWrapper implements LootPoolEntry {
     public static final class CodecProviderImpl implements LootPoolEntry.CodecProvider {
         @Override
         public Codec<LootPoolEntry> get() {
-            return LootPoolEntryTypes.CODEC.xmap(LootPoolEntryWrapper::new, wrappedEntry -> ((LootPoolEntryWrapper) wrappedEntry).vanillaEntry);
+            return LootPoolEntries.CODEC.xmap(LootPoolEntryWrapper::new, wrappedEntry -> ((LootPoolEntryWrapper) wrappedEntry).vanillaEntry);
         }
     }
 }

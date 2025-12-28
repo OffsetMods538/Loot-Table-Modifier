@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.api.wrapper.Identifier;
 
-public record IdentifierWrapper(net.minecraft.util.Identifier vanillaIdentifier) implements Identifier {
+public record IdentifierWrapper(net.minecraft.resources.ResourceLocation vanillaIdentifier) implements Identifier {
 
     @Override
     public String asString() {
@@ -29,7 +29,7 @@ public record IdentifierWrapper(net.minecraft.util.Identifier vanillaIdentifier)
     public static final class CodecProviderImpl implements CodecProvider {
         @Override
         public Codec<Identifier> get() {
-            return net.minecraft.util.Identifier.CODEC.xmap(IdentifierWrapper::new, wrappedIdentifier -> ((IdentifierWrapper) wrappedIdentifier).vanillaIdentifier());
+            return net.minecraft.resources.ResourceLocation.CODEC.xmap(IdentifierWrapper::new, wrappedIdentifier -> ((IdentifierWrapper) wrappedIdentifier).vanillaIdentifier());
         }
     }
 }

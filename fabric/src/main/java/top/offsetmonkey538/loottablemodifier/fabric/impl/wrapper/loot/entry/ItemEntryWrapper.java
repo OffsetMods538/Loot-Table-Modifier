@@ -6,9 +6,9 @@ import top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper.ItemWrapper;
 import top.offsetmonkey538.loottablemodifier.fabric.mixin.ItemEntryAccessor;
 
 public final class ItemEntryWrapper extends LootPoolEntryWrapper implements ItemEntry {
-    private final net.minecraft.loot.entry.ItemEntry vanillaEntry;
+    private final net.minecraft.world.level.storage.loot.entries.LootItem vanillaEntry;
 
-    ItemEntryWrapper(net.minecraft.loot.entry.ItemEntry vanillaEntry) {
+    ItemEntryWrapper(net.minecraft.world.level.storage.loot.entries.LootItem vanillaEntry) {
         super(vanillaEntry);
         this.vanillaEntry = vanillaEntry;
     }
@@ -20,7 +20,7 @@ public final class ItemEntryWrapper extends LootPoolEntryWrapper implements Item
 
     @Override
     public String getId() {
-        return ((ItemEntryAccessor) this.vanillaEntry).getItem().getIdAsString();
+        return ((ItemEntryAccessor) this.vanillaEntry).getItem().getRegisteredName();
     }
 }
 

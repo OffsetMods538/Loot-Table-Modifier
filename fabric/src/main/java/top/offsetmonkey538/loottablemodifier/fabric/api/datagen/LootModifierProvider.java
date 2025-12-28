@@ -2,9 +2,9 @@ package top.offsetmonkey538.loottablemodifier.fabric.api.datagen;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricCodecDataProvider;
-import net.minecraft.data.DataOutput;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.api.resource.LootModifier;
 
@@ -16,7 +16,7 @@ import static top.offsetmonkey538.loottablemodifier.LootTableModifierCommon.MOD_
 /**
  * A datagen provider for creating loot modifiers.
  * <br>
- * Override {@link #generate(RegistryWrapper.WrapperLookup) generate()} and use the {@link #addModifier(Identifier, LootModifier.Builder)} method to add modifiers.
+ * Override {@link #generate(HolderLookup.Provider) generate()} and use the {@link #addModifier(ResourceLocation, LootModifier.Builder)} method to add modifiers.
  * <br>
  * <pre>{@code
  * @Override
@@ -46,14 +46,14 @@ import static top.offsetmonkey538.loottablemodifier.LootTableModifierCommon.MOD_
  */
 // TODO: FIXME: Datagen part of api should be platform specific and probably include helper methods for turning vanilla things into wrappers cause calling the constructors seems annoying
 public abstract class LootModifierProvider extends FabricCodecDataProvider<LootModifier> {
-    private BiConsumer<Identifier, LootModifier> provider;
+    private BiConsumer<ResourceLocation, LootModifier> provider;
 
-    public LootModifierProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-        super(dataOutput, registriesFuture, DataOutput.OutputType.DATA_PACK, MOD_ID + "/loot_modifier", LootModifier.CODEC);
+    public LootModifierProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+        super(dataOutput, registriesFuture, PackOutput.Target.DATA_PACK, MOD_ID + "/loot_modifier", LootModifier.CODEC);
     }
 
     @Override
-    protected void configure(BiConsumer<Identifier, LootModifier> provider, RegistryWrapper.WrapperLookup lookup) {
+    protected void configure(BiConsumer<ResourceLocation, LootModifier> provider, HolderLookup.Provider lookup) {
         this.provider = provider;
         generate(lookup);
     }
@@ -64,11 +64,11 @@ public abstract class LootModifierProvider extends FabricCodecDataProvider<LootM
     }
 
     /**
-     * Override and use {@link #addModifier(Identifier, LootModifier.Builder)} method to add modifiers.
+     * Override and use {@link #addModifier(ResourceLocation, LootModifier.Builder)} method to add modifiers.
      *
      * @param lookup A lookup for registries.
      */
-    protected abstract void generate(RegistryWrapper.WrapperLookup lookup);
+    protected abstract void generate(HolderLookup.Provider lookup);
 
     /**
      * Adds a loot modifier using the provided name and builder.
@@ -76,7 +76,7 @@ public abstract class LootModifierProvider extends FabricCodecDataProvider<LootM
      * @param name the identifier of the modifier
      * @param builder the builder to generate the loot modifier from
      */
-    protected void addModifier(@NotNull Identifier name, @NotNull LootModifier.Builder builder) {
+    protected void addModifier(@NotNull ResourceLocation name, @NotNull LootModifier.Builder builder) {
         provider.accept(name, builder.build());
     }
 }

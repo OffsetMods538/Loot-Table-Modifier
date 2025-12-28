@@ -1,7 +1,7 @@
 package top.offsetmonkey538.loottablemodifier.fabric.api;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.EntityType;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.api.wrapper.Identifier;

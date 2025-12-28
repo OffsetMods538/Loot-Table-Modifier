@@ -2,9 +2,9 @@ package top.offsetmonkey538.loottablemodifier.fabric.impl.resource.action;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Lifecycle;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.SimpleRegistry;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierActionType;
@@ -19,8 +19,8 @@ public final class LootModifierActionTypeImpl {
     }
 
     public static final class RegistryImpl implements LootModifierActionType.Registry {
-        private static final Registry<LootModifierActionType> REGISTRY = new SimpleRegistry<>(
-                RegistryKey.ofRegistry(id("loot_modifier_action_types")), Lifecycle.stable()
+        private static final Registry<LootModifierActionType> REGISTRY = new MappedRegistry<>(
+                ResourceKey.createRegistryKey(id("loot_modifier_action_types")), Lifecycle.stable()
         );
 
         @Override
@@ -30,7 +30,7 @@ public final class LootModifierActionTypeImpl {
     }
 
     public static final class CodecProviderImpl implements LootModifierActionType.CodecProvider {
-        private static final Codec<LootModifierAction> CODEC = RegistryImpl.REGISTRY.getCodec().dispatch(LootModifierAction::getType, LootModifierActionType::codec);
+        private static final Codec<LootModifierAction> CODEC = RegistryImpl.REGISTRY.byNameCodec().dispatch(LootModifierAction::getType, LootModifierActionType::codec);
 
         @Override
         public Codec<LootModifierAction> get() {

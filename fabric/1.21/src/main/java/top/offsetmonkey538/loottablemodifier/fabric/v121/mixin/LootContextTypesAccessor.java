@@ -1,16 +1,16 @@
 package top.offsetmonkey538.loottablemodifier.fabric.v121.mixin;
 
 import com.google.common.collect.BiMap;
-import net.minecraft.loot.context.LootContextType;
-import net.minecraft.loot.context.LootContextTypes;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(LootContextTypes.class)
+@Mixin(LootContextParamSets.class)
 public interface LootContextTypesAccessor {
-    @Accessor("MAP")
-    static BiMap<Identifier, LootContextType> getMAP() {
+    @Accessor("REGISTRY")
+    static BiMap<ResourceLocation, LootContextParamSet> getMAP() {
         throw new AssertionError();
     }
 }
