@@ -59,7 +59,7 @@ public abstract class LootModifierProvider extends FabricCodecDataProvider<LootM
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Loot Table Modifiers";
     }
 

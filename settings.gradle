@@ -9,18 +9,18 @@ pluginManagement {
 	}
 }
 
-rootProject.name = "loottablemodifier"
+rootProject.name = "Loot-Table-Modifier"
 
 
-include "common"
+include ":common"
 
-include "modded"
-include "modded:1.20.5"
-include "modded:1.21"
-include "modded:1.21.2"
+include ":modded"
+include ":modded:1.20.5"
+include ":modded:1.21"
+include ":modded:1.21.2"
 
-include "fabric"
-include "fabric:1.20.5"
+include ":fabric"
+include ":fabric:1.20.5"
 include "fabric:1.21"
 include "fabric:1.21.2"
 

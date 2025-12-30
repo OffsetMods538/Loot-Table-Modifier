@@ -99,7 +99,7 @@ public record TablePredicate(@Nullable List<RegexPattern> identifiers, @Nullable
          * @param name the identifier of the loot table to match
          * @return this
          */
-        @Contract("_->this")
+        @Contract("_->this") //TODO: these methods shoulöd prolly also take identigfiers?
         public TablePredicate.Builder name(@NotNull String name) {
             name(RegexPattern.literal(name));
             return this;

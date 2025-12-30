@@ -125,7 +125,7 @@ public final class LootTableModifierCommon {
     }
 
 	private static void enableDebug() {
-        PlatformMain.registerExamplePack();
+        //TODO: guess this should be done in the fabric initializer?: PlatformMain.registerExamplePack();
 
         CommandRegistrationApi.registerCommand(
                 literal(MOD_ID)
@@ -191,7 +191,7 @@ public final class LootTableModifierCommon {
 	}
 
     public static <T> T load(Class<T> clazz) {
-        return java.util.ServiceLoader.load(clazz)
+        return java.util.ServiceLoader.load(clazz, LootTableModifierCommon.class.getClassLoader())
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Failed to load service for " + clazz.getName()));
     }

@@ -1,19 +1,11 @@
+import org.codehaus.groovy.runtime.GStringImpl
+
 import java.nio.file.Files
 
 plugins {
-    /*
-	id 'fabric-loom' version '1.11-SNAPSHOT' apply false
-    id 'net.neoforged.moddev' version '2.0.112' apply false
-	id 'io.github.dexman545.outlet' version '1.6.1' apply false
-    id 'io.papermc.paperweight.userdev' version '2.0.0-beta.8' apply false
-    id 'xyz.jpenilla.run-paper' version '2.3.1' apply false
-    id 'com.gradleup.shadow' version '9.0.0-beta4' apply false
-	id 'com.modrinth.minotaur' version '2.+' apply false
-     */
     id 'java'
+    id 'fabric-loom' version '1.14-SNAPSHOT' apply false
 }
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 ext {
     versionPrefix = rootProject.mod_version
@@ -28,87 +20,28 @@ ext {
 
         var separator = "-"
         if (versionPrefix.contains("-")) separator = "."
-        versionPrefix = "${versionPrefix}${separator}${preReleaseVersion}"
+        versionPrefix = "${versionPrefix}${separator}${preReleaseVersion}" as GStringImpl
     }
     final String versionSuffix = System.getenv("VERSION_SUFFIX")
     if (versionSuffix != null && !versionSuffix.isEmpty()) {
-        versionPrefix = "${versionPrefix}+${versionSuffix}"
+        versionPrefix = "${versionPrefix}+${versionSuffix}" as GStringImpl
     }
 
     System.out.println("Version Prefix: " + versionPrefix)
 }
 
 allprojects {
-    group = "top.offsetmonkey538.loottablemodifier"
-}
-
-subprojects {
-    apply plugin: "java"
-    apply plugin: "maven-publish"
-
-    base.archivesName = "loot-table-modifier-${project.project_name}"
-    version = project.project_name == project.name ? "${rootProject.versionPrefix}" : "${rootProject.versionPrefix}+${project.minecraft_version}"
-
     repositories {
-        mavenCentral()
-        mavenLocal()
-        maven {
-            name = "OffsetMods538"
-            url = "https://maven.offsetmonkey538.top/releases"
-            content {
-                includeGroup "top.offsetmonkey538.monkeylib538"
-                includeGroup "top.offsetmonkey538.offsetconfig538"
-            }
-        }
-    }
-
-    dependencies {
-        compileOnly "org.jetbrains:annotations:${rootProject.jetbrainsannotations_version}"
-    }
-
-    tasks.withType(JavaCompile).configureEach {
-        it.options.release = 21
-    }
-
-    java {
-        withSourcesJar()
-        withJavadocJar()
-
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
-
-    tasks.named("javadoc", Javadoc) {
-        options.addFileOption('-add-stylesheet', rootProject.file("javadoc-stylesheet.css"))
-    }
-
-    jar {
-        from("${rootProject.projectDir}/LICENSE") {
-            rename { "${it}" }
-        }
-    }
-
-    publishing {
-        repositories {
-            maven {
-                name = "OffsetMonkey538"
-                url = "https://maven.offsetmonkey538.top/releases"
-                credentials {
-                    username = providers.gradleProperty("OffsetMonkey538Username").getOrElse(System.getenv("MAVEN_USERNAME"))
-                    password = providers.gradleProperty("OffsetMonkey538Password").getOrElse(System.getenv("MAVEN_PASSWORD"))
-                }
-                authentication {
-                    basic(BasicAuthentication)
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = "OffsetMods538"
+                    url = "https://maven.offsetmonkey538.top/releases"
                 }
             }
-        }
-        publications {
-            maven(MavenPublication) {
-                artifactId = base.archivesName.get()
-
-                from components.java
+            filter {
+                includeGroupAndSubgroups "top.offsetmonkey538"
             }
         }
     }
-
 }

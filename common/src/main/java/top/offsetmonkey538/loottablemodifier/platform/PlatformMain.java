@@ -15,10 +15,6 @@ public interface PlatformMain {
     @ApiStatus.Internal
     PlatformMain INSTANCE = load(PlatformMain.class);
 
-    static void registerExamplePack() {
-        INSTANCE.registerExamplePackImpl();
-    }
-
     static void writeSorted(JsonWriter jsonWriter, JsonElement json) throws IOException {
         INSTANCE.writeSortedImpl(jsonWriter, json);
     }
@@ -27,17 +23,16 @@ public interface PlatformMain {
         return INSTANCE.idImpl(path);
     }
 
-    static <T> Predicate<T> allOf(List<? extends Predicate<? super T>> predicates) {
+    static <T> Predicate<T> allOf(List<? extends Predicate<T>> predicates) {
         return INSTANCE.allOfImpl(predicates);
     }
 
-    static <T> Predicate<T> anyOf(List<? extends Predicate<? super T>> predicates) {
+    static <T> Predicate<T> anyOf(List<? extends Predicate<T>> predicates) {
         return INSTANCE.anyOfImpl(predicates);
     }
 
-    void registerExamplePackImpl();
     void writeSortedImpl(JsonWriter jsonWriter, JsonElement json) throws IOException;
     Identifier idImpl(String path);
-    <T> Predicate<T> allOfImpl(List<? extends Predicate<? super T>> predicates);
-    <T> Predicate<T> anyOfImpl(List<? extends Predicate<? super T>> predicates);
+    <T> Predicate<T> allOfImpl(List<? extends Predicate<T>> predicates);
+    <T> Predicate<T> anyOfImpl(List<? extends Predicate<T>> predicates);
 }

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "loot-table-modifier-common-fabric",
+  "id": "loot-table-modifier",
   "version": "${modVersion}",
-  "name": "Loot Table Modifier Common Fabric",
+  "name": "Loot Table Modifier",
   "description": "Makes it possible to modify instead of replace loot tables through datapacks",
   "authors": [
     "OffsetMonkey538"
@@ -10,7 +10,8 @@
   "contact": {
     "sources": "https://github.com/OffsetMods538/Loot-Table-Modifier",
     "issues": "https://github.com/OffsetMods538/Loot-Table-Modifier/issues",
-    "homepage": "https://modrinth.com/mod/loot-table-modifier"
+    "homepage": "https://modrinth.com/mod/loot-table-modifier",
+    "discord": "https://discord.offsetmonkey538.top/"
   },
   "license": "MIT",
   "icon": "assets/loot-table-modifier/icon.png",
@@ -18,13 +19,17 @@
   "entrypoints": {
     "main": [
       "top.offsetmonkey538.loottablemodifier.fabric.platform.FabricPlatformMain"
+    ],
+    "fabric-datagen": [
+      "${fabricDatagenEntrypoint}"
     ]
   },
   "mixins": [
-    "loot-table-modifier.fabric.mixins.json"
+    "loot-table-modifier.modded.mixins.json",
+    "loot-table-modifier.version.modded.mixins.json"
   ],
   "depends": {
-    "loot-table-modifier-common": "${commonVersion}",
+    "minecraft": "${supportedMinecraftVersions}",
     "java": ">=21"
   }
 }

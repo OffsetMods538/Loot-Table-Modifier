@@ -8,6 +8,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -25,22 +26,21 @@ import top.offsetmonkey538.loottablemodifier.api.resource.action.condition.Condi
 import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.EntryAddAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.EntryRemoveAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.table.TablePredicate;
-import top.offsetmonkey538.loottablemodifier.fabric.api.LootTableIdGetter;
 import top.offsetmonkey538.loottablemodifier.api.resource.util.RegexPattern;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.PoolAddAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.entry.EntryItemSetAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.action.pool.PoolRemoveAction;
 import top.offsetmonkey538.loottablemodifier.api.resource.predicate.entry.EntryItemPredicate;
-import top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper.ItemWrapper;
-import top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper.loot.LootConditionWrapper;
-import top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper.loot.LootPoolWrapper;
-import top.offsetmonkey538.loottablemodifier.fabric.impl.wrapper.loot.entry.LootPoolEntryWrapper;
-import top.offsetmonkey538.loottablemodifier.fabric.v1212.mixin.LootContextTypesAccessor;
+import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.ItemWrapper;
+import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot.LootConditionWrapper;
+import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot.LootPoolWrapper;
+import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot.entry.LootPoolEntryWrapper;
+import top.offsetmonkey538.loottablemodifier.modded.v1212.mixin.LootContextTypesAccessor;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
-import static top.offsetmonkey538.loottablemodifier.fabric.platform.FabricPlatformMain.id;
+import static top.offsetmonkey538.loottablemodifier.modded.platform.FabricPlatformMain.id;
 
 /**
  * Datagen for loot modifiers used for testing.
@@ -95,8 +95,8 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     LootModifier.builder()
                             .conditionally(
                                     TablePredicate.builder()
-                                            .name(LootTableIdGetter.INSTANCE.get(EntityType.CREEPER).toString())
-                                            .name(LootTableIdGetter.INSTANCE.get(EntityType.ZOMBIE).toString())
+                                            .name(EntityType.CREEPER.getDefaultLootTable().map(ResourceKey::location).map(ResourceLocation::toString).orElse(""))
+                                            .name(EntityType.ZOMBIE.getDefaultLootTable().map(ResourceKey::location).map(ResourceLocation::toString).orElse(""))
                             )
                             .action(
                                     PoolAddAction.builder()
@@ -135,7 +135,7 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                             .conditionally(
                                     EntryItemPredicate.builder(new ItemWrapper(BuiltInRegistries.ITEM.wrapAsHolder(Items.STICK)))
                                             // Exclude witch to test if AllOf and Inverted work + so I can test RemoveEntry on witch.
-                                            .and(TablePredicate.builder().name(LootTableIdGetter.INSTANCE.get(EntityType.WITCH).toString()).invert())
+                                            .and(TablePredicate.builder().name(EntityType.WITCH.getDefaultLootTable().map(ResourceKey::location).map(ResourceLocation::toString).orElse("")).invert())
                             )
                             .action(
                                     PoolRemoveAction.builder()
@@ -146,7 +146,7 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     LootModifier.builder()
                             .conditionally(
                                     TablePredicate.builder()
-                                            .name(LootTableIdGetter.INSTANCE.get(Blocks.DIRT).toString())
+                                            .name(Blocks.DIRT.getLootTable().map(ResourceKey::location).map(ResourceLocation::toString).orElse(""))
                             )
                             .action(
                                     EntryAddAction.builder()
@@ -175,7 +175,7 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     id("remove_glowstone_and_gunpowder_from_witch"),
                     LootModifier.builder()
                             .conditionally(
-                                    TablePredicate.builder().name(LootTableIdGetter.INSTANCE.get(EntityType.WITCH).toString())
+                                    TablePredicate.builder().name(EntityType.WITCH.getDefaultLootTable().map(ResourceKey::location).map(ResourceLocation::toString).orElse(""))
                                             .and(
                                                     EntryItemPredicate.builder(new ItemWrapper(BuiltInRegistries.ITEM.wrapAsHolder(Items.GLOWSTONE_DUST)))
                                                             .or(EntryItemPredicate.builder(new ItemWrapper(BuiltInRegistries.ITEM.wrapAsHolder(Items.GUNPOWDER))))
@@ -190,7 +190,7 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     LootModifier.builder()
                             .conditionally(
                                     TablePredicate.builder()
-                                            .name(LootTableIdGetter.INSTANCE.get(EntityType.SQUID).toString())
+                                            .name(EntityType.SQUID.getDefaultLootTable().map(ResourceKey::location).map(ResourceLocation::toString).orElse(""))
                                             .and(EntryItemPredicate.builder(new ItemWrapper(BuiltInRegistries.ITEM.wrapAsHolder(Items.INK_SAC))))
                             )
                             .action(

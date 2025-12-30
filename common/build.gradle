@@ -1,5 +1,5 @@
 plugins {
-    id 'java-library'
+    id 'multiloader-base'
 }
 
 repositories {
@@ -13,20 +13,9 @@ repositories {
 }
 
 dependencies {
-    compileOnlyApi("top.offsetmonkey538.monkeylib538:monkeylib538-common:${rootProject.monkeylib538_version}")
+    compileOnlyApi "top.offsetmonkey538.monkeylib538:monkeylib538-common:${rootProject.monkeylib538_version}"
+    compileOnlyApi "org.jetbrains:annotations:${rootProject.jetbrainsannotations_version}"
     compileOnly "com.mojang:datafixerupper:${rootProject.datafixerupper_version}"
     compileOnly "com.mojang:brigadier:${rootProject.brigadier_version}"
     compileOnly "commons-io:commons-io:${rootProject.commonsio_version}"
-}
-
-processResources {
-    final Map properties = [
-            "modVersion":       project.version,
-            'monkeylibVersion': rootProject.monkeylib538_version
-    ]
-    inputs.properties(properties)
-
-    filesMatching(["fabric.mod.json", "META-INF/neoforge.mods.toml"]) {
-        expand(properties)
-    }
 }

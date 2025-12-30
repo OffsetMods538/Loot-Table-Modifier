@@ -1,21 +1,13 @@
 import dex.plugins.outlet.v2.util.ReleaseType
 
 plugins {
+    id 'multiloader-modded'
     id 'fabric-loom' version '1.14-SNAPSHOT'
-    id 'io.github.dexman545.outlet' version '1.6.1' apply false
+    id 'io.github.dexman545.outlet' version '1.6.1'
     id 'com.modrinth.minotaur' version '2.+' apply false
 }
 
 loom {
-    splitEnvironmentSourceSets()
-
-    mods {
-        loottablemodifierFabricCommon {
-            sourceSet sourceSets.main
-            sourceSet sourceSets.client
-        }
-    }
-
     afterEvaluate {
         runClient.setEnabled(false)
         runServer.setEnabled(false)
@@ -23,15 +15,13 @@ loom {
 }
 
 dependencies {
-    api project(":common")
-    include project(":common")
-
-    modCompileOnlyApi("top.offsetmonkey538.monkeylib538:monkeylib538-fabric:${rootProject.monkeylib538_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
+    compileOnlyApi project(":modded")
+    commonJava project(path: ":modded", configuration: "commonJava")
+    commonResources project(path: ":modded", configuration: "commonResources")
 }
 
 allprojects {
+    apply plugin: "multiloader-modded"
     apply plugin: "fabric-loom"
     apply plugin: "io.github.dexman545.outlet"
 
@@ -51,21 +41,10 @@ allprojects {
         modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
         modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fapi_version}"
-    }
 
-    processResources {
-        final Map properties = [
-                'modVersion':                 project.version,
-                'commonVersion':              rootProject.versionPrefix,
-                'supportedMinecraftVersions': project.supported_minecraft_versions
-        ]
-        inputs.properties(properties)
-
-        filesMatching("fabric.mod.json") {
-            expand(properties)
+        modCompileOnly("top.offsetmonkey538.monkeylib538:monkeylib538-fabric:${rootProject.monkeylib538_version}") {
+            exclude(group: "net.fabricmc.fabric-api")
         }
-
-        exclude ".cache/**"
     }
 }
 
@@ -75,17 +54,7 @@ subprojects {
 
     tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
 
-    configurations {
-        common {
-            canBeResolved = true
-            canBeConsumed = false
-        }
-        api.extendsFrom common
-    }
-
     repositories {
-        mavenCentral()
-        mavenLocal()
         maven {
             name = "DevAuth"
             url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1"
@@ -96,8 +65,13 @@ subprojects {
     }
 
     dependencies {
-        common project(path: ":fabric", configuration: "namedElements")
-        include project(path: ":fabric")
+        compileOnlyApi project(":fabric")
+        commonJava project(path: ":fabric", configuration: "commonJava")
+        commonResources project(path: ":fabric", configuration: "commonResources")
+
+        compileOnlyApi project(":modded:${project.commonModdedVersion}")
+        commonJava project(path: ":modded:${project.commonModdedVersion}", configuration: "commonJava")
+        commonResources project(path: ":modded:${project.commonModdedVersion}", configuration: "commonResources")
 
         modRuntimeOnly("top.offsetmonkey538.monkeylib538:monkeylib538-fabric-${project.monkeylib538_suffix}:${rootProject.monkeylib538_version}+${project.monkeylib538_suffix}") {
             exclude(group: "net.fabricmc.fabric-api")
@@ -109,15 +83,6 @@ subprojects {
     }
 
     loom {
-        splitEnvironmentSourceSets()
-
-        mods {
-            loottablemodifier {
-                sourceSet sourceSets.main
-                sourceSet sourceSets.client
-            }
-        }
-
         runs {
             server {
                 name = "${project.project_name} Server"
@@ -134,7 +99,6 @@ subprojects {
                 name = "${project.project_name} Datagen"
                 inherit client
                 runDir "build/datagen"
-                name "Data Generation"
                 vmArg "-Dfabric-api.datagen"
                 vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
                 vmArg "-Dfabric-api.datagen.modid=loot-table-modifier"
@@ -186,7 +150,7 @@ subprojects {
 
 
         dependencies {
-            required.project "fabric-api"
+            //TODO: not actually required? just cause datagen... required.project "fabric-api"
         }
     }
 }
