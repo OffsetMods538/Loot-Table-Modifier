@@ -145,7 +145,7 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     LootModifier.builder()
                             .conditionally(
                                     TablePredicate.builder()
-                                            .name(Blocks.DIRT.getLootTable().toString())
+                                            .name(Blocks.DIRT.getLootTable().location().toString())
                             )
                             .action(
                                     EntryAddAction.builder()
@@ -174,7 +174,7 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     id("remove_glowstone_and_gunpowder_from_witch"),
                     LootModifier.builder()
                             .conditionally(
-                                    TablePredicate.builder().name(EntityType.WITCH.getDefaultLootTable().toString())
+                                    TablePredicate.builder().name(EntityType.WITCH.getDefaultLootTable().location().toString())
                                             .and(
                                                     EntryItemPredicate.builder(new ItemWrapper(BuiltInRegistries.ITEM.wrapAsHolder(Items.GLOWSTONE_DUST)))
                                                             .or(EntryItemPredicate.builder(new ItemWrapper(BuiltInRegistries.ITEM.wrapAsHolder(Items.GUNPOWDER))))
@@ -189,7 +189,7 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
                     LootModifier.builder()
                             .conditionally(
                                     TablePredicate.builder()
-                                            .name(EntityType.SQUID.getDefaultLootTable().toString())
+                                            .name(EntityType.SQUID.getDefaultLootTable().location().toString())
                                             .and(EntryItemPredicate.builder(new ItemWrapper(BuiltInRegistries.ITEM.wrapAsHolder(Items.INK_SAC))))
                             )
                             .action(
