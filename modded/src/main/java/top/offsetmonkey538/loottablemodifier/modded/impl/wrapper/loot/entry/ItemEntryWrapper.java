@@ -1,7 +1,7 @@
 package top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot.entry;
 
-import top.offsetmonkey538.loottablemodifier.api.wrapper.Item;
-import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.entry.ItemEntry;
+import top.offsetmonkey538.loottablemodifier.common.api.wrapper.Item;
+import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.entry.ItemEntry;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.ItemWrapper;
 import top.offsetmonkey538.loottablemodifier.modded.mixin.ItemEntryAccessor;
 

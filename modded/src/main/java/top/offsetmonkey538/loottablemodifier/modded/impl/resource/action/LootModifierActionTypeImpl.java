@@ -6,9 +6,9 @@ import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import org.jetbrains.annotations.NotNull;
-import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierAction;
-import top.offsetmonkey538.loottablemodifier.api.resource.action.LootModifierActionType;
-import top.offsetmonkey538.loottablemodifier.api.wrapper.Identifier;
+import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierAction;
+import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierActionType;
+import top.offsetmonkey538.loottablemodifier.common.api.wrapper.Identifier;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.IdentifierWrapper;
 
 import static top.offsetmonkey538.loottablemodifier.modded.platform.FabricPlatformMain.id;

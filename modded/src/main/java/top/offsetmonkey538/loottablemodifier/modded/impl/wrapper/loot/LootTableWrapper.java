@@ -2,9 +2,9 @@ package top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
-import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootFunction;
-import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootPool;
-import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootTable;
+import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootFunction;
+import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootPool;
+import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootTable;
 import top.offsetmonkey538.loottablemodifier.modded.mixin.LootTableAccessor;
 
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static top.offsetmonkey538.loottablemodifier.LootTableModifierCommon.load;
+import static top.offsetmonkey538.loottablemodifier.common.LootTableModifierCommon.load;
 
 public record LootTableWrapper(net.minecraft.world.level.storage.loot.LootTable vanillaTable) implements LootTable {
 

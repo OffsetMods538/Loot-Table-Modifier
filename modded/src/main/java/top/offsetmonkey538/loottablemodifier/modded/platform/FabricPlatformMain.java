@@ -16,12 +16,12 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
-import top.offsetmonkey538.loottablemodifier.LootTableModifierCommon;
-import top.offsetmonkey538.loottablemodifier.api.resource.LootModifier;
-import top.offsetmonkey538.loottablemodifier.api.wrapper.Identifier;
+import top.offsetmonkey538.loottablemodifier.common.LootTableModifierCommon;
+import top.offsetmonkey538.loottablemodifier.common.api.resource.LootModifier;
+import top.offsetmonkey538.loottablemodifier.common.api.wrapper.Identifier;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.IdentifierWrapper;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot.LootTableWrapper;
-import top.offsetmonkey538.loottablemodifier.platform.PlatformMain;
+import top.offsetmonkey538.loottablemodifier.common.platform.PlatformMain;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static top.offsetmonkey538.loottablemodifier.LootTableModifierCommon.*;
+import static top.offsetmonkey538.loottablemodifier.common.LootTableModifierCommon.*;
 
 public class FabricPlatformMain implements PlatformMain {
 
@@ -58,7 +58,7 @@ public class FabricPlatformMain implements PlatformMain {
         LOGGER.info("Gathering loot tables...");
         final Stopwatch stopwatch = Stopwatch.createStarted();
 
-        final Map<Identifier, top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootTable> tables = RegistryUtil.getRegistryAsLookup(lootRegistry)
+        final Map<Identifier, top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootTable> tables = RegistryUtil.getRegistryAsLookup(lootRegistry)
                 .listElements()
                 .collect(Collectors.toMap(
                         registryEntry -> new IdentifierWrapper(registryEntry.key().location()),
@@ -70,11 +70,11 @@ public class FabricPlatformMain implements PlatformMain {
         LootTableModifierCommon.runModification(loadModifiers(resourceManager, registryOps), tables);
     }
 
-    private static Map<top.offsetmonkey538.loottablemodifier.api.wrapper.Identifier, LootModifier> loadModifiers(ResourceManager resourceManager, RegistryOps<JsonElement> registryOps) {
+    private static Map<top.offsetmonkey538.loottablemodifier.common.api.wrapper.Identifier, LootModifier> loadModifiers(ResourceManager resourceManager, RegistryOps<JsonElement> registryOps) {
         LOGGER.info("Loading loot table modifiers...");
         final Stopwatch stopwatch = Stopwatch.createStarted();
 
-        final Map<top.offsetmonkey538.loottablemodifier.api.wrapper.Identifier, LootModifier> result = new HashMap<>();
+        final Map<top.offsetmonkey538.loottablemodifier.common.api.wrapper.Identifier, LootModifier> result = new HashMap<>();
 
         for (Map.Entry<net.minecraft.resources.ResourceLocation, Resource> entry : resourceManager.listResources(MOD_ID + "/loot_modifier", path -> path.toString().endsWith(".json")).entrySet()) {
             final net.minecraft.resources.ResourceLocation id = entry.getKey();

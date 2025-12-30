@@ -2,7 +2,7 @@ package top.offsetmonkey538.loottablemodifier.modded.impl.wrapper;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import top.offsetmonkey538.loottablemodifier.api.wrapper.Item;
+import top.offsetmonkey538.loottablemodifier.common.api.wrapper.Item;
 
 public record ItemWrapper(Holder<net.minecraft.world.item.Item> vanillaItem) implements Item {
 

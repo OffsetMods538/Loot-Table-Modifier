@@ -6,9 +6,9 @@ import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import org.jetbrains.annotations.NotNull;
-import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicate;
-import top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicateType;
-import top.offsetmonkey538.loottablemodifier.api.wrapper.Identifier;
+import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicate;
+import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicateType;
+import top.offsetmonkey538.loottablemodifier.common.api.wrapper.Identifier;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.IdentifierWrapper;
 
 import static top.offsetmonkey538.loottablemodifier.modded.platform.FabricPlatformMain.id;
@@ -24,7 +24,7 @@ public final class LootModifierPredicateTypeImpl {
         );
 
         @Override
-        public top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicateType register(@NotNull Identifier id, @NotNull top.offsetmonkey538.loottablemodifier.api.resource.predicate.LootModifierPredicateType type) {
+        public top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicateType register(@NotNull Identifier id, @NotNull top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicateType type) {
             return Registry.register(REGISTRY, ((IdentifierWrapper) id).vanillaIdentifier(), type);
         }
     }

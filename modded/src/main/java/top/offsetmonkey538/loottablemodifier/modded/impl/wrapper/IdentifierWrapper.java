@@ -2,7 +2,7 @@ package top.offsetmonkey538.loottablemodifier.modded.impl.wrapper;
 
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.NotNull;
-import top.offsetmonkey538.loottablemodifier.api.wrapper.Identifier;
+import top.offsetmonkey538.loottablemodifier.common.api.wrapper.Identifier;
 
 public record IdentifierWrapper(net.minecraft.resources.ResourceLocation vanillaIdentifier) implements Identifier {
 

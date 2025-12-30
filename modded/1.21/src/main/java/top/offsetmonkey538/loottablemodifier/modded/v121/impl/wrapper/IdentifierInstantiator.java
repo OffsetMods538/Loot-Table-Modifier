@@ -1,7 +1,7 @@
 package top.offsetmonkey538.loottablemodifier.modded.v121.impl.wrapper;
 
 import net.minecraft.resources.ResourceLocation;
-import top.offsetmonkey538.loottablemodifier.api.wrapper.Identifier;
+import top.offsetmonkey538.loottablemodifier.common.api.wrapper.Identifier;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.IdentifierWrapper;
 
 public final class IdentifierInstantiator implements Identifier.Instantiator {

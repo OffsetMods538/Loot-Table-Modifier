@@ -2,10 +2,10 @@ package top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
-import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootCondition;
-import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootFunction;
-import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.LootPool;
-import top.offsetmonkey538.loottablemodifier.api.wrapper.loot.entry.LootPoolEntry;
+import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootCondition;
+import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootFunction;
+import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootPool;
+import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.entry.LootPoolEntry;
 import top.offsetmonkey538.loottablemodifier.modded.duck.LootElementWithConditions;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot.entry.LootPoolEntryWrapper;
 import top.offsetmonkey538.loottablemodifier.modded.mixin.LootPoolAccessor;
