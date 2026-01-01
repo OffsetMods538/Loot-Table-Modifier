@@ -2,9 +2,9 @@ import dex.plugins.outlet.v2.util.ReleaseType
 
 plugins {
     id 'multiloader-modded'
-    id 'fabric-loom' version '1.14-SNAPSHOT'
-    id 'io.github.dexman545.outlet' version '1.6.1'
-    id 'com.modrinth.minotaur' version '2.+' apply false
+    id 'fabric-loom'
+    id 'io.github.dexman545.outlet'
+    id 'com.modrinth.minotaur' apply false
 }
 
 loom {
@@ -15,7 +15,7 @@ loom {
 }
 
 dependencies {
-    compileOnlyApi project(":modded")
+    compileOnly project(":modded")
     commonJava project(path: ":modded", configuration: "commonJava")
     commonResources project(path: ":modded", configuration: "commonResources")
 }
@@ -65,17 +65,17 @@ subprojects {
     }
 
     dependencies {
-        compileOnlyApi project(":fabric")
+        compileOnly project(":fabric")
         commonJava project(path: ":fabric", configuration: "commonJava")
         commonResources project(path: ":fabric", configuration: "commonResources")
 
-        compileOnlyApi project(":modded:${project.commonModdedVersion}")
+        compileOnly project(":modded:${project.commonModdedVersion}")
         commonJava project(path: ":modded:${project.commonModdedVersion}", configuration: "commonJava")
         commonResources project(path: ":modded:${project.commonModdedVersion}", configuration: "commonResources")
 
         modRuntimeOnly("top.offsetmonkey538.monkeylib538:monkeylib538-fabric-${project.monkeylib538_suffix}:${rootProject.monkeylib538_version}+fabric+${project.monkeylib538_suffix}") {
             exclude(group: "net.fabricmc.fabric-api")
-            exclude(group: "top.offsetmonkey538.monkeylib538:monkeylib538-fabric")
+            //TODO: can remove? exclude(group: "top.offsetmonkey538.monkeylib538:monkeylib538-fabric")
         }
 
         // DevAuth
@@ -103,7 +103,6 @@ subprojects {
                 vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
                 vmArg "-Dfabric-api.datagen.modid=loot-table-modifier"
                 vmArg "-Ddevauth.enabled=false"
-
                 ideConfigGenerated(true)
             }
         }
@@ -149,6 +148,7 @@ subprojects {
         if (changelogEnv != null) changelog = changelogEnv
 
 
+        // Dependencies
         dependencies {
             //TODO: not actually required? just cause datagen... required.project "fabric-api"
         }

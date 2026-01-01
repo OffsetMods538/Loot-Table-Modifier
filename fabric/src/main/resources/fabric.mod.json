@@ -29,7 +29,7 @@
     "loot-table-modifier.version.modded.mixins.json"
   ],
   "depends": {
-    "minecraft": "${supportedMinecraftVersions}",
+    "minecraft": "${fabricSupportedMinecraftVersions}",
     "java": ">=21"
   }
 }

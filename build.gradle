@@ -4,7 +4,11 @@ import java.nio.file.Files
 
 plugins {
     id 'java'
+    id 'java-library'
+    id 'net.neoforged.moddev' version '2.0.+' apply false
     id 'fabric-loom' version '1.14-SNAPSHOT' apply false
+    id 'io.github.dexman545.outlet' version '1.6.1' apply false
+    id 'com.modrinth.minotaur' version '2.+' apply false
 }
 
 ext {
@@ -23,26 +27,33 @@ ext {
         versionPrefix = "${versionPrefix}${separator}${preReleaseVersion}" as GStringImpl
     }
     final String versionSuffix = System.getenv("VERSION_SUFFIX")
-    if (versionSuffix != null && !versionSuffix.isEmpty()) {
-        versionPrefix = "${versionPrefix}+${versionSuffix}" as GStringImpl
-    }
+    versionPrefix = "${versionPrefix}${versionSuffix == null ? "+local" : versionSuffix.isEmpty() ? "" : "+${versionSuffix}"}" as GStringImpl
 
     System.out.println("Version Prefix: " + versionPrefix)
 }
 
 allprojects {
+    apply plugin: "java-library"
+
     repositories {
+        mavenCentral()
+        mavenLocal()
         exclusiveContent {
             forRepositories(
-                maven {
-                    name = "OffsetMods538"
-                    url = "https://maven.offsetmonkey538.top/releases"
-                },
-                mavenLocal()
+                    maven {
+                        name = "OffsetMods538"
+                        url = "https://maven.offsetmonkey538.top/releases"
+                    },
+                    mavenLocal()
             )
             filter {
                 includeGroupAndSubgroups "top.offsetmonkey538"
             }
         }
+    }
+
+    dependencies {
+        // TODO: jspecify: compileOnlyApi "org.jspecify:jspecify:${rootProject.jspecify_version}"
+        compileOnlyApi "org.jetbrains:annotations:${rootProject.jetbrainsannotations_version}"
     }
 }

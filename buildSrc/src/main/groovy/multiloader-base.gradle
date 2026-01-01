@@ -38,12 +38,7 @@ tasks.named("javadoc", Javadoc) {
     options.addFileOption('-add-stylesheet', rootProject.file("javadoc-stylesheet.css"))
 }
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
-sourcesJar {
+tasks.named("sourcesJar", Jar) {
     dependsOn configurations.commonJava
     from configurations.commonJava
     dependsOn configurations.commonResources
@@ -57,6 +52,9 @@ sourcesJar {
 jar {
     from(rootProject.file("LICENSE")) {
         rename { "${it}" }
+    }
+    manifest {
+        attributes("Fabric-Loom-Remap": project.name == "common" ? "false" : "true")
     }
 }
 

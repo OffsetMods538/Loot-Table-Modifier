@@ -1,10 +1,10 @@
 plugins {
     id 'multiloader-modded'
-    id 'fabric-loom' version '1.14-SNAPSHOT'
+    id 'fabric-loom'
 }
 
 dependencies {
-    compileOnlyApi project(":common")
+    compileOnly project(":common")
     commonJava project(path: ":common", configuration: "commonJava")
     commonResources project(path: ":common", configuration: "commonResources")
 }
@@ -40,7 +40,7 @@ allprojects {
 
 subprojects {
     dependencies {
-        compileOnlyApi project(":modded")
+        compileOnly project(":modded")
         commonJava project(path: ":modded", configuration: "commonJava")
         commonResources project(path: ":modded", configuration: "commonResources")
     }

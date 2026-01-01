@@ -4,13 +4,14 @@ plugins {
 
 processResources {
     final Map properties = [
-            "modVersion"                : project.version,
-            "supportedMinecraftVersions": project.hasProperty("supported_minecraft_versions") ? project.findProperty("supported_minecraft_versions") : "",
-            "fabricDatagenEntrypoint"   : project.hasProperty("fabricDatagenEntrypoint") ? project.findProperty("fabricDatagenEntrypoint") : "",
+            "modVersion"                        : project.version,
+            "fabricSupportedMinecraftVersions"  : project.hasProperty("supported_minecraft_versions") ? project.findProperty("supported_minecraft_versions") : "",
+            "neoforgeSupportedMinecraftVersions": project.hasProperty("minecraft_version_range") ? project.findProperty("minecraft_version_range") : "",
+            "fabricDatagenEntrypoint"           : project.hasProperty("fabricDatagenEntrypoint") ? project.findProperty("fabricDatagenEntrypoint") : "",
     ]
     inputs.properties(properties)
 
-    filesMatching("fabric.mod.json") {
+    filesMatching(["fabric.mod.json", "META-INF/neoforge.mods.toml", "META-INF/mods.toml"]) {
         expand(properties)
     }
 }
