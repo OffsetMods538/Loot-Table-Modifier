@@ -33,12 +33,13 @@ ext {
 allprojects {
     repositories {
         exclusiveContent {
-            forRepository {
+            forRepositories(
                 maven {
                     name = "OffsetMods538"
                     url = "https://maven.offsetmonkey538.top/releases"
-                }
-            }
+                },
+                mavenLocal()
+            )
             filter {
                 includeGroupAndSubgroups "top.offsetmonkey538"
             }

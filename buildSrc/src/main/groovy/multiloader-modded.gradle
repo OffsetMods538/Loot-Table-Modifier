@@ -3,13 +3,9 @@ plugins {
 }
 
 processResources {
-    dependsOn configurations.commonResources
-    from configurations.commonResources
-
     final Map properties = [
             "modVersion"                : project.version,
-            "commonVersion"             : rootProject.versionPrefix,
-            "supportedMinecraftVersions": project.supported_minecraft_versions,
+            "supportedMinecraftVersions": project.hasProperty("supported_minecraft_versions") ? project.findProperty("supported_minecraft_versions") : "",
             "fabricDatagenEntrypoint"   : project.hasProperty("fabricDatagenEntrypoint") ? project.findProperty("fabricDatagenEntrypoint") : "",
     ]
     inputs.properties(properties)

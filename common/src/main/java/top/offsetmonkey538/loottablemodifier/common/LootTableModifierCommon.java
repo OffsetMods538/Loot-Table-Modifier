@@ -18,12 +18,12 @@ import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootTable;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.entry.LootPoolEntry;
 import top.offsetmonkey538.loottablemodifier.common.platform.PlatformCommandUtils;
 import top.offsetmonkey538.loottablemodifier.common.platform.PlatformMain;
-import top.offsetmonkey538.monkeylib538.api.command.CommandRegistrationApi;
-import top.offsetmonkey538.monkeylib538.api.log.MonkeyLibLogger;
-import top.offsetmonkey538.monkeylib538.api.platform.PlatformUtil;
-import top.offsetmonkey538.monkeylib538.api.telemetry.TelemetryRegistry;
-import top.offsetmonkey538.monkeylib538.api.text.MonkeyLibStyle;
-import top.offsetmonkey538.monkeylib538.api.text.MonkeyLibText;
+import top.offsetmonkey538.monkeylib538.common.api.command.CommandRegistrationApi;
+import top.offsetmonkey538.monkeylib538.common.api.log.MonkeyLibLogger;
+import top.offsetmonkey538.monkeylib538.common.api.platform.LoaderUtil;
+import top.offsetmonkey538.monkeylib538.common.api.telemetry.TelemetryRegistry;
+import top.offsetmonkey538.monkeylib538.common.api.text.MonkeyLibStyle;
+import top.offsetmonkey538.monkeylib538.common.api.text.MonkeyLibText;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -31,7 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-import static top.offsetmonkey538.monkeylib538.api.command.CommandAbstractionApi.*;
+import static top.offsetmonkey538.monkeylib538.common.api.command.CommandAbstractionApi.*;
 
 public final class LootTableModifierCommon {
 	public static final String MOD_ID = "loot-table-modifier";
@@ -42,7 +42,7 @@ public final class LootTableModifierCommon {
 		final String isDev = System.getProperty("lootTableModifierDev", "");
 		if (isDev.equalsIgnoreCase("true")) IS_DEV = true;
 		else if (isDev.equalsIgnoreCase("false")) IS_DEV = false; // This way it can be disabled in devenv too.
-		else IS_DEV = PlatformUtil.isDevelopmentEnvironment();
+		else IS_DEV = LoaderUtil.isDevelopmentEnvironment();
 	}
 
 	// Only used when IS_DEV is true
@@ -146,7 +146,7 @@ public final class LootTableModifierCommon {
 			final DynamicOps<JsonElement> ops = PlatformCommandUtils.getRegistryOps(context);
 
 			try {
-				final Path exportDir = PlatformUtil.getGameDir().resolve(".loot-table-modifier").resolve("export");
+				final Path exportDir = LoaderUtil.getGameDir().resolve(".loot-table-modifier").resolve("export");
 				if (Files.exists(exportDir)) PathUtils.deleteDirectory(exportDir);
 
 				sendText(

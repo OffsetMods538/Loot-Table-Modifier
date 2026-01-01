@@ -26,9 +26,6 @@ jobs:
         with:
           cache-read-only: false
 
-      - name: Store short commit hash
-        run: echo "short_commit_hash=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
-
       - name: Generate resources with Gradle
         run: ./gradlew runDatagenClient
         env:

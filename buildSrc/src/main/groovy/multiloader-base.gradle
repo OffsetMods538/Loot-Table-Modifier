@@ -65,6 +65,11 @@ tasks.named("compileJava", JavaCompile) {
     source configurations.commonJava
 }
 
+processResources {
+    dependsOn configurations.commonResources
+    from configurations.commonResources
+}
+
 artifacts {
     commonJava sourceSets.main.java.sourceDirectories.singleFile
     commonResources sourceSets.main.resources.sourceDirectories.singleFile

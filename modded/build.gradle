@@ -34,9 +34,7 @@ allprojects {
         compileOnly "org.spongepowered:mixin:0.8.5"
         compileOnly annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.5")
 
-        modCompileOnly("top.offsetmonkey538.monkeylib538:monkeylib538-fabric:${rootProject.monkeylib538_version}") {
-            exclude(group: "net.fabricmc.fabric-api")
-        }
+        modCompileOnly "top.offsetmonkey538.monkeylib538:monkeylib538-modded:${rootProject.monkeylib538_version}+modded"
     }
 }
 

@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    compileOnlyApi "top.offsetmonkey538.monkeylib538:monkeylib538-common:${rootProject.monkeylib538_version}"
+    compileOnlyApi "top.offsetmonkey538.monkeylib538:monkeylib538-common:${rootProject.monkeylib538_version}+common"
     compileOnlyApi "org.jetbrains:annotations:${rootProject.jetbrainsannotations_version}"
     compileOnly "com.mojang:datafixerupper:${rootProject.datafixerupper_version}"
     compileOnly "com.mojang:brigadier:${rootProject.brigadier_version}"
