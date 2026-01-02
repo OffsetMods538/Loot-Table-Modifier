@@ -20,6 +20,7 @@ import top.offsetmonkey538.loottablemodifier.modded.platform.ModdedPlatformMain;
         remap = false
 )
 // TODO: move to different subprojects instead of this maybe? Though I mean I guess it works so maybe not....?
+// todo: fixme: yeah i have no idea how this will work in 1.20.1
 public abstract class ReloadableRegistriesMixin {
     @Inject(
             method = {
