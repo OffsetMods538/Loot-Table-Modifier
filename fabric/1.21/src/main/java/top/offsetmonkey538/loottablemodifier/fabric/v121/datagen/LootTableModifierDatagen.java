@@ -39,7 +39,7 @@ import top.offsetmonkey538.loottablemodifier.modded.v121.mixin.LootContextTypesA
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
-import static top.offsetmonkey538.loottablemodifier.modded.platform.FabricPlatformMain.id;
+import static top.offsetmonkey538.loottablemodifier.modded.platform.ModdedPlatformMain.id;
 
 /**
  * Datagen for loot modifiers used for testing.

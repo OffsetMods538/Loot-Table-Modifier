@@ -4,9 +4,9 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import org.jetbrains.annotations.NotNull;
-import top.offsetmonkey538.loottablemodifier.modded.platform.FabricPlatformMain;
+import top.offsetmonkey538.loottablemodifier.modded.platform.ModdedPlatformMain;
 
-public final class RegistryUtilImpl implements FabricPlatformMain.RegistryUtil {
+public final class RegistryUtilImpl implements ModdedPlatformMain.RegistryUtil {
     @Override
     public <T> HolderLookup<T> getRegistryAsLookupImpl(@NotNull Registry<T> registry) {
         return registry;

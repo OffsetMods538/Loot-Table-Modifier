@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import top.offsetmonkey538.loottablemodifier.modded.platform.FabricPlatformMain;
+import top.offsetmonkey538.loottablemodifier.modded.platform.ModdedPlatformMain;
 
 @Mixin(
         value = ReloadableServerRegistries.class,
@@ -23,10 +23,12 @@ import top.offsetmonkey538.loottablemodifier.modded.platform.FabricPlatformMain;
 public abstract class ReloadableRegistriesMixin {
     @Inject(
             method = {
+                    // Everything >=1.21.2
                     "method_61240(Lnet/minecraft/class_8490;Lnet/minecraft/class_3300;Lnet/minecraft/class_6903;)Lnet/minecraft/class_2385;",
                     "method_61240(Lnet/minecraft/world/level/storage/loot/LootDataType;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/resources/RegistryOps;)Lnet/minecraft/core/WritableRegistry;",
                     "lambda$scheduleRegistryLoad$3(Lnet/minecraft/world/level/storage/loot/LootDataType;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/resources/RegistryOps;)Lnet/minecraft/core/WritableRegistry;",
 
+                    // >=1.20.5 <=1.21.1
                     "method_58279(Lnet/minecraft/class_8490;Lnet/minecraft/class_3300;Lnet/minecraft/class_6903;)Lnet/minecraft/class_2385;",
                     "method_58279(Lnet/minecraft/world/level/storage/loot/LootDataType;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/resources/RegistryOps;)Lnet/minecraft/core/WritableRegistry;",
                     "lambda$scheduleElementParse$4(Lnet/minecraft/world/level/storage/loot/LootDataType;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/resources/RegistryOps;)Lnet/minecraft/core/WritableRegistry;"
@@ -36,6 +38,6 @@ public abstract class ReloadableRegistriesMixin {
     private static <T> void loottablemodifier$modifyLootTables(LootDataType<T> lootDataType, ResourceManager resourceManager, RegistryOps<JsonElement> registryOps, CallbackInfoReturnable<WritableRegistry<?>> cir) {
         if (lootDataType != LootDataType.TABLE) return;
         //noinspection unchecked
-        FabricPlatformMain.runModification(resourceManager, (Registry<LootTable>) cir.getReturnValue(), registryOps);
+        ModdedPlatformMain.runModification(resourceManager, (Registry<LootTable>) cir.getReturnValue(), registryOps);
     }
 }

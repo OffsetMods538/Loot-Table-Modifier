@@ -11,7 +11,7 @@ import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootM
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.Identifier;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.IdentifierWrapper;
 
-import static top.offsetmonkey538.loottablemodifier.modded.platform.FabricPlatformMain.id;
+import static top.offsetmonkey538.loottablemodifier.modded.platform.ModdedPlatformMain.id;
 
 public final class LootModifierPredicateTypeImpl {
     private LootModifierPredicateTypeImpl() {

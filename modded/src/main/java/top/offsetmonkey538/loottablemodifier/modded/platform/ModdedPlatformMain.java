@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 
 import static top.offsetmonkey538.loottablemodifier.common.LootTableModifierCommon.*;
 
-public class FabricPlatformMain implements PlatformMain {
+public class ModdedPlatformMain implements PlatformMain {
 
     @Override
     public void writeSortedImpl(JsonWriter jsonWriter, JsonElement json) throws IOException {

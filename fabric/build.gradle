@@ -14,12 +14,6 @@ loom {
     }
 }
 
-dependencies {
-    compileOnly project(":modded")
-    commonJava project(path: ":modded", configuration: "commonJava")
-    commonResources project(path: ":modded", configuration: "commonResources")
-}
-
 allprojects {
     apply plugin: "multiloader-modded"
     apply plugin: "fabric-loom"
@@ -36,6 +30,13 @@ allprojects {
     }
 
     dependencies {
+        compileOnly project(":common")
+        commonJava project(path: ":common", configuration: "commonJava")
+        commonResources project(path: ":common", configuration: "commonResources")
+        compileOnly project(":modded")
+        commonJava project(path: ":modded", configuration: "commonJava")
+        commonResources project(path: ":modded", configuration: "commonResources")
+
         minecraft "com.mojang:minecraft:${project.minecraft_version}"
         mappings loom.officialMojangMappings()
         modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"

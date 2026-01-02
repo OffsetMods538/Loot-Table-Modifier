@@ -9,7 +9,7 @@ import top.offsetmonkey538.loottablemodifier.common.LootTableModifierCommon;
 
 import static top.offsetmonkey538.loottablemodifier.common.LootTableModifierCommon.IS_DEV;
 import static top.offsetmonkey538.loottablemodifier.common.LootTableModifierCommon.MOD_ID;
-import static top.offsetmonkey538.loottablemodifier.modded.platform.FabricPlatformMain.id;
+import static top.offsetmonkey538.loottablemodifier.modded.platform.ModdedPlatformMain.id;
 
 public class FabricPlatformMain implements ModInitializer {
     @Override
