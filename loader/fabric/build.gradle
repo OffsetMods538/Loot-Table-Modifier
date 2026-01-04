@@ -66,9 +66,9 @@ subprojects {
     }
 
     dependencies {
-        compileOnly project(":fabric")
-        commonJava project(path: ":fabric", configuration: "commonJava")
-        commonResources project(path: ":fabric", configuration: "commonResources")
+        compileOnly project(":loader:fabric")
+        commonJava project(path: ":loader:fabric", configuration: "commonJava")
+        commonResources project(path: ":loader:fabric", configuration: "commonResources")
 
         compileOnly project(":modded:${project.commonModdedVersion}")
         commonJava project(path: ":modded:${project.commonModdedVersion}", configuration: "commonJava")

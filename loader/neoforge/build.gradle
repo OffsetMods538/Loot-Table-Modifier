@@ -71,9 +71,9 @@ subprojects {
     }
 
     dependencies {
-        compileOnly project(":neoforge")
-        commonJava project(path: ":neoforge", configuration: "commonJava")
-        commonResources project(path: ":neoforge", configuration: "commonResources")
+        compileOnly project(":loader:neoforge")
+        commonJava project(path: ":loader:neoforge", configuration: "commonJava")
+        commonResources project(path: ":loader:neoforge", configuration: "commonResources")
 
         compileOnly project(":modded:${project.commonModdedVersion}")
         commonJava project(path: ":modded:${project.commonModdedVersion}", configuration: "commonJava")
