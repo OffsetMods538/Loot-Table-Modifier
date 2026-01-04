@@ -47,6 +47,10 @@ public class ModdedPlatformMain implements PlatformMain {
     @Override
     public <T> Predicate<T> allOfImpl(List<? extends Predicate<T>> predicates) {
         return Util.allOf(predicates);
+        // TODO: 1.20.1 through 1.20.4:
+        // 1.20.1: LootItemConditions.andConditions(FUCKASS ARRAY);
+        // 1.20.2 - 1.20.4: LootItemConditions.andConditions(LIST);
+        // 1.20.5+: Util.allOf(LIST)
     }
 
     @Override
