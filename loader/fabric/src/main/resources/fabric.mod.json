@@ -26,7 +26,8 @@
   },
   "mixins": [
     "loot-table-modifier.modded.mixins.json",
-    "loot-table-modifier.version.modded.mixins.json"
+    "loot-table-modifier.version.modded.mixins.json",
+    "loot-table-modifier.version.loader.mixins.json"
   ],
   "depends": {
     "minecraft": "${fabricSupportedMinecraftVersions}",

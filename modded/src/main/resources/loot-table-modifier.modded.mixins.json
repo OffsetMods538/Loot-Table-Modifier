@@ -7,8 +7,7 @@
     "LootPoolAccessor",
     "LootPoolEntryMixin",
     "LootPoolMixin",
-    "LootTableAccessor",
-    "ReloadableRegistriesMixin"
+    "LootTableAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

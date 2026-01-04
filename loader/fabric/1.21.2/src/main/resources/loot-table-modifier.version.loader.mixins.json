@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "top.offsetmonkey538.loottablemodifier.fabric.v1212.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ReloadableRegistriesMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

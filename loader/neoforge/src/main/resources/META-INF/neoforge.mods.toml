@@ -9,6 +9,8 @@ issueTrackerURL="https://github.com/OffsetMods538/Loot-Table-Modifier/issues"
 config="loot-table-modifier.modded.mixins.json"
 [[mixins]]
 config="loot-table-modifier.version.modded.mixins.json"
+[[mixins]]
+config="loot-table-modifier.version.loader.mixins.json"
 
 
 [[mods]]
