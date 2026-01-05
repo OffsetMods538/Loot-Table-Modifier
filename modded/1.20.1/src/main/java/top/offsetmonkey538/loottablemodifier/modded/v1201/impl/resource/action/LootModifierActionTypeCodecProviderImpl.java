@@ -6,7 +6,7 @@ import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModi
 import top.offsetmonkey538.loottablemodifier.modded.impl.resource.action.LootModifierActionTypeRegistryImpl;
 
 public final class LootModifierActionTypeCodecProviderImpl implements LootModifierActionType.CodecProvider {
-    private static final Codec<LootModifierAction> CODEC = LootModifierActionTypeRegistryImpl.REGISTRY.byNameCodec().dispatch(LootModifierAction::getType, LootModifierActionType::codec);
+    private static final Codec<LootModifierAction> CODEC = LootModifierActionTypeRegistryImpl.REGISTRY.byNameCodec().dispatch(LootModifierAction::getType, lootModifierActionType -> lootModifierActionType.codec().codec());
 
     @Override
     public Codec<LootModifierAction> get() {
