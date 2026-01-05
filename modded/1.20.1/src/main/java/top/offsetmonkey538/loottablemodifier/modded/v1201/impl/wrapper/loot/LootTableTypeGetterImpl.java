@@ -1,8 +1,8 @@
-package top.offsetmonkey538.loottablemodifier.modded.v1205.impl.wrapper.loot;
+package top.offsetmonkey538.loottablemodifier.modded.v1201.impl.wrapper.loot;
 
 import net.minecraft.world.level.storage.loot.LootTable;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot.LootTableWrapper;
-import top.offsetmonkey538.loottablemodifier.modded.v1205.mixin.LootContextTypesAccessor;
+import top.offsetmonkey538.loottablemodifier.modded.v1201.mixin.LootContextTypesAccessor;
 
 public final class LootTableTypeGetterImpl implements LootTableWrapper.TypeGetter {
     @Override

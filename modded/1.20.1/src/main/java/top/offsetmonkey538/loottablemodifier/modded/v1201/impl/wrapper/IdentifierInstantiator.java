@@ -1,4 +1,4 @@
-package top.offsetmonkey538.loottablemodifier.modded.v1205.impl.wrapper;
+package top.offsetmonkey538.loottablemodifier.modded.v1201.impl.wrapper;
 
 import net.minecraft.resources.ResourceLocation;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.Identifier;

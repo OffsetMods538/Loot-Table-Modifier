@@ -1,4 +1,4 @@
-package top.offsetmonkey538.loottablemodifier.modded.v1205.impl;
+package top.offsetmonkey538.loottablemodifier.modded.v1201.impl;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;

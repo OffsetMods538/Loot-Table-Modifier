@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "top.offsetmonkey538.loottablemodifier.modded.v1205.mixin",
+  "package": "top.offsetmonkey538.loottablemodifier.modded.v1201.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "LootContextTypesAccessor"

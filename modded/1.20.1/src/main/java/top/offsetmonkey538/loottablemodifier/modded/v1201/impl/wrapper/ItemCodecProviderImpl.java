@@ -1,4 +1,4 @@
-package top.offsetmonkey538.loottablemodifier.modded.v1205.impl.wrapper;
+package top.offsetmonkey538.loottablemodifier.modded.v1201.impl.wrapper;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.core.registries.BuiltInRegistries;

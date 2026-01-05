@@ -1,4 +1,4 @@
-package top.offsetmonkey538.loottablemodifier.modded.v1205.mixin;
+package top.offsetmonkey538.loottablemodifier.modded.v1201.mixin;
 
 import com.google.common.collect.BiMap;
 import net.minecraft.resources.ResourceLocation;
