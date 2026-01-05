@@ -23,16 +23,6 @@ public interface PlatformMain {
         return INSTANCE.idImpl(path);
     }
 
-    static <T> Predicate<T> allOf(List<? extends Predicate<T>> predicates) {
-        return INSTANCE.allOfImpl(predicates);
-    }
-
-    static <T> Predicate<T> anyOf(List<? extends Predicate<T>> predicates) {
-        return INSTANCE.anyOfImpl(predicates);
-    }
-
     void writeSortedImpl(JsonWriter jsonWriter, JsonElement json) throws IOException;
     Identifier idImpl(String path);
-    <T> Predicate<T> allOfImpl(List<? extends Predicate<T>> predicates);
-    <T> Predicate<T> anyOfImpl(List<? extends Predicate<T>> predicates);
 }

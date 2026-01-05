@@ -7,6 +7,7 @@ import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootM
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicateType;
 import top.offsetmonkey538.loottablemodifier.common.platform.PlatformMain;
+import top.offsetmonkey538.loottablemodifier.common.util.PredicateUtils;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class AnyOfPredicate extends TermsPredicate {
     public static final MapCodec<AnyOfPredicate> CODEC = createCodec(AnyOfPredicate::new);
 
     private AnyOfPredicate(final List<LootModifierPredicate> terms) {
-        super(terms, PlatformMain.anyOf(terms));
+        super(terms, PredicateUtils.anyOf(terms));
     }
 
     @Override
