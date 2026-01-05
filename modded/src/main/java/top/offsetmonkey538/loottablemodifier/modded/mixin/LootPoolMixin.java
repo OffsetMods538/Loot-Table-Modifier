@@ -1,6 +1,7 @@
 package top.offsetmonkey538.loottablemodifier.modded.mixin;
 
 import org.spongepowered.asm.mixin.*;
+import top.offsetmonkey538.loottablemodifier.common.platform.PlatformMain;
 import top.offsetmonkey538.loottablemodifier.modded.duck.LootElementWithConditions;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class LootPoolMixin implements LootElementWithConditions {
     @Unique
     public void loot_table_modifier$setConditions(List<LootItemCondition> conditions) {
         this.conditions = conditions;
-        this.compositeCondition = Util.allOf(conditions);
+        this.compositeCondition = PlatformMain.allOf(conditions);
     }
 
     @Override
