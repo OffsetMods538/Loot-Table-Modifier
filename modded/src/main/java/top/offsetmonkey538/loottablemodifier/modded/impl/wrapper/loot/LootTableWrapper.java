@@ -49,13 +49,6 @@ public record LootTableWrapper(net.minecraft.world.level.storage.loot.LootTable 
         ((LootTableAccessor) vanillaTable).setFunctions(newFunctions.build());
     }
 
-    public static final class CodecProviderImpl implements LootTable.CodecProvider {
-        @Override
-        public Codec<LootTable> get() {
-            return net.minecraft.world.level.storage.loot.LootTable.DIRECT_CODEC.xmap(LootTableWrapper::new, wrappedPool -> ((LootTableWrapper) wrappedPool).vanillaTable());
-        }
-    }
-
     public interface TypeGetter extends Function<net.minecraft.world.level.storage.loot.LootTable, String> {
         TypeGetter INSTANCE = load(TypeGetter.class);
     }

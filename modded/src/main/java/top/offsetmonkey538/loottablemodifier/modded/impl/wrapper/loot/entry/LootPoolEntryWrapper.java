@@ -1,7 +1,6 @@
 package top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot.entry;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.serialization.Codec;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootCondition;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.entry.LootPoolEntry;
 import top.offsetmonkey538.loottablemodifier.modded.duck.LootElementWithConditions;
@@ -11,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.entries.LootPoolEntries;
 
 /**
  * Don't initialize using canonical constructor. Use {@link #create(net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer)} instead
@@ -52,13 +50,6 @@ public class LootPoolEntryWrapper implements LootPoolEntry {
     @Override
     public int hashCode() {
         return vanillaEntry.hashCode();
-    }
-
-    public static final class CodecProviderImpl implements LootPoolEntry.CodecProvider {
-        @Override
-        public Codec<LootPoolEntry> get() {
-            return LootPoolEntries.CODEC.xmap(LootPoolEntryWrapper::new, wrappedEntry -> ((LootPoolEntryWrapper) wrappedEntry).vanillaEntry);
-        }
     }
 }
 

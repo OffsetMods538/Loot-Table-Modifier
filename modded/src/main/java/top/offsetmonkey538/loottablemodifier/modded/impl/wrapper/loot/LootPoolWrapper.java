@@ -56,12 +56,5 @@ public record LootPoolWrapper(net.minecraft.world.level.storage.loot.LootPool va
 
         ((LootPoolAccessor) vanillaPool).setFunctions(newFunctions.build());
     }
-
-    public static final class CodecProviderImpl implements LootPool.CodecProvider {
-        @Override
-        public Codec<LootPool> get() {
-            return net.minecraft.world.level.storage.loot.LootPool.CODEC.xmap(LootPoolWrapper::new, wrappedPool -> ((LootPoolWrapper) wrappedPool).vanillaPool());
-        }
-    }
 }
 
