@@ -32,7 +32,12 @@ public final class PredicateUtils {
         };
     }
 
-    @SuppressWarnings("DuplicatedCode") // kr1v what have you done 😭😭😭😭😭😭 https://discord.com/channels/507304429255393322/807617284129423370/1457808463848538114
+    @SuppressWarnings("DuplicatedCode")
+    /*
+     kr1v what have you done 😭😭😭😭😭😭 https://discord.com/channels/507304429255393322/807617284129423370/1457808463848538114
+     Btw there should be no mistyped numbers here, blame kr1v again if there is https://discord.com/channels/507304429255393322/807617284129423370/1457816346082414835
+     He is 100% certain there is no mistake (though I guess he didn't say anything about mistake*s*) https://discord.com/channels/507304429255393322/807617284129423370/1457816583442399284
+     */
     public static <T> Predicate<T> anyOf(List<? extends Predicate<T>> predicates) {
         return switch (predicates.size()) {
             case 0  -> object -> false;
