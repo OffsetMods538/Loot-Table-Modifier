@@ -20,7 +20,8 @@ public final class ItemEntryWrapper extends LootPoolEntryWrapper implements Item
 
     @Override
     public String getId() {
-        return ((ItemEntryAccessor) this.vanillaEntry).getItem().getRegisteredName();
+        // Have to implement getRegisteredName myself cause 1.20.1 don't got it
+        return ((ItemEntryAccessor) this.vanillaEntry).getItem().unwrapKey().map(key -> key.location().toString()).orElse("[unregistered]");
     }
 }
 

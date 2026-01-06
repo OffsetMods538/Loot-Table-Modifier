@@ -4,6 +4,7 @@ import com.google.common.base.Stopwatch;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
@@ -73,7 +74,8 @@ public class ModdedPlatformMain implements PlatformMain {
                 LOGGER.debug("Loading load loot table modifier from '%s'", id);
                 result.put(
                         new IdentifierWrapper(id),
-                        LootModifier.CODEC.decode(registryOps, JsonParser.parseReader(entry.getValue().openAsReader())).getOrThrow().getFirst()
+                        // Can't just use orElseThrow cause 1.20.1 don't have that
+                        LootModifier.CODEC.decode(registryOps, JsonParser.parseReader(entry.getValue().openAsReader())).map(Pair::getFirst).resultOrPartial(error -> {throw new RuntimeException(error);}).orElseThrow()
                 );
             } catch (Exception e) {
                 LOGGER.error("Failed to load loot table modifier from '%s'!", e, id);
