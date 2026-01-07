@@ -21,6 +21,7 @@ include "modded:1.21"
 include "modded:1.21.2"
 
 include "loader:fabric"
+include "loader:fabric:1.20.1"
 include "loader:fabric:1.20.5"
 include "loader:fabric:1.21"
 include "loader:fabric:1.21.2"

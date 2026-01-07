@@ -2,17 +2,21 @@ package top.offsetmonkey538.loottablemodifier.common;
 
 import com.google.common.base.Stopwatch;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
+import it.unimi.dsi.fastutil.Pair;
 import org.apache.commons.io.file.PathUtils;
+import org.jetbrains.annotations.Unmodifiable;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierActionTypes;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicateTypes;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.LootModifier;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.util.LootModifierContext;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.Identifier;
+import top.offsetmonkey538.loottablemodifier.common.api.wrapper.ResourceManager;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootPool;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootTable;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.entry.LootPoolEntry;
@@ -30,6 +34,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static top.offsetmonkey538.monkeylib538.common.api.command.CommandAbstractionApi.*;
 
@@ -61,9 +66,46 @@ public final class LootTableModifierCommon {
 		if (IS_DEV) enableDebug();
 	}
 
+	public static void runModification(ResourceManager resourceManager, Stream<Pair<Identifier, LootTable>> lootRegistry, DynamicOps<JsonElement> registryOps) {
+		LOGGER.info("Gathering loot tables...");
+		final Stopwatch stopwatch = Stopwatch.createStarted();
+
+		// Streams are lazy so calling toList here means all the intermediary steps will only now be executed and counted between the stopwatch.
+		final List<Pair<Identifier, LootTable>> tables = lootRegistry.toList();
+
+		LOGGER.info("Gathered %s loot tables in %s", tables.size(), stopwatch.stop());
+
+		LootTableModifierCommon.runModification(loadModifiers(resourceManager, registryOps), tables);
+	}
+
+	private static Map<Identifier, LootModifier> loadModifiers(ResourceManager resourceManager, DynamicOps<JsonElement> registryOps) {
+		LOGGER.info("Loading loot table modifiers...");
+		final Stopwatch stopwatch = Stopwatch.createStarted();
+
+		final Map<Identifier, LootModifier> result = new HashMap<>();
+
+		resourceManager.listResources(MOD_ID + "/loot_modifier", path -> path.endsWith(".json")).forEach(resource -> {
+			final Identifier id = resource.left();
+
+			try {
+				LOGGER.debug("Loading load loot table modifier from '%s'", id);
+				result.put(
+						id,
+						// Can't just use orElseThrow cause 1.20.1 don't have that
+						LootModifier.CODEC.decode(registryOps, JsonParser.parseReader(resource.right().get())).map(com.mojang.datafixers.util.Pair::getFirst).resultOrPartial(error -> {throw new RuntimeException(error);}).orElseThrow()
+				);
+			} catch (Exception e) {
+				LOGGER.error("Failed to load loot table modifier from '%s'!", e, id);
+			}
+		});
+
+		LOGGER.info("Loaded %s loot modifiers in %s!", result.size(), stopwatch.stop());
+
+		return result;
+	}
 
 	//public static void runModification(ResourceManager resourceManager, Registry<LootTable> lootRegistry, RegistryOps<JsonElement> registryOps) {
-	public static void runModification(Map<Identifier, LootModifier> modifiers, Map<Identifier, LootTable> tables) {
+	private static void runModification(Map<Identifier, LootModifier> modifiers, @Unmodifiable List<Pair<Identifier, LootTable>> tables) {
 		final List<Identifier> modifiedTableIds = new ArrayList<>(); // Used for exporting modified ones
 		int poolsModified = 0, entriesModified = 0;
 		boolean tableModified, poolModified;
@@ -71,9 +113,9 @@ public final class LootTableModifierCommon {
 		LOGGER.info("Modifying loot tables...");
 		final Stopwatch stopwatch = Stopwatch.createStarted();
 
-		for (Map.Entry<Identifier, LootTable> tableEntry : tables.entrySet()) {
-			final Identifier tableId = tableEntry.getKey();
-			final LootTable table = tableEntry.getValue();
+		for (Pair<Identifier, LootTable> tableEntry : tables) {
+			final Identifier tableId = tableEntry.left();
+			final LootTable table = tableEntry.right();
 
 			tableModified = false;
 
@@ -125,8 +167,6 @@ public final class LootTableModifierCommon {
     }
 
 	private static void enableDebug() {
-        //TODO: guess this should be done in the fabric initializer?: PlatformMain.registerExamplePack();
-
         CommandRegistrationApi.registerCommand(
                 literal(MOD_ID)
                         .then(

@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.DynamicOps;
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
@@ -45,63 +46,49 @@ public class ModdedPlatformMain implements PlatformMain {
         return new IdentifierWrapper(id(path));
     }
 
-    public static void runModification(ResourceManager resourceManager, Registry<LootTable> lootRegistry, RegistryOps<JsonElement> registryOps) {
-        LOGGER.info("Gathering loot tables...");
-        final Stopwatch stopwatch = Stopwatch.createStarted();
+    // TODO: delete: public static void runModification(ResourceManager resourceManager, Registry<LootTable> lootRegistry, DynamicOps<JsonElement> registryOps) {
+    // TODO: delete:     LOGGER.info("Gathering loot tables...");
+    // TODO: delete:     final Stopwatch stopwatch = Stopwatch.createStarted();
 
-        final Map<Identifier, top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootTable> tables = RegistryUtil.getRegistryAsLookup(lootRegistry)
-                .listElements()
-                .collect(Collectors.toMap(
-                        registryEntry -> new IdentifierWrapper(registryEntry.key().location()),
-                        registryEntry -> new LootTableWrapper(RegistryUtil.getValue(lootRegistry, registryEntry.key()))
-                ));
+    // TODO: delete:     final Map<Identifier, top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootTable> tables = RegistryUtil.getRegistryAsLookup(lootRegistry)
+    // TODO: delete:             .listElements()
+    // TODO: delete:             .collect(Collectors.toMap(
+    // TODO: delete:                     registryEntry -> new IdentifierWrapper(registryEntry.key().location()),
+    // TODO: delete:                     registryEntry -> new LootTableWrapper(RegistryUtil.getValue(lootRegistry, registryEntry.key()))
+    // TODO: delete:             ));
 
-        LOGGER.info("Gathered %s loot tables in %s", tables.size(), stopwatch.stop());
+    // TODO: delete:     LOGGER.info("Gathered %s loot tables in %s", tables.size(), stopwatch.stop());
 
-        LootTableModifierCommon.runModification(loadModifiers(resourceManager, registryOps), tables);
-    }
+    // TODO: delete:     LootTableModifierCommon.runModification(loadModifiers(resourceManager, registryOps), tables);
+    // TODO: delete: }
 
-    private static Map<top.offsetmonkey538.loottablemodifier.common.api.wrapper.Identifier, LootModifier> loadModifiers(ResourceManager resourceManager, RegistryOps<JsonElement> registryOps) {
-        LOGGER.info("Loading loot table modifiers...");
-        final Stopwatch stopwatch = Stopwatch.createStarted();
+    // TODO: delete: private static Map<Identifier, LootModifier> loadModifiers(ResourceManager resourceManager, DynamicOps<JsonElement> registryOps) {
+    // TODO: delete:     LOGGER.info("Loading loot table modifiers...");
+    // TODO: delete:     final Stopwatch stopwatch = Stopwatch.createStarted();
 
-        final Map<top.offsetmonkey538.loottablemodifier.common.api.wrapper.Identifier, LootModifier> result = new HashMap<>();
+    // TODO: delete:     final Map<Identifier, LootModifier> result = new HashMap<>();
 
-        for (Map.Entry<net.minecraft.resources.ResourceLocation, Resource> entry : resourceManager.listResources(MOD_ID + "/loot_modifier", path -> path.toString().endsWith(".json")).entrySet()) {
-            final net.minecraft.resources.ResourceLocation id = entry.getKey();
+    // TODO: delete:     for (Map.Entry<net.minecraft.resources.ResourceLocation, Resource> entry : resourceManager.listResources(MOD_ID + "/loot_modifier", path -> path.toString().endsWith(".json")).entrySet()) {
+    // TODO: delete:         final net.minecraft.resources.ResourceLocation id = entry.getKey();
 
-            try {
-                LOGGER.debug("Loading load loot table modifier from '%s'", id);
-                result.put(
-                        new IdentifierWrapper(id),
-                        // Can't just use orElseThrow cause 1.20.1 don't have that
-                        LootModifier.CODEC.decode(registryOps, JsonParser.parseReader(entry.getValue().openAsReader())).map(Pair::getFirst).resultOrPartial(error -> {throw new RuntimeException(error);}).orElseThrow()
-                );
-            } catch (Exception e) {
-                LOGGER.error("Failed to load loot table modifier from '%s'!", e, id);
-            }
-        }
+    // TODO: delete:         try {
+    // TODO: delete:             LOGGER.debug("Loading load loot table modifier from '%s'", id);
+    // TODO: delete:             result.put(
+    // TODO: delete:                     new IdentifierWrapper(id),
+    // TODO: delete:                     // Can't just use orElseThrow cause 1.20.1 don't have that
+    // TODO: delete:                     LootModifier.CODEC.decode(registryOps, JsonParser.parseReader(entry.getValue().openAsReader())).map(Pair::getFirst).resultOrPartial(error -> {throw new RuntimeException(error);}).orElseThrow()
+    // TODO: delete:             );
+    // TODO: delete:         } catch (Exception e) {
+    // TODO: delete:             LOGGER.error("Failed to load loot table modifier from '%s'!", e, id);
+    // TODO: delete:         }
+    // TODO: delete:     }
 
-        LOGGER.info("Loaded %s loot modifiers in %s!", result.size(), stopwatch.stop());
+    // TODO: delete:     LOGGER.info("Loaded %s loot modifiers in %s!", result.size(), stopwatch.stop());
 
-        return result;
-    }
+    // TODO: delete:     return result;
+    // TODO: delete: }
 
     public static ResourceLocation id(String path) {
         return ((IdentifierWrapper) Identifier.of(MOD_ID + ":" + path)).vanillaIdentifier();
-    }
-
-    public interface RegistryUtil {
-        RegistryUtil INSTANCE = load(RegistryUtil.class);
-
-        static <T> HolderLookup<T> getRegistryAsLookup(@NotNull Registry<T> registry) {
-            return INSTANCE.getRegistryAsLookupImpl(registry);
-        }
-        static <T> T getValue(@NotNull Registry<T> registry, @NotNull ResourceKey<T> key) {
-            return INSTANCE.getValueImpl(registry, key);
-        }
-
-        <T> HolderLookup<T> getRegistryAsLookupImpl(@NotNull Registry<T> registry);
-        <T> T getValueImpl(@NotNull Registry<T> registry, @NotNull ResourceKey<T> key);
     }
 }
