@@ -19,7 +19,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.predicates.LootItemKilledByPlayerCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import top.offsetmonkey538.loottablemodifier.fabric.api.datagen.LootModifierProvider;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.LootModifier;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.condition.ConditionAddAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.entry.EntryAddAction;
@@ -48,12 +47,12 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
 
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
-        final FabricDataGenerator.Pack pack = fabricDataGenerator.createBuiltinResourcePack(id("example_pack"));
+        //final FabricDataGenerator.Pack pack = fabricDataGenerator.createBuiltinResourcePack(id("example_pack"));
 
-        pack.addProvider(ModLootModifierProvider::new);
-        pack.addProvider(LootProvider::new);
+        //pack.addProvider(ModLootModifierProvider::new);
+        //pack.addProvider(LootProvider::new);
     }
-
+/*
     private static class ModLootModifierProvider extends LootModifierProvider {
         public ModLootModifierProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registriesFuture) {
             super(dataOutput, registriesFuture);
@@ -213,4 +212,6 @@ public class LootTableModifierDatagen implements DataGeneratorEntrypoint {
             consumer.accept(ResourceKey.create(Registries.LOOT_TABLE, id("test_empty_table")), LootTable.lootTable());
         }
     }
+
+ */
 }

@@ -1,4 +1,4 @@
-package top.offsetmonkey538.loottablemodifier.fabric.api.datagen;
+/*package top.offsetmonkey538.loottablemodifier.fabric.api.datagen;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricCodecDataProvider;
@@ -43,7 +43,7 @@ import static top.offsetmonkey538.loottablemodifier.common.LootTableModifierComm
  *     );
  * }
  * }</pre>
- */
+ *//*
 // TODO: FIXME: Datagen part of api should be platform specific and probably include helper methods for turning vanilla things into wrappers cause calling the constructors seems annoying
 public abstract class LootModifierProvider extends FabricCodecDataProvider<LootModifier> {
     private BiConsumer<ResourceLocation, LootModifier> provider;
@@ -67,7 +67,7 @@ public abstract class LootModifierProvider extends FabricCodecDataProvider<LootM
      * Override and use {@link #addModifier(ResourceLocation, LootModifier.Builder)} method to add modifiers.
      *
      * @param lookup A lookup for registries.
-     */
+     *//*
     protected abstract void generate(HolderLookup.Provider lookup);
 
     /**
@@ -75,8 +75,9 @@ public abstract class LootModifierProvider extends FabricCodecDataProvider<LootM
      *
      * @param name the identifier of the modifier
      * @param builder the builder to generate the loot modifier from
-     */
+     *//*
     protected void addModifier(@NotNull ResourceLocation name, @NotNull LootModifier.Builder builder) {
         provider.accept(name, builder.build());
     }
 }
+*/
