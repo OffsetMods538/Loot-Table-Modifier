@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 @Mixin(LootTable.class)
-public class LootTableMixin implements LootTableDuck {
+public abstract class LootTableMixin implements LootTableDuck {
 
     @Shadow
     @Mutable

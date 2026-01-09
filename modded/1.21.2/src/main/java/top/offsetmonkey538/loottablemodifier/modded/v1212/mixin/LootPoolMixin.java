@@ -17,7 +17,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import top.offsetmonkey538.loottablemodifier.modded.duck.LootPoolDuck;
 
 @Mixin(LootPool.class)
-public class LootPoolMixin implements LootPoolDuck {
+public abstract class LootPoolMixin implements LootPoolDuck {
 
     @Shadow
     @Final

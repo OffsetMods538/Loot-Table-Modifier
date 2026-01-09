@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 @Mixin(LootPoolEntryContainer.class)
-public class LootPoolEntryMixin implements LootElementWithConditions {
+public abstract class LootPoolEntryMixin implements LootElementWithConditions {
 
     @Shadow
     @Final

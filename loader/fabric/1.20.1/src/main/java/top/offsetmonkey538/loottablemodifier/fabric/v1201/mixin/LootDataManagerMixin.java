@@ -28,7 +28,7 @@ public abstract class LootDataManagerMixin {
             method = "method_51189(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/world/level/storage/loot/LootDataType;Ljava/util/Map;)V",
             at = @At("RETURN")
     )
-    private static <T> void loottablemodifier$modifyLootTables(ResourceManager resourceManager, LootDataType<T> lootDataType, Map<ResourceLocation, T> map, CallbackInfo ci) {
+    private static <T> void loot_table_modifier$modifyLootTables(ResourceManager resourceManager, LootDataType<T> lootDataType, Map<ResourceLocation, T> map, CallbackInfo ci) {
         if (lootDataType != LootDataType.TABLE) return;
 
         //noinspection unchecked

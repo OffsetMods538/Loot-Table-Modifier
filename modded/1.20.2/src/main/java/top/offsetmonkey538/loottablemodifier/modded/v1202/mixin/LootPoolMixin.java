@@ -16,7 +16,7 @@ import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 @Mixin(LootPool.class)
-public class LootPoolMixin implements LootPoolDuck {
+public abstract class LootPoolMixin implements LootPoolDuck {
 
     @Shadow
     @Final

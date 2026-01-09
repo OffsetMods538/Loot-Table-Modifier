@@ -12,7 +12,7 @@ import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 @Mixin(LootPoolEntryContainer.class)
-public class LootPoolEntryMixin implements LootElementWithConditions {
+public abstract class LootPoolEntryMixin implements LootElementWithConditions {
 
     @Shadow
     @Final
