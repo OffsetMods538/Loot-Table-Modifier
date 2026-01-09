@@ -1,9 +1,9 @@
 {
   "required": true,
-  "package": "top.offsetmonkey538.loottablemodifier.modded.mixin",
+  "package": "top.offsetmonkey538.loottablemodifier.fabric.v1202.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-
+    "LootDataManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

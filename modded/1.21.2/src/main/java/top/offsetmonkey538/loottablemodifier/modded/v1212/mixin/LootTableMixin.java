@@ -1,0 +1,58 @@
+package top.offsetmonkey538.loottablemodifier.modded.v1212.mixin;
+
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctions;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import org.spongepowered.asm.mixin.*;
+import top.offsetmonkey538.loottablemodifier.common.util.PredicateUtils;
+import top.offsetmonkey538.loottablemodifier.modded.duck.LootPoolDuck;
+import top.offsetmonkey538.loottablemodifier.modded.duck.LootTableDuck;
+
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
+
+@Mixin(LootTable.class)
+public class LootTableMixin implements LootTableDuck {
+
+    @Shadow
+    @Mutable
+    @Final
+    private List<LootPool> pools;
+
+    @Shadow
+    @Mutable
+    @Final
+    private List<LootItemFunction> functions;
+
+    @Shadow
+    @Mutable
+    @Final
+    private BiFunction<ItemStack, LootContext, ItemStack> compositeFunction;
+
+    @Override
+    public void loot_table_modifier$setPools(List<LootPool> pools) {
+        this.pools = pools;
+    }
+
+    @Override
+    public List<LootPool> loot_table_modifier$getPools() {
+        return this.pools;
+    }
+
+    @Override
+    public void loot_table_modifier$setFunctions(List<LootItemFunction> functions) {
+        this.functions = functions;
+        this.compositeFunction = LootItemFunctions.compose(functions);
+    }
+
+    @Override
+    public List<LootItemFunction> loot_table_modifier$getFunctions() {
+        return this.functions;
+    }
+}

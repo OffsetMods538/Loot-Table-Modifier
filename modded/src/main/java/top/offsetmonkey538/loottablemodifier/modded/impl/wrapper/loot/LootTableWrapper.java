@@ -1,11 +1,10 @@
 package top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.serialization.Codec;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootFunction;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootPool;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootTable;
-import top.offsetmonkey538.loottablemodifier.modded.mixin.LootTableAccessor;
+import top.offsetmonkey538.loottablemodifier.modded.duck.LootTableDuck;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,7 @@ public record LootTableWrapper(net.minecraft.world.level.storage.loot.LootTable 
 
     @Override
     public ArrayList<LootPool> getPools() {
-        return ((LootTableAccessor) vanillaTable).getPools().stream().map(LootPoolWrapper::new).collect(Collectors.toCollection(ArrayList::new));
+        return ((LootTableDuck) vanillaTable).loot_table_modifier$getPools().stream().map(LootPoolWrapper::new).collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
@@ -32,12 +31,12 @@ public record LootTableWrapper(net.minecraft.world.level.storage.loot.LootTable 
 
         newPools.addAll(entries.stream().map(wrapperEntry -> ((LootPoolWrapper) wrapperEntry).vanillaPool()).toList());
 
-        ((LootTableAccessor) vanillaTable).setPools(newPools.build());
+        ((LootTableDuck) vanillaTable).loot_table_modifier$setPools(newPools.build());
     }
 
     @Override
     public ArrayList<LootFunction> getFunctions() {
-        return ((LootTableAccessor) vanillaTable).getFunctions().stream().map(LootFunctionWrapper::new).collect(Collectors.toCollection(ArrayList::new));
+        return ((LootTableDuck) vanillaTable).loot_table_modifier$getFunctions().stream().map(LootFunctionWrapper::new).collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
@@ -46,7 +45,7 @@ public record LootTableWrapper(net.minecraft.world.level.storage.loot.LootTable 
 
         newFunctions.addAll(functions.stream().map(wrapperEntry -> ((LootFunctionWrapper) wrapperEntry).vanillaFunction()).toList());
 
-        ((LootTableAccessor) vanillaTable).setFunctions(newFunctions.build());
+        ((LootTableDuck) vanillaTable).loot_table_modifier$setFunctions(newFunctions.build());
     }
 
     public interface TypeGetter extends Function<net.minecraft.world.level.storage.loot.LootTable, String> {

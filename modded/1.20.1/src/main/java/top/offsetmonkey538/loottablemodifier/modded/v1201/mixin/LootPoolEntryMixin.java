@@ -1,24 +1,23 @@
-package top.offsetmonkey538.loottablemodifier.modded.mixin;
+package top.offsetmonkey538.loottablemodifier.modded.v1201.mixin;
 
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import org.spongepowered.asm.mixin.*;
-import top.offsetmonkey538.loottablemodifier.common.platform.PlatformMain;
 import top.offsetmonkey538.loottablemodifier.common.util.PredicateUtils;
 import top.offsetmonkey538.loottablemodifier.modded.duck.LootElementWithConditions;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
-import net.minecraft.Util;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
-@Mixin(LootPool.class)
-public class LootPoolMixin implements LootElementWithConditions {
+@Mixin(LootPoolEntryContainer.class)
+public class LootPoolEntryMixin implements LootElementWithConditions {
 
     @Shadow
     @Final
     @Mutable
-    public List<LootItemCondition> conditions;
+    protected LootItemCondition[] conditions;
 
     @Shadow
     @Final
@@ -28,12 +27,12 @@ public class LootPoolMixin implements LootElementWithConditions {
     @Override
     @Unique
     public void loot_table_modifier$setConditions(List<LootItemCondition> conditions) {
-        this.conditions = conditions;
+        this.conditions = conditions.toArray(LootItemCondition[]::new);
         this.compositeCondition = PredicateUtils.allOf(conditions);
     }
 
     @Override
     public List<LootItemCondition> loot_table_modifier$getConditions() {
-        return this.conditions;
+        return Arrays.asList(this.conditions);
     }
 }

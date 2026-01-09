@@ -1,14 +1,12 @@
 package top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.serialization.Codec;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootCondition;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootFunction;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootPool;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.entry.LootPoolEntry;
-import top.offsetmonkey538.loottablemodifier.modded.duck.LootElementWithConditions;
+import top.offsetmonkey538.loottablemodifier.modded.duck.LootPoolDuck;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot.entry.LootPoolEntryWrapper;
-import top.offsetmonkey538.loottablemodifier.modded.mixin.LootPoolAccessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +15,7 @@ import java.util.stream.Collectors;
 public record LootPoolWrapper(net.minecraft.world.level.storage.loot.LootPool vanillaPool) implements LootPool {
     @Override
     public ArrayList<LootPoolEntry> getEntries() {
-        return ((LootPoolAccessor) vanillaPool).getEntries().stream().map(LootPoolEntryWrapper::create).collect(Collectors.toCollection(ArrayList::new));
+        return ((LootPoolDuck) vanillaPool).loot_table_modifier$getEntries().stream().map(LootPoolEntryWrapper::create).collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
@@ -26,12 +24,12 @@ public record LootPoolWrapper(net.minecraft.world.level.storage.loot.LootPool va
 
         newEntries.addAll(entries.stream().map(wrapperEntry -> ((LootPoolEntryWrapper) wrapperEntry).vanillaEntry).toList());
 
-        ((LootPoolAccessor) vanillaPool).setEntries(newEntries.build());
+        ((LootPoolDuck) vanillaPool).loot_table_modifier$setEntries(newEntries.build());
     }
 
     @Override
     public ArrayList<LootCondition> getConditions() {
-        return ((LootElementWithConditions) vanillaPool).loot_table_modifier$getConditions().stream().map(LootConditionWrapper::new).collect(Collectors.toCollection(ArrayList::new));
+        return ((LootPoolDuck) vanillaPool).loot_table_modifier$getConditions().stream().map(LootConditionWrapper::new).collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
@@ -40,12 +38,12 @@ public record LootPoolWrapper(net.minecraft.world.level.storage.loot.LootPool va
 
         newConditions.addAll(conditions.stream().map(wrapperEntry -> ((LootConditionWrapper) wrapperEntry).vanillaCondition()).toList());
 
-        ((LootElementWithConditions) vanillaPool).loot_table_modifier$setConditions(newConditions.build());
+        ((LootPoolDuck) vanillaPool).loot_table_modifier$setConditions(newConditions.build());
     }
 
     @Override
     public ArrayList<LootFunction> getFunctions() {
-        return ((LootPoolAccessor) vanillaPool).getFunctions().stream().map(LootFunctionWrapper::new).collect(Collectors.toCollection(ArrayList::new));
+        return ((LootPoolDuck) vanillaPool).loot_table_modifier$getFunctions().stream().map(LootFunctionWrapper::new).collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
@@ -54,7 +52,7 @@ public record LootPoolWrapper(net.minecraft.world.level.storage.loot.LootPool va
 
         newFunctions.addAll(functions.stream().map(wrapperEntry -> ((LootFunctionWrapper) wrapperEntry).vanillaFunction()).toList());
 
-        ((LootPoolAccessor) vanillaPool).setFunctions(newFunctions.build());
+        ((LootPoolDuck) vanillaPool).loot_table_modifier$setFunctions(newFunctions.build());
     }
 }
 

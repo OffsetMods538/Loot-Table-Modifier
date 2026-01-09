@@ -5,4 +5,3 @@ import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootFunctio
 public record LootFunctionWrapper(net.minecraft.world.level.storage.loot.functions.LootItemFunction vanillaFunction) implements LootFunction {
 
 }
-

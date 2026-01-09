@@ -2,8 +2,8 @@ package top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot.entry;
 
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.Item;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.entry.ItemEntry;
+import top.offsetmonkey538.loottablemodifier.modded.duck.ItemEntryDuck;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.ItemWrapper;
-import top.offsetmonkey538.loottablemodifier.modded.mixin.ItemEntryAccessor;
 
 public final class ItemEntryWrapper extends LootPoolEntryWrapper implements ItemEntry {
     private final net.minecraft.world.level.storage.loot.entries.LootItem vanillaEntry;
@@ -15,13 +15,13 @@ public final class ItemEntryWrapper extends LootPoolEntryWrapper implements Item
 
     @Override
     public void setItem(Item item) {
-        ((ItemEntryAccessor) this.vanillaEntry).setItem(((ItemWrapper) item).vanillaItem());
+        ((ItemWrapper) item).vanillaItem().value();
+        ((ItemEntryDuck) this.vanillaEntry).loot_table_modifier$setItem(((ItemWrapper) item).vanillaItem());
     }
 
     @Override
     public String getId() {
-        // Have to implement getRegisteredName myself cause 1.20.1 don't got it
-        return ((ItemEntryAccessor) this.vanillaEntry).getItem().unwrapKey().map(key -> key.location().toString()).orElse("[unregistered]");
+        return ((ItemEntryDuck) this.vanillaEntry).loot_table_modifier$getId();
     }
 }
 
