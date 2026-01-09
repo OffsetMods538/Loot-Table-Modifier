@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ReloadableServerRegistries;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.storage.loot.LootDataType;
@@ -13,16 +12,11 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import top.offsetmonkey538.loottablemodifier.common.LootTableModifierCommon;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.IdentifierWrapper;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.ResourceManagerWrapper;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot.LootTableWrapper;
-import top.offsetmonkey538.loottablemodifier.modded.platform.ModdedPlatformMain;
-
-import java.util.Map;
-import java.util.Optional;
 
 @Mixin(
         value = ReloadableServerRegistries.class,

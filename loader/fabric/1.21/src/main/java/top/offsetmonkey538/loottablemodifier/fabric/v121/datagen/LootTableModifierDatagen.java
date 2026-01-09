@@ -2,43 +2,6 @@ package top.offsetmonkey538.loottablemodifier.fabric.v121.datagen;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraft.world.level.storage.loot.predicates.LootItemKilledByPlayerCondition;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.LootModifier;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.action.condition.ConditionAddAction;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.action.entry.EntryAddAction;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.action.entry.EntryRemoveAction;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.table.TablePredicate;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.util.RegexPattern;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.action.pool.PoolAddAction;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.action.entry.EntryItemSetAction;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.action.pool.PoolRemoveAction;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.entry.EntryItemPredicate;
-import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.ItemWrapper;
-import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot.LootConditionWrapper;
-import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot.LootPoolWrapper;
-import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot.entry.LootPoolEntryWrapper;
-import top.offsetmonkey538.loottablemodifier.modded.v121.mixin.LootContextTypesAccessor;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.function.BiConsumer;
-
-import static top.offsetmonkey538.loottablemodifier.modded.platform.ModdedPlatformMain.id;
 
 /**
  * Datagen for loot modifiers used for testing.

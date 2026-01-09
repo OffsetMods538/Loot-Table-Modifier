@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicateTypes;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicateType;
-import top.offsetmonkey538.loottablemodifier.common.platform.PlatformMain;
 import top.offsetmonkey538.loottablemodifier.common.util.PredicateUtils;
 
 import java.util.List;

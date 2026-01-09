@@ -1,7 +1,6 @@
 package top.offsetmonkey538.loottablemodifier.modded.v1202.mixin;
 
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import org.spongepowered.asm.mixin.Final;

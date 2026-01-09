@@ -6,7 +6,6 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctions;
 import org.spongepowered.asm.mixin.*;
 import top.offsetmonkey538.loottablemodifier.common.util.PredicateUtils;
-import top.offsetmonkey538.loottablemodifier.modded.duck.LootElementWithConditions;
 
 import java.util.List;
 import java.util.function.BiFunction;

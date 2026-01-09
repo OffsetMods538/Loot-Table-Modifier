@@ -1,12 +1,10 @@
 package top.offsetmonkey538.loottablemodifier.modded.impl.resource.predicate;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.Lifecycle;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import org.jetbrains.annotations.NotNull;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicateType;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.Identifier;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.IdentifierWrapper;

@@ -2,12 +2,8 @@ package top.offsetmonkey538.loottablemodifier.modded.v1201.impl.wrapper.loot.ent
 
 import com.mojang.serialization.Codec;
 import net.minecraft.world.level.storage.loot.Deserializers;
-import net.minecraft.world.level.storage.loot.entries.LootPoolEntries;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootCondition;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.entry.LootPoolEntry;
-import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot.LootConditionWrapper;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot.entry.LootPoolEntryWrapper;
 import top.offsetmonkey538.loottablemodifier.modded.v1201.codec.GSONCodec;
 

@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
-import net.minecraft.world.level.storage.loot.Deserializers;
 
 public final class GSONCodec<C> implements Codec<C> {
     private final Gson gson;

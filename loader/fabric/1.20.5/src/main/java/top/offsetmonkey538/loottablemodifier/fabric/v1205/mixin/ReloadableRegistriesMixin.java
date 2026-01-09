@@ -17,7 +17,6 @@ import top.offsetmonkey538.loottablemodifier.common.LootTableModifierCommon;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.IdentifierWrapper;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.ResourceManagerWrapper;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot.LootTableWrapper;
-import top.offsetmonkey538.loottablemodifier.modded.platform.ModdedPlatformMain;
 
 @Mixin(
         value = ReloadableServerRegistries.class,

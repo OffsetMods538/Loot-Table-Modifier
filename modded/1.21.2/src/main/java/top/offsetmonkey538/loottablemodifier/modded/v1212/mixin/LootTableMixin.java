@@ -4,18 +4,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctions;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import org.spongepowered.asm.mixin.*;
-import top.offsetmonkey538.loottablemodifier.common.util.PredicateUtils;
-import top.offsetmonkey538.loottablemodifier.modded.duck.LootPoolDuck;
 import top.offsetmonkey538.loottablemodifier.modded.duck.LootTableDuck;
 
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.function.Predicate;
 
 @Mixin(LootTable.class)
 public class LootTableMixin implements LootTableDuck {
