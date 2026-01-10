@@ -26,14 +26,12 @@ jobs:
         with:
           cache-read-only: false
 
-      - name: Store short commit hash
-        run: echo "short_commit_hash=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
-
       - name: Generate resources with Gradle
         run: ./gradlew runDatagenClient
         env:
           IS_RELEASE: true
           DISABLE_PROPERTIES_UPDATE: true
+          VERSION_SUFFIX: ""
 
 
       - name: Build with Gradle
@@ -41,12 +39,14 @@ jobs:
         env:
           IS_RELEASE: true
           DISABLE_PROPERTIES_UPDATE: true
+          VERSION_SUFFIX: ""
 
       - name: Upload to Modrinth
         run: ./gradlew modrinth
         env:
           IS_RELEASE: true
           DISABLE_PROPERTIES_UPDATE: true
+          VERSION_SUFFIX: ""
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           VERSION_NAME: ${{ github.event.release.name }}
           VERSION_IS_PRERELEASE: ${{ github.event.release.prerelease }}
@@ -57,10 +57,11 @@ jobs:
         env:
           IS_RELEASE: true
           DISABLE_PROPERTIES_UPDATE: true
+          VERSION_SUFFIX: ""
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
 
       - name: Upload to GitHub
         uses: softprops/action-gh-release@v2
         with:
-          files: build/libs/*.jar
+          files: ./loader/*/*/build/libs/

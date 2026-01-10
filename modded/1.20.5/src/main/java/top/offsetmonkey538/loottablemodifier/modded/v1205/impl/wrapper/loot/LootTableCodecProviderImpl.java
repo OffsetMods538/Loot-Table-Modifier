@@ -1,0 +1,12 @@
+package top.offsetmonkey538.loottablemodifier.modded.v1205.impl.wrapper.loot;
+
+import com.mojang.serialization.Codec;
+import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootTable;
+import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot.LootTableWrapper;
+
+public final class LootTableCodecProviderImpl implements LootTable.CodecProvider {
+    @Override
+    public Codec<LootTable> get() {
+        return net.minecraft.world.level.storage.loot.LootTable.DIRECT_CODEC.xmap(LootTableWrapper::new, wrappedPool -> ((LootTableWrapper) wrappedPool).vanillaTable());
+    }
+}

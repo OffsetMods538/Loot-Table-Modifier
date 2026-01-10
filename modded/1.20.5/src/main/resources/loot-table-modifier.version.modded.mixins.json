@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "top.offsetmonkey538.loottablemodifier.modded.v1205.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ItemEntryMixin",
+    "LootContextTypesAccessor",
+    "LootPoolEntryMixin",
+    "LootPoolMixin",
+    "LootTableMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

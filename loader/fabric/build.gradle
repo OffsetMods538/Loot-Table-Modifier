@@ -1,0 +1,157 @@
+import dex.plugins.outlet.v2.util.ReleaseType
+
+plugins {
+    id 'multiloader-modded'
+    id 'fabric-loom'
+    id 'io.github.dexman545.outlet'
+    id 'com.modrinth.minotaur' apply false
+}
+
+loom {
+    afterEvaluate {
+        runClient.setEnabled(false)
+        runServer.setEnabled(false)
+    }
+}
+
+allprojects {
+    apply plugin: "multiloader-modded"
+    apply plugin: "fabric-loom"
+    apply plugin: "io.github.dexman545.outlet"
+
+    outlet {
+        maintainPropertiesFile = System.getenv("DISABLE_PROPERTIES_UPDATE") == null
+        mcVersionRange = project.supported_minecraft_versions
+        allowedReleaseTypes = [ReleaseType.RELEASE]
+        propertiesData = [
+                'loader_version': outlet.loaderVersion(),
+                'fapi_version'  : outlet.fapiVersion(project.minecraft_version)
+        ]
+    }
+
+    dependencies {
+        compileOnly project(":common")
+        commonJava project(path: ":common", configuration: "commonJava")
+        commonResources project(path: ":common", configuration: "commonResources")
+        compileOnly project(":modded")
+        commonJava project(path: ":modded", configuration: "commonJava")
+        commonResources project(path: ":modded", configuration: "commonResources")
+
+        minecraft "com.mojang:minecraft:${project.minecraft_version}"
+        mappings loom.officialMojangMappings()
+        modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+        modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fapi_version}"
+
+        modCompileOnly("top.offsetmonkey538.monkeylib538:monkeylib538-fabric:${rootProject.monkeylib538_version}+fabric") {
+            exclude(group: "net.fabricmc.fabric-api")
+        }
+    }
+}
+
+subprojects {
+    apply plugin: "io.github.dexman545.outlet"
+    apply plugin: "com.modrinth.minotaur"
+
+    tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
+
+    repositories {
+        maven {
+            name = "DevAuth"
+            url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1"
+            content {
+                includeGroup "me.djtheredstoner"
+            }
+        }
+    }
+
+    dependencies {
+        compileOnly project(":loader:fabric")
+        commonJava project(path: ":loader:fabric", configuration: "commonJava")
+        commonResources project(path: ":loader:fabric", configuration: "commonResources")
+
+        compileOnly project(":modded:${project.commonModdedVersion}")
+        commonJava project(path: ":modded:${project.commonModdedVersion}", configuration: "commonJava")
+        commonResources project(path: ":modded:${project.commonModdedVersion}", configuration: "commonResources")
+
+        modRuntimeOnly("top.offsetmonkey538.monkeylib538:monkeylib538-fabric-${project.monkeylib538_suffix}:${rootProject.monkeylib538_version}+fabric+${project.monkeylib538_suffix}") {
+            exclude(group: "net.fabricmc.fabric-api")
+            //TODO: can remove? exclude(group: "top.offsetmonkey538.monkeylib538:monkeylib538-fabric")
+        }
+
+        // DevAuth
+        modLocalRuntime "me.djtheredstoner:DevAuth-fabric:${rootProject.devauth_version}"
+    }
+
+    loom {
+        runs {
+            server {
+                name = "${project.project_name} Server"
+                runDir "run/server"
+                ideConfigGenerated(true)
+            }
+            client {
+                name = "${project.project_name} Client"
+                runDir "run/client"
+                vmArg "-Ddevauth.enabled=true"
+                ideConfigGenerated(true)
+            }
+            datagenClient {
+                name = "${project.project_name} Datagen"
+                inherit client
+                runDir "build/datagen"
+                vmArg "-Dfabric-api.datagen"
+                vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
+                vmArg "-Dfabric-api.datagen.modid=loot-table-modifier"
+                vmArg "-Ddevauth.enabled=false"
+                ideConfigGenerated(true)
+            }
+        }
+    }
+
+    sourceSets {
+        main {
+            resources {
+                srcDirs += [
+                        "src/main/generated"
+                ]
+            }
+        }
+    }
+
+    modrinth {
+        // Main properties
+        token = System.getenv("MODRINTH_TOKEN")
+        projectId = "loot-table-modifier"
+        gameVersions = outlet.mcVersions()
+        loaders = ["fabric"]
+
+        // Version stuff
+        def customVersionName = System.getenv("VERSION_NAME")
+        if (customVersionName != null) versionName = customVersionName
+
+        versionNumber = "${project.version}"
+
+        versionType = Boolean.parseBoolean(System.getenv("VERSION_IS_PRERELEASE")) ? "beta" : "release"
+
+        if (rootProject.mod_version.contains("beta")) versionType = "beta"
+        if (rootProject.mod_version.contains("alpha")) versionType = "alpha"
+
+
+        // Files
+        uploadFile = remapJar.archiveFile
+        additionalFiles = [sourcesJar.archiveFile]
+
+
+        // Project info
+        syncBodyFrom = rootProject.file("README.md").text
+        def changelogEnv = System.getenv("VERSION_CHANGELOG")
+        if (changelogEnv != null) changelog = changelogEnv
+
+
+        // Dependencies
+        dependencies {
+            //TODO: not actually required? just cause datagen... required.project "fabric-api"
+        }
+    }
+}
