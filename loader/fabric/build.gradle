@@ -74,7 +74,7 @@ subprojects {
         commonJava project(path: ":modded:${project.commonModdedVersion}", configuration: "commonJava")
         commonResources project(path: ":modded:${project.commonModdedVersion}", configuration: "commonResources")
 
-        modRuntimeOnly("top.offsetmonkey538.monkeylib538:monkeylib538-fabric-${project.monkeylib538_suffix}:${rootProject.monkeylib538_version}+fabric+${project.monkeylib538_suffix}") {
+        modImplementation("top.offsetmonkey538.monkeylib538:monkeylib538-fabric-${project.monkeylib538_suffix}:${rootProject.monkeylib538_version}+fabric+${project.monkeylib538_suffix}") {
             exclude(group: "net.fabricmc.fabric-api")
             //TODO: can remove? exclude(group: "top.offsetmonkey538.monkeylib538:monkeylib538-fabric")
         }
@@ -151,7 +151,7 @@ subprojects {
 
         // Dependencies
         dependencies {
-            //TODO: not actually required? just cause datagen... required.project "fabric-api"
+            required.project "monkeylib538"
         }
     }
 }

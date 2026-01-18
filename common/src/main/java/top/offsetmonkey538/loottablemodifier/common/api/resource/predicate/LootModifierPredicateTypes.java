@@ -7,7 +7,7 @@ import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.op.An
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.op.InvertedPredicate;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.table.TablePredicate;
 
-import static top.offsetmonkey538.loottablemodifier.common.platform.PlatformMain.id;
+import static top.offsetmonkey538.loottablemodifier.common.LootTableModifierCommon.id;
 
 /**
  * Contains all {@link LootModifierPredicate} types available in Loot Table Modifier

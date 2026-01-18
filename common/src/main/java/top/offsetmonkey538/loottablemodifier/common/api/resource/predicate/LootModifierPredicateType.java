@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import top.offsetmonkey538.loottablemodifier.common.api.wrapper.Identifier;
+import top.offsetmonkey538.monkeylib538.common.api.wrapper.Identifier;
 
 import java.util.function.Supplier;
 

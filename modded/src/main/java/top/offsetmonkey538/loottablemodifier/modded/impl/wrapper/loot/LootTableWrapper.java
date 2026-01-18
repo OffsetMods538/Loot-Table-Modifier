@@ -17,7 +17,7 @@ public record LootTableWrapper(net.minecraft.world.level.storage.loot.LootTable 
 
     @Override
     public String getType() {
-        return TypeGetter.INSTANCE.apply(vanillaTable);
+        return TypeGetter.INSTANCE.getType(vanillaTable);
     }
 
     @Override
@@ -48,8 +48,10 @@ public record LootTableWrapper(net.minecraft.world.level.storage.loot.LootTable 
         ((LootTableDuck) vanillaTable).loot_table_modifier$setFunctions(newFunctions.build());
     }
 
-    public interface TypeGetter extends Function<net.minecraft.world.level.storage.loot.LootTable, String> {
+    public interface TypeGetter {
         TypeGetter INSTANCE = load(TypeGetter.class);
+
+        String getType(net.minecraft.world.level.storage.loot.LootTable table);
     }
 }
 

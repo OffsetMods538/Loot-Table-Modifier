@@ -41,5 +41,7 @@ subprojects {
         compileOnly project(":modded")
         commonJava project(path: ":modded", configuration: "commonJava")
         commonResources project(path: ":modded", configuration: "commonResources")
+
+        modCompileOnly "top.offsetmonkey538.monkeylib538:monkeylib538-modded-${project.monkeylib538_suffix}:${rootProject.monkeylib538_version}+modded+${project.monkeylib538_suffix}"
     }
 }

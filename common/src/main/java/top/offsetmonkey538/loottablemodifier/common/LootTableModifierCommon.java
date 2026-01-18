@@ -15,7 +15,7 @@ import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModi
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicateTypes;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.LootModifier;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.util.LootModifierContext;
-import top.offsetmonkey538.loottablemodifier.common.api.wrapper.Identifier;
+import top.offsetmonkey538.monkeylib538.common.api.wrapper.Identifier;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.ResourceManager;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootPool;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootTable;
@@ -235,4 +235,8 @@ public final class LootTableModifierCommon {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Failed to load service for " + clazz.getName()));
     }
+
+	public static Identifier id(String path) {
+		return Identifier.of(MOD_ID, path);
+	}
 }

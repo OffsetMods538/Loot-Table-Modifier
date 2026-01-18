@@ -8,6 +8,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import top.offsetmonkey538.loottablemodifier.modded.duck.ItemEntryDuck;
+import top.offsetmonkey538.monkeylib538.common.api.wrapper.Identifier;
+import top.offsetmonkey538.monkeylib538.modded.api.resource.ResourceKeyApi;
 
 @Mixin(LootItem.class)
 public abstract class ItemEntryMixin implements ItemEntryDuck {
@@ -23,6 +25,6 @@ public abstract class ItemEntryMixin implements ItemEntryDuck {
 
     @Override
     public String loot_table_modifier$getId() {
-        return this.item.unwrapKey().map(key -> key.location().toString()).orElse("[unregistered]");
+        return this.item.unwrapKey().map(ResourceKeyApi::getLocation).map(Identifier::toString).orElse("[unregistered]");
     }
 }

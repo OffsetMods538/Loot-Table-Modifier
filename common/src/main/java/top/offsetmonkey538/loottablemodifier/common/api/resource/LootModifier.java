@@ -12,7 +12,7 @@ import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModi
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.table.TablePredicate;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.util.LootModifierContext;
-import top.offsetmonkey538.loottablemodifier.common.api.wrapper.Identifier;
+import top.offsetmonkey538.monkeylib538.common.api.wrapper.Identifier;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootPool;
 
 import java.util.*;
@@ -27,7 +27,7 @@ import static top.offsetmonkey538.loottablemodifier.common.api.resource.action.L
  */
 public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> actions, @NotNull LootModifierPredicate predicate) implements Predicate<LootModifierContext> {
     private static final Codec<LootModifier> LEGACY_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.either(Identifier.CODEC_PROVIDER.get(), Identifier.CODEC_PROVIDER.get().listOf()).fieldOf("modifies").forGetter(modifier -> {
+            Codec.either(Identifier.CODEC, Identifier.CODEC.listOf()).fieldOf("modifies").forGetter(modifier -> {
                 throw new IllegalStateException("Tried using legacy loot table modifier codec for serialization for some reason!");
             }),
             LootPool.CODEC_PROVIDER.get().listOf().optionalFieldOf("pools").forGetter(lootModifier -> Optional.empty()),
@@ -60,7 +60,7 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
     private static @NotNull LootModifierPredicate getPredicateFromLegacyCodec(@NotNull Either<Identifier, List<Identifier>> modifiesEither) {
         final TablePredicate.Builder predicateBuilder = TablePredicate.builder();
         for (final Identifier currentId : modifiesEither.map(List::of, it -> it)) {
-            predicateBuilder.name(currentId.asString());
+            predicateBuilder.name(currentId.toString());
         }
         return predicateBuilder.build();
     }
