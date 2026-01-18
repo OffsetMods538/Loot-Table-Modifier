@@ -12,9 +12,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import top.offsetmonkey538.loottablemodifier.common.LootTableModifierCommon;
-import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.IdentifierWrapper;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.ResourceManagerWrapper;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot.LootTableWrapper;
+import top.offsetmonkey538.monkeylib538.modded.api.wrapper.ModdedIdentifier;
+import top.offsetmonkey538.monkeylib538.modded.v1201.api.wrapper.ModdedVersionIdentifier;
 
 import java.util.Map;
 
@@ -39,7 +40,7 @@ public abstract class LootDataManagerMixin {
                 lootRegistry.entrySet()
                         .stream()
                         .map(entry -> Pair.of(
-                                new IdentifierWrapper(entry.getKey()),
+                                ModdedVersionIdentifier.of(entry.getKey()),
                                 new LootTableWrapper(entry.getValue())
                         )),
                 JsonOps.INSTANCE // TODO: Is a RegistryOps not needed on 1.20.1? Doesn't look like the loot table loader uses it so maybe not?

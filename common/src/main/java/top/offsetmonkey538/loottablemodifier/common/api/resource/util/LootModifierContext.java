@@ -1,6 +1,6 @@
 package top.offsetmonkey538.loottablemodifier.common.api.resource.util;
 
-import top.offsetmonkey538.loottablemodifier.common.api.wrapper.Identifier;
+import top.offsetmonkey538.monkeylib538.common.api.wrapper.Identifier;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootPool;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootTable;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.entry.LootPoolEntry;

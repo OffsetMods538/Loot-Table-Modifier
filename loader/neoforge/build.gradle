@@ -79,7 +79,7 @@ subprojects {
         commonJava project(path: ":modded:${project.commonModdedVersion}", configuration: "commonJava")
         commonResources project(path: ":modded:${project.commonModdedVersion}", configuration: "commonResources")
 
-        runtimeOnly "top.offsetmonkey538.monkeylib538:monkeylib538-neoforge-${project.monkeylib538_suffix}:${rootProject.monkeylib538_version}+neoforge+${project.monkeylib538_suffix}"
+        implementation "top.offsetmonkey538.monkeylib538:monkeylib538-neoforge-${project.monkeylib538_suffix}:${rootProject.monkeylib538_version}+neoforge+${project.monkeylib538_suffix}"
 
         // DevAuth
         localRuntime "me.djtheredstoner:DevAuth-neoforge:${rootProject.devauth_version}"

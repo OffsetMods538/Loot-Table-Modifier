@@ -6,7 +6,7 @@ import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.resources.RegistryOps;
-import top.offsetmonkey538.loottablemodifier.common.api.wrapper.Identifier;
+import top.offsetmonkey538.monkeylib538.common.api.wrapper.Identifier;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootTable;
 import top.offsetmonkey538.loottablemodifier.common.platform.PlatformCommandUtils;
 import top.offsetmonkey538.monkeylib538.modded.api.command.ModdedCommandAbstractionApi;

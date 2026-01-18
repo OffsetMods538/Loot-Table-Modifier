@@ -8,7 +8,7 @@ import top.offsetmonkey538.loottablemodifier.common.api.resource.action.pool.Poo
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.entry.EntryItemSetAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.pool.PoolRemoveAction;
 
-import static top.offsetmonkey538.loottablemodifier.common.platform.PlatformMain.id;
+import static top.offsetmonkey538.loottablemodifier.common.LootTableModifierCommon.id;
 
 /**
  * Contains all {@link LootModifierAction} types available in Loot Table Modifier.

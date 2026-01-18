@@ -6,7 +6,7 @@ import top.offsetmonkey538.loottablemodifier.modded.v1201.mixin.LootContextTypes
 
 public final class LootTableTypeGetterImpl implements LootTableWrapper.TypeGetter {
     @Override
-    public String apply(LootTable lootTable) {
+    public String getType(LootTable lootTable) {
         return LootContextTypesAccessor.getMAP().inverse().get(lootTable.getParamSet()).toString();
     }
 }
