@@ -27,6 +27,7 @@ include "loader:fabric:1.20.2"
 include "loader:fabric:1.20.5"
 include "loader:fabric:1.21"
 include "loader:fabric:1.21.2"
+include "loader:fabric:1.21.11"
 
 include "loader:neoforge"
 include "loader:neoforge:1.21"
