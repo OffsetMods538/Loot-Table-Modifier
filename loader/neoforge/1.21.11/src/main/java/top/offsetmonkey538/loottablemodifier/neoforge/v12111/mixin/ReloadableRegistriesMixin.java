@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import top.offsetmonkey538.loottablemodifier.common.LootTableModifierCommon;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.ResourceManagerWrapper;
 import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot.LootTableWrapper;
+import top.offsetmonkey538.monkeylib538.modded.api.wrapper.ModdedIdentifier;
 import top.offsetmonkey538.monkeylib538.modded.v12111.api.wrapper.ModdedVersionIdentifier;
 
 @Mixin(
@@ -39,7 +40,7 @@ public abstract class ReloadableRegistriesMixin {
                 lootRegistry
                         .listElements()
                         .map(registryEntry -> Pair.of(
-                                ModdedVersionIdentifier.of(registryEntry.key().identifier()),
+                                ModdedIdentifier.of(registryEntry.key().identifier()),
                                 new LootTableWrapper(lootRegistry.getValue(registryEntry.key()))
                         )),
                 registryOps

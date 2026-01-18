@@ -40,7 +40,7 @@ public abstract class LootDataManagerMixin {
                 lootRegistry.entrySet()
                         .stream()
                         .map(entry -> Pair.of(
-                                ModdedVersionIdentifier.of(entry.getKey()),
+                                ModdedIdentifier.of(entry.getKey()),
                                 new LootTableWrapper(entry.getValue())
                         )),
                 JsonOps.INSTANCE // TODO: Is a RegistryOps not needed on 1.20.1? Doesn't look like the loot table loader uses it so maybe not?
