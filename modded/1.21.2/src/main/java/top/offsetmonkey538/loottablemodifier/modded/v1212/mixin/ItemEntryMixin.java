@@ -25,6 +25,6 @@ public abstract class ItemEntryMixin implements ItemEntryDuck {
 
     @Override
     public String loot_table_modifier$getId() {
-        return this.item.unwrapKey().map(ResourceKeyApi::getLocation).map(Identifier::asString).orElse("[unregistered]");
+        return this.item.unwrapKey().map(ResourceKeyApi::getLocation).map(Identifier::toString).orElse("[unregistered]");
     }
 }

@@ -136,12 +136,12 @@ public final class LootTableModifierCommon {
 						final LootModifier modifier = modifierEntry.getValue();
 						if (!modifier.test(context)) continue;
 
-						if (IS_DEV) LOGGER.warn("Modifier %s can modify table %s", modifierEntry.getKey().asString(), tableId.asString());
+						if (IS_DEV) LOGGER.warn("Modifier %s can modify table %s", modifierEntry.getKey(), tableId);
 
 
 						int result = modifier.apply(context);
 
-						if (IS_DEV && result != LootModifierAction.MODIFIED_NONE) LOGGER.warn("Modifier %s modified table %s with modified mask %s", modifierEntry.getKey().asString(), tableId.asString(), Integer.toUnsignedString(result, 2));
+						if (IS_DEV && result != LootModifierAction.MODIFIED_NONE) LOGGER.warn("Modifier %s modified table %s with modified mask %s", modifierEntry.getKey(), tableId, Integer.toUnsignedString(result, 2));
 
 						if ((result & LootModifierAction.MODIFIED_TABLE) == LootModifierAction.MODIFIED_TABLE) tableModified = true;
 						if ((result & LootModifierAction.MODIFIED_POOL) == LootModifierAction.MODIFIED_POOL) poolModified = true;

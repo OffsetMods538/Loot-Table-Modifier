@@ -15,7 +15,7 @@ public record ResourceManagerWrapper(net.minecraft.server.packs.resources.Resour
     public Stream<Pair<Identifier, Supplier<BufferedReader>>> listResources(String string, Predicate<String> predicate) {
         return vanillaIdentifier.listResources(string, id -> predicate.test(id.toString())).entrySet().stream()
                 .map(entry -> Pair.of(
-                        // The entry can contain either a ResourceLocation or Identifier, but at runtime it's an Object cause generics be funny that way. This isn't a problem because generic types are erased, but
+                        // The entry can contain either a ResourceLocation or Identifier, but that's fine cause this code never explicitly mentions either of those so compiling for whatever version will choose the correct thing.
                         Identifier.of(entry.getKey().toString()),
                         () -> {
                             try {

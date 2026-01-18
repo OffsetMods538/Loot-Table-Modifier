@@ -60,7 +60,7 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
     private static @NotNull LootModifierPredicate getPredicateFromLegacyCodec(@NotNull Either<Identifier, List<Identifier>> modifiesEither) {
         final TablePredicate.Builder predicateBuilder = TablePredicate.builder();
         for (final Identifier currentId : modifiesEither.map(List::of, it -> it)) {
-            predicateBuilder.name(currentId.asString());
+            predicateBuilder.name(currentId.toString());
         }
         return predicateBuilder.build();
     }
