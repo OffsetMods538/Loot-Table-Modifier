@@ -144,7 +144,7 @@ subprojects {
 
         // Dependencies
         dependencies {
-
+            required.project "monkeylib538"
         }
     }
 }

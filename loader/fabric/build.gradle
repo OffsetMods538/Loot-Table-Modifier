@@ -151,7 +151,7 @@ subprojects {
 
         // Dependencies
         dependencies {
-            //TODO: not actually required? just cause datagen... required.project "fabric-api"
+            required.project "monkeylib538"
         }
     }
 }
