@@ -1,6 +1,7 @@
 package top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot.entry;
 
 import com.google.common.collect.ImmutableList;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootCondition;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.entry.LootPoolEntry;
 import top.offsetmonkey538.loottablemodifier.modded.duck.LootElementWithConditions;
@@ -9,7 +10,6 @@ import top.offsetmonkey538.loottablemodifier.modded.impl.wrapper.loot.LootCondit
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import net.minecraft.world.level.storage.loot.entries.LootItem;
 
 /**
  * Don't initialize using canonical constructor. Use {@link #create(net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer)} instead

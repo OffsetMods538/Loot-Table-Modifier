@@ -39,6 +39,7 @@ public interface LootModifierAction {
 
     /**
      * Applies this action to the provided context
+     *
      * @param context the context to apply to
      * @return the applied modification level
      * @see #MODIFIED_NONE

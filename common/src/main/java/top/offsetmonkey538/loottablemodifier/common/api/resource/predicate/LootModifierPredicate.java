@@ -3,10 +3,10 @@ package top.offsetmonkey538.loottablemodifier.common.api.resource.predicate;
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.util.LootModifierContext;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.op.AllOfPredicate;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.op.AnyOfPredicate;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.op.InvertedPredicate;
+import top.offsetmonkey538.loottablemodifier.common.api.resource.util.LootModifierContext;
 
 import java.util.function.Predicate;
 

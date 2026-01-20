@@ -5,11 +5,11 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierActionTypes;
-import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootPool;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.util.LootModifierContext;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierActionType;
+import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierActionTypes;
+import top.offsetmonkey538.loottablemodifier.common.api.resource.util.LootModifierContext;
+import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootPool;
 
 import java.util.ArrayList;
 import java.util.List;

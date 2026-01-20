@@ -1,20 +1,23 @@
 package top.offsetmonkey538.loottablemodifier.modded.v1212.mixin;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctions;
-import org.spongepowered.asm.mixin.*;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import top.offsetmonkey538.loottablemodifier.common.util.PredicateUtils;
+import top.offsetmonkey538.loottablemodifier.modded.duck.LootPoolDuck;
 
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
-
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import top.offsetmonkey538.loottablemodifier.modded.duck.LootPoolDuck;
 
 @Mixin(LootPool.class)
 public abstract class LootPoolMixin implements LootPoolDuck {

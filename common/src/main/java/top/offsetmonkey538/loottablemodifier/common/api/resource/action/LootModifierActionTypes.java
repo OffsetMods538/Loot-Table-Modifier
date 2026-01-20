@@ -3,9 +3,9 @@ package top.offsetmonkey538.loottablemodifier.common.api.resource.action;
 import org.jetbrains.annotations.ApiStatus;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.condition.ConditionAddAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.entry.EntryAddAction;
+import top.offsetmonkey538.loottablemodifier.common.api.resource.action.entry.EntryItemSetAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.entry.EntryRemoveAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.pool.PoolAddAction;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.action.entry.EntryItemSetAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.pool.PoolRemoveAction;
 
 import static top.offsetmonkey538.loottablemodifier.common.LootTableModifierCommon.id;

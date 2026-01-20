@@ -1,11 +1,11 @@
 package top.offsetmonkey538.loottablemodifier.common.api.resource.util;
 
-import top.offsetmonkey538.monkeylib538.common.api.wrapper.Identifier;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootPool;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootTable;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.entry.LootPoolEntry;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import top.offsetmonkey538.monkeylib538.common.api.wrapper.Identifier;
 
 /**
  * A context for predicates to match against and actions to modify.

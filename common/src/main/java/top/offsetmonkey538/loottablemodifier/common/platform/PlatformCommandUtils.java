@@ -4,8 +4,8 @@ import com.google.gson.JsonElement;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.DynamicOps;
 import org.jetbrains.annotations.ApiStatus;
-import top.offsetmonkey538.monkeylib538.common.api.wrapper.Identifier;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootTable;
+import top.offsetmonkey538.monkeylib538.common.api.wrapper.Identifier;
 
 import static top.offsetmonkey538.loottablemodifier.common.LootTableModifierCommon.load;
 

@@ -83,7 +83,8 @@ public record ConditionAddAction(List<LootCondition> conditions, boolean include
         }
 
         private final ImmutableList.Builder<LootCondition> conditions = ImmutableList.builder();
-        private boolean includePools = true, includeEntries = true;
+        private boolean includePools = true;
+        private boolean includeEntries = true;
 
         /**
          * Adds a condition

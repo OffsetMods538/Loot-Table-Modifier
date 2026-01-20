@@ -10,12 +10,11 @@ import com.mojang.serialization.DynamicOps;
 import it.unimi.dsi.fastutil.Pair;
 import org.apache.commons.io.file.PathUtils;
 import org.jetbrains.annotations.Unmodifiable;
+import top.offsetmonkey538.loottablemodifier.common.api.resource.LootModifier;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierActionTypes;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicateTypes;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.LootModifier;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.util.LootModifierContext;
-import top.offsetmonkey538.monkeylib538.common.api.wrapper.Identifier;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.ResourceManager;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootPool;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootTable;
@@ -28,15 +27,23 @@ import top.offsetmonkey538.monkeylib538.common.api.platform.LoaderUtil;
 import top.offsetmonkey538.monkeylib538.common.api.telemetry.TelemetryRegistry;
 import top.offsetmonkey538.monkeylib538.common.api.text.MonkeyLibStyle;
 import top.offsetmonkey538.monkeylib538.common.api.text.MonkeyLibText;
+import top.offsetmonkey538.monkeylib538.common.api.wrapper.Identifier;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
-import static top.offsetmonkey538.monkeylib538.common.api.command.CommandAbstractionApi.*;
+import static top.offsetmonkey538.monkeylib538.common.api.command.CommandAbstractionApi.literal;
+import static top.offsetmonkey538.monkeylib538.common.api.command.CommandAbstractionApi.sendMessage;
+import static top.offsetmonkey538.monkeylib538.common.api.command.CommandAbstractionApi.sendText;
 
 public final class LootTableModifierCommon {
 	public static final String MOD_ID = "loot-table-modifier";
@@ -92,7 +99,7 @@ public final class LootTableModifierCommon {
 				result.put(
 						id,
 						// Can't just use orElseThrow cause 1.20.1 don't have that
-						LootModifier.CODEC.decode(registryOps, JsonParser.parseReader(resource.right().get())).map(com.mojang.datafixers.util.Pair::getFirst).resultOrPartial(error -> {throw new RuntimeException(error);}).orElseThrow()
+						LootModifier.CODEC.decode(registryOps, JsonParser.parseReader(resource.right().get())).map(com.mojang.datafixers.util.Pair::getFirst).resultOrPartial(error -> { throw new RuntimeException(error); }).orElseThrow()
 				);
 			} catch (Exception e) {
 				LOGGER.error("Failed to load loot table modifier from '%s'!", e, id);

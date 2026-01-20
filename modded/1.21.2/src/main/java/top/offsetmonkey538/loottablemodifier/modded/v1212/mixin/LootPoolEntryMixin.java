@@ -1,15 +1,18 @@
 package top.offsetmonkey538.loottablemodifier.modded.v1212.mixin;
 
-import org.spongepowered.asm.mixin.*;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import top.offsetmonkey538.loottablemodifier.common.util.PredicateUtils;
 import top.offsetmonkey538.loottablemodifier.modded.duck.LootElementWithConditions;
 
 import java.util.List;
 import java.util.function.Predicate;
-
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 @Mixin(LootPoolEntryContainer.class)
 public abstract class LootPoolEntryMixin implements LootElementWithConditions {

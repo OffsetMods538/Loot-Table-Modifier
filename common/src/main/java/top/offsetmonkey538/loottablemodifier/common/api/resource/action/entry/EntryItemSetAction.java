@@ -4,13 +4,13 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierAction;
+import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierActionType;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierActionTypes;
+import top.offsetmonkey538.loottablemodifier.common.api.resource.util.LootModifierContext;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.Item;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.entry.ItemEntry;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.entry.LootPoolEntry;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.util.LootModifierContext;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierAction;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierActionType;
 
 import static top.offsetmonkey538.loottablemodifier.common.LootTableModifierCommon.IS_DEV;
 import static top.offsetmonkey538.loottablemodifier.common.LootTableModifierCommon.LOGGER;

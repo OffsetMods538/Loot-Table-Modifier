@@ -7,15 +7,16 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.action.pool.PoolAddAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierAction;
+import top.offsetmonkey538.loottablemodifier.common.api.resource.action.pool.PoolAddAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.table.TablePredicate;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.util.LootModifierContext;
-import top.offsetmonkey538.monkeylib538.common.api.wrapper.Identifier;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootPool;
+import top.offsetmonkey538.monkeylib538.common.api.wrapper.Identifier;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import static top.offsetmonkey538.loottablemodifier.common.LootTableModifierCommon.LOGGER;
