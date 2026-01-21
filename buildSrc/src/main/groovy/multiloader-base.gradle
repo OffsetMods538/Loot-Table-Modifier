@@ -1,7 +1,6 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
-    id 'checkstyle-stuff'
 }
 
 base.archivesName = "loot-table-modifier-${project.project_name}"

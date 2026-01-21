@@ -1,8 +1,0 @@
-plugins {
-    id 'checkstyle'
-}
-
-checkstyle {
-    toolVersion = "13.0.0"
-    config = resources.text.fromUri("https://raw.githubusercontent.com/OffsetMods538/good-code/refs/heads/master/checkstyle.xml")
-}
