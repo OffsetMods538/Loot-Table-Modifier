@@ -1,105 +1,34 @@
 import dex.plugins.outlet.v2.util.ReleaseType
 
 plugins {
-    id 'multiloader-modded'
-    id 'net.neoforged.moddev'
-    id 'io.github.dexman545.outlet' apply false
-    id 'com.modrinth.minotaur' apply false
-}
-
-neoForge {
-    runs {
-
-    }
+    id 'multiloader-neoforge'
 }
 
 allprojects {
-    apply plugin: "multiloader-modded"
-    apply plugin: "net.neoforged.moddev"
-
-    dependencies {
-        compileOnly project(":common")
-        commonJava project(path: ":common", configuration: "commonJava")
-        commonResources project(path: ":common", configuration: "commonResources")
-        compileOnly project(":modded")
-        commonJava project(path: ":modded", configuration: "commonJava")
-        commonResources project(path: ":modded", configuration: "commonResources")
-
-        compileOnly "top.offsetmonkey538.monkeylib538:monkeylib538-neoforge:${rootProject.monkeylib538_version}+neoforge"
-    }
-
-    neoForge {
-        version = project.neoforge_version
-
-        parchment {
-            minecraftVersion = project.parchment_minecraft_version
-            mappingsVersion = project.parchment_mappings_version
-        }
-
-        mods {
-            "loot-table-modifier" {
-                sourceSet(sourceSets.main)
+    neoForgeModsToml {
+        mitLicense()
+        mod(rootProject.neo_mod_id) {
+            authors = "OffsetMonkey538"
+            dependencies {
+                required("monkeylib538", "[${rootProject.monkeylib538_version},)")
             }
         }
+        mixin("loot-table-modifier.modded.mixins.json")
+        mixin("loot-table-modifier.version.modded.mixins.json")
+        mixin("loot-table-modifier.version.loader.mixins.json")
+    }
+
+    dependencies {
+        compileOnly "top.offsetmonkey538.monkeylib538:monkeylib538-neoforge:${rootProject.monkeylib538_version}+neoforge"
     }
 }
 
 subprojects {
-    apply plugin: "net.neoforged.moddev"
-    apply plugin: "io.github.dexman545.outlet"
-    apply plugin: "com.modrinth.minotaur"
-
-    tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
-
-    outlet {
-        mcVersionRange = project.supported_minecraft_versions
-        allowedReleaseTypes = Set.of(ReleaseType.RELEASE)
-    }
-
-    configurations {
-        runtimeClasspath.extendsFrom localRuntime
-    }
-
-    repositories {
-        maven {
-            name = "DevAuth"
-            url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1"
-            content {
-                includeGroup "me.djtheredstoner"
-            }
-        }
-    }
+    // Gotta have this here cause I can't import it in buildSrc
+    outlet.allowedReleaseTypes = Set.of(ReleaseType.RELEASE)
 
     dependencies {
-        compileOnly project(":loader:neoforge")
-        commonJava project(path: ":loader:neoforge", configuration: "commonJava")
-        commonResources project(path: ":loader:neoforge", configuration: "commonResources")
-
-        compileOnly project(":modded:${project.commonModdedVersion}")
-        commonJava project(path: ":modded:${project.commonModdedVersion}", configuration: "commonJava")
-        commonResources project(path: ":modded:${project.commonModdedVersion}", configuration: "commonResources")
-
         implementation "top.offsetmonkey538.monkeylib538:monkeylib538-neoforge-${project.monkeylib538_suffix}:${rootProject.monkeylib538_version}+neoforge+${project.monkeylib538_suffix}"
-
-        // DevAuth
-        localRuntime "me.djtheredstoner:DevAuth-neoforge:${rootProject.devauth_version}"
-    }
-
-    neoForge {
-        runs {
-            client {
-                client()
-            }
-
-            server {
-                server()
-            }
-
-            configureEach {
-                systemProperty 'forge.logging.markers', 'REGISTRIES'
-                logLevel = org.slf4j.event.Level.INFO
-            }
-        }
     }
 
     sourceSets {
@@ -113,36 +42,6 @@ subprojects {
     }
 
     modrinth {
-        // Main properties
-        token = System.getenv("MODRINTH_TOKEN")
-        projectId = "loot-table-modifier"
-        gameVersions = outlet.mcVersions()
-        loaders = ["neoforge"]
-
-        // Version stuff
-        def customVersionName = System.getenv("VERSION_NAME")
-        if (customVersionName != null) versionName = customVersionName
-
-        versionNumber = "${project.version}"
-
-        versionType = Boolean.parseBoolean(System.getenv("VERSION_IS_PRERELEASE")) ? "beta" : "release"
-
-        if (rootProject.mod_version.contains("beta")) versionType = "beta"
-        if (rootProject.mod_version.contains("alpha")) versionType = "alpha"
-
-
-        // Files
-        uploadFile = jar.archiveFile
-        additionalFiles = [sourcesJar.archiveFile]
-
-
-        // Project info
-        syncBodyFrom = rootProject.file("README.md").text
-        def changelogEnv = System.getenv("VERSION_CHANGELOG")
-        if (changelogEnv != null) changelog = changelogEnv
-
-
-        // Dependencies
         dependencies {
             required.project "monkeylib538"
         }

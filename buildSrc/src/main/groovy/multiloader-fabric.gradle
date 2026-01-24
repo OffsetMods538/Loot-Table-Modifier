@@ -1,0 +1,142 @@
+plugins {
+    id 'multiloader-base'
+    id 'fabric-loom'
+    id 'xyz.jpenilla.resource-factory-fabric-convention'
+    id 'io.github.dexman545.outlet' apply false
+    id 'com.modrinth.minotaur' apply false
+}
+
+loom {
+    afterEvaluate {
+        runClient.setEnabled(false)
+        runServer.setEnabled(false)
+    }
+}
+
+allprojects {
+    apply plugin: "multiloader-base"
+    apply plugin: "fabric-loom"
+    apply plugin: "xyz.jpenilla.resource-factory-fabric-convention"
+    apply plugin: "io.github.dexman545.outlet"
+
+    fabricModJson {
+        id = rootProject.mod_id
+        version = project.version
+        name = rootProject.mod_name
+        description = rootProject.mod_description
+        contact {
+            homepage = rootProject.mod_website
+            issues = rootProject.mod_issues
+            sources = rootProject.mod_sources
+        }
+        icon("assets/${rootProject.mod_id}/icon.png")
+        if (project.hasProperty("supported_minecraft_versions"))  depends("minecraft", project.findProperty("supported_minecraft_versions"))
+        depends("java", ">=21")
+    }
+
+    outlet {
+        maintainPropertiesFile = System.getenv("DISABLE_PROPERTIES_UPDATE") == null
+        mcVersionRange = project.supported_minecraft_versions
+        propertiesData = [
+                'loader_version': outlet.loaderVersion(),
+                'fapi_version'  : outlet.fapiVersion(project.minecraft_version)
+        ]
+    }
+
+    dependencies {
+        compileOnly project(":common")
+        commonJava project(path: ":common", configuration: "commonJava")
+        commonResources project(path: ":common", configuration: "commonResources")
+        compileOnly project(":modded")
+        commonJava project(path: ":modded", configuration: "commonJava")
+        commonResources project(path: ":modded", configuration: "commonResources")
+
+        minecraft "com.mojang:minecraft:${project.minecraft_version}"
+        mappings loom.officialMojangMappings()
+        modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    }
+}
+
+subprojects {
+    apply plugin: "io.github.dexman545.outlet"
+    apply plugin: "com.modrinth.minotaur"
+
+    tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
+
+    configurations {
+        includeRuntime
+        runtimeOnly.extendsFrom includeRuntime
+        include.extendsFrom includeRuntime
+    }
+
+    repositories {
+        maven {
+            name = "DevAuth"
+            url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1"
+            content {
+                includeGroup "me.djtheredstoner"
+            }
+        }
+    }
+
+    dependencies {
+        compileOnly project(":loader:fabric")
+        commonJava project(path: ":loader:fabric", configuration: "commonJava")
+        commonResources project(path: ":loader:fabric", configuration: "commonResources")
+
+        compileOnly project(":modded:${project.commonModdedVersion}")
+        commonJava project(path: ":modded:${project.commonModdedVersion}", configuration: "commonJava")
+        commonResources project(path: ":modded:${project.commonModdedVersion}", configuration: "commonResources")
+
+        // DevAuth
+        modLocalRuntime "me.djtheredstoner:DevAuth-fabric:${rootProject.devauth_version}"
+    }
+
+    loom {
+        runs {
+            server {
+                name = "${project.project_name} Server"
+                runDir "run/server"
+                ideConfigGenerated(true)
+            }
+            client {
+                name = "${project.project_name} Client"
+                runDir "run/client"
+                vmArg "-Ddevauth.enabled=true"
+                ideConfigGenerated(true)
+            }
+        }
+    }
+
+    modrinth {
+        // Main properties
+        token = System.getenv("MODRINTH_TOKEN")
+        projectId = rootProject.mod_id
+        gameVersions = outlet.mcVersions()
+        loaders = ["fabric"]
+
+
+        // Version stuff
+        def customVersionName = System.getenv("VERSION_NAME")
+        if (customVersionName != null) versionName = customVersionName
+
+        versionNumber = "${project.version}"
+
+        def isPreRelease = System.getenv("VERSION_IS_PRERELEASE")
+        versionType = Boolean.parseBoolean(isPreRelease) ? "beta" : "release"
+
+        if (project.mod_version.contains("beta")) versionType = "beta"
+        if (project.mod_version.contains("alpha")) versionType = "alpha"
+
+
+        // Files
+        uploadFile = remapJar.archiveFile
+        additionalFiles = [sourcesJar.archiveFile]
+
+
+        // Project info
+        syncBodyFrom = rootProject.file("README.md").text
+        def changelogEnv = System.getenv("VERSION_CHANGELOG")
+        if (changelogEnv != null) changelog = changelogEnv
+    }
+}

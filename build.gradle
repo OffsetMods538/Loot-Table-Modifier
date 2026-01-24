@@ -1,35 +1,12 @@
-import org.codehaus.groovy.runtime.GStringImpl
-
-import java.nio.file.Files
-
 plugins {
+    id 'multiloader-root'
     id 'java'
     id 'java-library'
-    id 'net.neoforged.moddev' version '2.0.+' apply false
-    id 'fabric-loom' version '1.14-SNAPSHOT' apply false
-    id 'io.github.dexman545.outlet' version '1.6.1' apply false
-    id 'com.modrinth.minotaur' version '2.+' apply false
-}
-
-ext {
-    versionPrefix = rootProject.mod_version
-    if (!Boolean.parseBoolean(System.getenv("IS_RELEASE"))) {
-        String preReleaseVersion = System.currentTimeMillis()
-
-        if (Boolean.parseBoolean(System.getenv("PRESERVE_PRERELEASE_VERSION"))) {
-            var preReleaseVersionFile = file("preReleaseVersion.txt").toPath()
-            if (Files.exists(preReleaseVersionFile)) preReleaseVersion = Files.readString(preReleaseVersionFile)
-            Files.writeString(preReleaseVersionFile, preReleaseVersion)
-        }
-
-        var separator = "-"
-        if (versionPrefix.contains("-")) separator = "."
-        versionPrefix = "${versionPrefix}${separator}${preReleaseVersion}" as GStringImpl
-    }
-    final String versionSuffix = System.getenv("VERSION_SUFFIX")
-    versionPrefix = "${versionPrefix}${versionSuffix == null ? "+local" : versionSuffix.isEmpty() ? "" : "+${versionSuffix}"}" as GStringImpl
-
-    System.out.println("Version Prefix: " + versionPrefix)
+    id 'net.neoforged.moddev'           version "${neoforged_moddev}"            apply false
+    id 'fabric-loom'                    version "${fabric_loom}"                 apply false
+    id 'xyz.jpenilla.resource-factory'  version "${jpenilla_resource_factory}"   apply false
+    id 'io.github.dexman545.outlet'     version "${dexman_outlet}"               apply false
+    id 'com.modrinth.minotaur'          version "${modrinth_minotaur}"           apply false
 }
 
 allprojects {

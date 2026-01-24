@@ -1,46 +1,32 @@
 import dex.plugins.outlet.v2.util.ReleaseType
+import xyz.jpenilla.resourcefactory.fabric.Environment
 
 plugins {
-    id 'multiloader-modded'
-    id 'fabric-loom'
-    id 'io.github.dexman545.outlet'
-    id 'com.modrinth.minotaur' apply false
-}
-
-loom {
-    afterEvaluate {
-        runClient.setEnabled(false)
-        runServer.setEnabled(false)
-    }
+    id 'multiloader-fabric'
 }
 
 allprojects {
-    apply plugin: "multiloader-modded"
-    apply plugin: "fabric-loom"
-    apply plugin: "io.github.dexman545.outlet"
+    fabricModJson {
+        mitLicense()
+        author("OffsetMonkey538")
+        contact {
+            extra = ["discord": "https://discord.offsetmonkey538.top"]
+        }
+        environment = Environment.ANY
+        mainEntrypoint("top.offsetmonkey538.loottablemodifier.fabric.platform.FabricPlatformMain")
+        if(project.hasProperty("fabricDatagenEntrypoint")) entrypoint("fabric-datagen", project.findProperty("fabricDatagenEntrypoint"))
+        mixin("loot-table-modifier.modded.mixins.json")
+        mixin("loot-table-modifier.version.modded.mixins.json")
+        mixin("loot-table-modifier.version.loader.mixins.json")
 
-    outlet {
-        maintainPropertiesFile = System.getenv("DISABLE_PROPERTIES_UPDATE") == null
-        mcVersionRange = project.supported_minecraft_versions
-        allowedReleaseTypes = [ReleaseType.RELEASE]
-        propertiesData = [
-                'loader_version': outlet.loaderVersion(),
-                'fapi_version'  : outlet.fapiVersion(project.minecraft_version)
-        ]
+        depends("fabric-api", "*")
+        depends("monkeylib538", ">=${rootProject.monkeylib538_version}")
     }
 
+    // Gotta have this here cause I can't import it in buildSrc
+    outlet.allowedReleaseTypes = Set.of(ReleaseType.RELEASE)
+
     dependencies {
-        compileOnly project(":common")
-        commonJava project(path: ":common", configuration: "commonJava")
-        commonResources project(path: ":common", configuration: "commonResources")
-        compileOnly project(":modded")
-        commonJava project(path: ":modded", configuration: "commonJava")
-        commonResources project(path: ":modded", configuration: "commonResources")
-
-        minecraft "com.mojang:minecraft:${project.minecraft_version}"
-        mappings loom.officialMojangMappings()
-        modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
         modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fapi_version}"
 
         modCompileOnly("top.offsetmonkey538.monkeylib538:monkeylib538-fabric:${rootProject.monkeylib538_version}+fabric") {
@@ -50,52 +36,14 @@ allprojects {
 }
 
 subprojects {
-    apply plugin: "io.github.dexman545.outlet"
-    apply plugin: "com.modrinth.minotaur"
-
-    tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
-
-    repositories {
-        maven {
-            name = "DevAuth"
-            url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1"
-            content {
-                includeGroup "me.djtheredstoner"
-            }
-        }
-    }
-
     dependencies {
-        compileOnly project(":loader:fabric")
-        commonJava project(path: ":loader:fabric", configuration: "commonJava")
-        commonResources project(path: ":loader:fabric", configuration: "commonResources")
-
-        compileOnly project(":modded:${project.commonModdedVersion}")
-        commonJava project(path: ":modded:${project.commonModdedVersion}", configuration: "commonJava")
-        commonResources project(path: ":modded:${project.commonModdedVersion}", configuration: "commonResources")
-
         modImplementation("top.offsetmonkey538.monkeylib538:monkeylib538-fabric-${project.monkeylib538_suffix}:${rootProject.monkeylib538_version}+fabric+${project.monkeylib538_suffix}") {
             exclude(group: "net.fabricmc.fabric-api")
-            //TODO: can remove? exclude(group: "top.offsetmonkey538.monkeylib538:monkeylib538-fabric")
         }
-
-        // DevAuth
-        modLocalRuntime "me.djtheredstoner:DevAuth-fabric:${rootProject.devauth_version}"
     }
 
     loom {
         runs {
-            server {
-                name = "${project.project_name} Server"
-                runDir "run/server"
-                ideConfigGenerated(true)
-            }
-            client {
-                name = "${project.project_name} Client"
-                runDir "run/client"
-                vmArg "-Ddevauth.enabled=true"
-                ideConfigGenerated(true)
-            }
             datagenClient {
                 name = "${project.project_name} Datagen"
                 inherit client
@@ -120,37 +68,8 @@ subprojects {
     }
 
     modrinth {
-        // Main properties
-        token = System.getenv("MODRINTH_TOKEN")
-        projectId = "loot-table-modifier"
-        gameVersions = outlet.mcVersions()
-        loaders = ["fabric"]
-
-        // Version stuff
-        def customVersionName = System.getenv("VERSION_NAME")
-        if (customVersionName != null) versionName = customVersionName
-
-        versionNumber = "${project.version}"
-
-        versionType = Boolean.parseBoolean(System.getenv("VERSION_IS_PRERELEASE")) ? "beta" : "release"
-
-        if (rootProject.mod_version.contains("beta")) versionType = "beta"
-        if (rootProject.mod_version.contains("alpha")) versionType = "alpha"
-
-
-        // Files
-        uploadFile = remapJar.archiveFile
-        additionalFiles = [sourcesJar.archiveFile]
-
-
-        // Project info
-        syncBodyFrom = rootProject.file("README.md").text
-        def changelogEnv = System.getenv("VERSION_CHANGELOG")
-        if (changelogEnv != null) changelog = changelogEnv
-
-
-        // Dependencies
         dependencies {
+            required.project "fabric-api"
             required.project "monkeylib538"
         }
     }

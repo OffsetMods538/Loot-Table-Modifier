@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-base.archivesName = "loot-table-modifier-${project.project_name}"
+base.archivesName = "monkeylib538-${project.project_name}"
 version = project.project_name == project.name ? "${rootProject.versionPrefix}+${project.project_name}" : "${rootProject.versionPrefix}+${project.getParent().project_name}+${project.minecraft_version}"
 
 configurations {
@@ -94,7 +94,7 @@ publishing {
     publications {
         register("maven", MavenPublication) {
             artifactId base.archivesName.get()
-            groupId "top.offsetmonkey538.loottablemodifier"
+            groupId "top.offsetmonkey538.monkeylib538"
             from components.java
         }
     }
