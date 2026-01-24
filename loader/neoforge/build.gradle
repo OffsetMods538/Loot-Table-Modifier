@@ -31,15 +31,15 @@ subprojects {
         implementation "top.offsetmonkey538.monkeylib538:monkeylib538-neoforge-${project.monkeylib538_suffix}:${rootProject.monkeylib538_version}+neoforge+${project.monkeylib538_suffix}"
     }
 
-    sourceSets {
-        main {
-            resources {
-                srcDirs += [
-                        "src/main/generated" // TODO: figure out how to datagen
-                ]
-            }
-        }
-    }
+    // TODO: breaks resource-factory plugin: sourceSets {
+    // TODO: breaks resource-factory plugin:     main {
+    // TODO: breaks resource-factory plugin:         resources {
+    // TODO: breaks resource-factory plugin:             srcDirs += [
+    // TODO: breaks resource-factory plugin:                     "src/main/generated" // TODO: figure out how to datagen
+    // TODO: breaks resource-factory plugin:             ]
+    // TODO: breaks resource-factory plugin:         }
+    // TODO: breaks resource-factory plugin:     }
+    // TODO: breaks resource-factory plugin: }
 
     modrinth {
         dependencies {
