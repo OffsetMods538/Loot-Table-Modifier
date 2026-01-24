@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.stream.Stream;
 
 import static top.offsetmonkey538.monkeylib538.common.api.command.CommandAbstractionApi.literal;
@@ -196,7 +197,7 @@ public final class LootTableModifierCommon {
             final DynamicOps<JsonElement> ops = PlatformCommandUtils.getRegistryOps(context);
 
             try {
-                final Path exportDir = LoaderUtil.getGameDir().resolve(".loot-table-modifier").resolve("export");
+                final Path exportDir = LoaderUtil.getConfigDir().resolve(MOD_ID).resolve(".export");
                 if (Files.exists(exportDir)) PathUtils.deleteDirectory(exportDir);
 
                 sendText(
@@ -241,7 +242,8 @@ public final class LootTableModifierCommon {
     }
 
     public static <T> T load(Class<T> clazz) {
-        return java.util.ServiceLoader.load(clazz, LootTableModifierCommon.class.getClassLoader())
+        LOGGER.info("Loading service for: %s", clazz);
+        return ServiceLoader.load(clazz, LootTableModifierCommon.class.getClassLoader())
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Failed to load service for " + clazz.getName()));
     }
