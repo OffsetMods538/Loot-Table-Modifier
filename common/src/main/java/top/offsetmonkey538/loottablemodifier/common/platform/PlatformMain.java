@@ -2,15 +2,14 @@ package top.offsetmonkey538.loottablemodifier.common.platform;
 
 import com.google.gson.JsonElement;
 import com.google.gson.stream.JsonWriter;
-import org.jetbrains.annotations.ApiStatus;
-import top.offsetmonkey538.monkeylib538.common.api.wrapper.Identifier;
+import top.offsetmonkey538.offsetutils538.api.annotation.Internal;
 
 import java.io.IOException;
 
 import static top.offsetmonkey538.loottablemodifier.common.LootTableModifierCommon.load;
 
 public interface PlatformMain {
-    @ApiStatus.Internal
+    @Internal
     PlatformMain INSTANCE = load(PlatformMain.class);
 
     static void writeSorted(JsonWriter jsonWriter, JsonElement json) throws IOException {

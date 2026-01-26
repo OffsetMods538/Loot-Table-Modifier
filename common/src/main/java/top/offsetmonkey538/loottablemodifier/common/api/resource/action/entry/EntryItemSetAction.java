@@ -2,8 +2,6 @@ package top.offsetmonkey538.loottablemodifier.common.api.resource.action.entry;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierActionType;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierActionTypes;
@@ -31,7 +29,7 @@ public record EntryItemSetAction(Item item) implements LootModifierAction {
     }
 
     @Override
-    public int apply(@NotNull LootModifierContext context) {
+    public int apply(LootModifierContext context) {
         final LootPoolEntry entry = context.entry();
         if (entry == null) return MODIFIED_NONE;
 
@@ -53,8 +51,7 @@ public record EntryItemSetAction(Item item) implements LootModifierAction {
      * @param item the new item to replace the existing one with
      * @return a new {@link EntryItemSetAction.Builder}
      */
-    @Contract("_->new")
-    public static EntryItemSetAction.Builder builder(@NotNull Item item) {
+    public static EntryItemSetAction.Builder builder(Item item) {
         return () -> new EntryItemSetAction(item);
     }
 }

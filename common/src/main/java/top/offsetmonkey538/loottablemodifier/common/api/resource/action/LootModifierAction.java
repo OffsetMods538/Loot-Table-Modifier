@@ -1,7 +1,6 @@
 package top.offsetmonkey538.loottablemodifier.common.api.resource.action;
 
 import com.mojang.serialization.Codec;
-import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.util.LootModifierContext;
 
 /**
@@ -47,7 +46,7 @@ public interface LootModifierAction {
      * @see #MODIFIED_POOL
      * @see #MODIFIED_ENTRY
      */
-    int apply(final @NotNull LootModifierContext context);
+    int apply(final LootModifierContext context);
 
     /**
      * A builder for loot modifier actions.

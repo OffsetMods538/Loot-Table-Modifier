@@ -1,11 +1,11 @@
 package top.offsetmonkey538.loottablemodifier.common.api.resource.predicate;
 
-import org.jetbrains.annotations.ApiStatus;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.entry.EntryItemPredicate;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.op.AllOfPredicate;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.op.AnyOfPredicate;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.op.InvertedPredicate;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.table.TablePredicate;
+import top.offsetmonkey538.offsetutils538.api.annotation.Internal;
 
 import static top.offsetmonkey538.loottablemodifier.common.LootTableModifierCommon.id;
 
@@ -47,7 +47,7 @@ public final class LootModifierPredicateTypes {
      * <br />
      * Only for the loot table modifier initializer to call, NO TOUCHY >:(
      */
-    @ApiStatus.Internal
+    @Internal
     public static void register() {
         // Registers predicate types by loading the class
     }

@@ -1,7 +1,7 @@
 package top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot;
 
 import com.mojang.serialization.Codec;
-import org.jetbrains.annotations.ApiStatus;
+import top.offsetmonkey538.offsetutils538.api.annotation.Internal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public interface LootTable {
     ArrayList<LootFunction> getFunctions();
     void setFunctions(List<LootFunction> functions);
 
-    @ApiStatus.Internal
+    @Internal
     interface CodecProvider extends Supplier<Codec<LootTable>> {
 
     }

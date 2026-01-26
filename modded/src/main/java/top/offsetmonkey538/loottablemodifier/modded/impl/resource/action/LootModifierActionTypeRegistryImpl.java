@@ -3,7 +3,6 @@ package top.offsetmonkey538.loottablemodifier.modded.impl.resource.action;
 import com.mojang.serialization.Lifecycle;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
-import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierActionType;
 import top.offsetmonkey538.monkeylib538.common.api.wrapper.Identifier;
 import top.offsetmonkey538.monkeylib538.modded.api.resource.ResourceKeyApi;
@@ -17,7 +16,7 @@ public final class LootModifierActionTypeRegistryImpl implements LootModifierAct
     );
 
     @Override
-    public LootModifierActionType register(@NotNull Identifier id, @NotNull LootModifierActionType type) {
+    public LootModifierActionType register(Identifier id, LootModifierActionType type) {
         return Registry.register(REGISTRY, ResourceKeyApi.create(REGISTRY.key(), id), type);
     }
 }

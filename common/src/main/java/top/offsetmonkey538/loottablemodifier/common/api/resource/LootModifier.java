@@ -4,9 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.UnmodifiableView;
+import org.jspecify.annotations.Nullable;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.pool.PoolAddAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicate;
@@ -14,6 +12,7 @@ import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.table
 import top.offsetmonkey538.loottablemodifier.common.api.resource.util.LootModifierContext;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootPool;
 import top.offsetmonkey538.monkeylib538.common.api.wrapper.Identifier;
+import top.offsetmonkey538.offsetutils538.api.annotation.UnmodifiableView;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +25,7 @@ import static top.offsetmonkey538.loottablemodifier.common.api.resource.action.L
  * @param actions a list of actions to apply
  * @param predicate the predicate
  */
-public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> actions, @NotNull LootModifierPredicate predicate) implements Predicate<LootModifierContext> {
+public record LootModifier(@UnmodifiableView List<LootModifierAction> actions, LootModifierPredicate predicate) implements Predicate<LootModifierContext> {
     private static final Codec<LootModifier> LEGACY_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.either(Identifier.CODEC, Identifier.CODEC.listOf()).fieldOf("modifies").forGetter(modifier -> {
                 throw new IllegalStateException("Tried using legacy loot table modifier codec for serialization for some reason!");
@@ -46,7 +45,7 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
     ).xmap(either -> either.map(it -> it, it -> it), Either::left); // Always encode as current codec, which is on the left.
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // from the codec
-    private static @NotNull List<LootModifierAction> getActionsFromLegacyCodec(@NotNull Optional<List<LootPool>> pools, @NotNull Optional<List<LootPool>> lootPools) {
+    private static List<LootModifierAction> getActionsFromLegacyCodec(Optional<List<LootPool>> pools, Optional<List<LootPool>> lootPools) {
         List<LootModifierAction> actions = null;
 
         if (pools.isPresent() && lootPools.isPresent()) throw new IllegalStateException("Both \"pools\" and \"loot_pools\" present in legacy loot modifier!");
@@ -58,7 +57,7 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
         return actions;
     }
 
-    private static @NotNull LootModifierPredicate getPredicateFromLegacyCodec(@NotNull Either<Identifier, List<Identifier>> modifiesEither) {
+    private static LootModifierPredicate getPredicateFromLegacyCodec(Either<Identifier, List<Identifier>> modifiesEither) {
         final TablePredicate.Builder predicateBuilder = TablePredicate.builder();
         for (final Identifier currentId : modifiesEither.map(List::of, it -> it)) {
             predicateBuilder.name(currentId.toString());
@@ -76,7 +75,7 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
      * @see LootModifierAction#MODIFIED_POOL
      * @see LootModifierAction#MODIFIED_ENTRY
      */
-    public int apply(final @NotNull LootModifierContext context) {
+    public int apply(final LootModifierContext context) {
         int result = MODIFIED_NONE;
         for (LootModifierAction action : actions) {
             result = result | action.apply(context);
@@ -90,7 +89,7 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
      * @param context the context to match against
      * @return if the predicate of this loot modifier matched the provided context
      */
-    public boolean test(final @NotNull LootModifierContext context) {
+    public boolean test(final LootModifierContext context) {
         return predicate.test(context);
     }
 
@@ -99,7 +98,6 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
      *
      * @return a new {@link LootModifier.Builder}
      */
-    @Contract("->new")
     public static LootModifier.Builder builder() {
         return new LootModifier.Builder();
     }
@@ -113,7 +111,7 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
         }
 
         private final ImmutableList.Builder<LootModifierAction> actions = ImmutableList.builder();
-        private LootModifierPredicate predicate;
+        private @Nullable LootModifierPredicate predicate;
 
         /**
          * Adds an action
@@ -121,8 +119,7 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
          * @param action the action to add
          * @return this
          */
-        @Contract("_->this")
-        public LootModifier.Builder action(@NotNull LootModifierAction.Builder action) {
+        public LootModifier.Builder action(LootModifierAction.Builder action) {
             this.actions.add(action.build());
             return this;
         }
@@ -135,8 +132,7 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
          * @param predicate the predicate to use
          * @return this
          */
-        @Contract("_->this")
-        public LootModifier.Builder conditionally(@NotNull LootModifierPredicate.Builder predicate) {
+        public LootModifier.Builder conditionally(LootModifierPredicate.Builder predicate) {
             if (this.predicate != null) LOGGER.error("Predicate has already been set for this builder! The previously set predicate will be overwritten! Please use the 'LootModifierPredicate.Builder#and()' and 'LootModifierPredicate.Builder#or()' methods for adding multiple conditions!");
             this.predicate = predicate.build();
             return this;
@@ -148,6 +144,7 @@ public record LootModifier(@NotNull @UnmodifiableView List<LootModifierAction> a
          * @return a built {@link LootModifier}
          */
         public LootModifier build() {
+            if (this.predicate == null) throw new IllegalStateException("Predicate has not been set for this builder!");
             return new LootModifier(this.actions.build(), this.predicate);
         }
     }

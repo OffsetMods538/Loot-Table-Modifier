@@ -4,8 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.Decoder;
 import com.mojang.serialization.Encoder;
 import com.mojang.serialization.MapCodec;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierActionType;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierActionTypes;
@@ -27,7 +25,7 @@ public record PoolRemoveAction() implements LootModifierAction {
     }
 
     @Override
-    public int apply(@NotNull LootModifierContext context) {
+    public int apply(LootModifierContext context) {
         final LootTable table = context.table();
         final LootPool pool = context.pool();
         if (pool == null) return MODIFIED_NONE;
@@ -44,7 +42,6 @@ public record PoolRemoveAction() implements LootModifierAction {
      *
      * @return a new {@link PoolRemoveAction.Builder}
      */
-    @Contract("->new")
     public static PoolRemoveAction.Builder builder() {
         return PoolRemoveAction::new;
     }

@@ -2,8 +2,6 @@ package top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.entr
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicateType;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicateTypes;
@@ -28,7 +26,7 @@ public record EntryItemPredicate(RegexPattern name) implements LootModifierPredi
     }
 
     @Override
-    public boolean test(@NotNull LootModifierContext context) {
+    public boolean test(LootModifierContext context) {
         // No need for a separate null check of entry as null isn't an instance of ItemEntry
         if (!(context.entry() instanceof ItemEntry itemEntry)) return false;
 
@@ -41,7 +39,6 @@ public record EntryItemPredicate(RegexPattern name) implements LootModifierPredi
      * @param name the item to match
      * @return a new {@link EntryItemPredicate.Builder}
      */
-    @Contract("_->new")
     public static EntryItemPredicate.Builder builder(Item name) {
         return builder(name.getId());
     }
@@ -51,7 +48,6 @@ public record EntryItemPredicate(RegexPattern name) implements LootModifierPredi
      * @param name the item id to match
      * @return a new {@link EntryItemPredicate.Builder}
      */
-    @Contract("_->new")
     public static EntryItemPredicate.Builder builder(String name) {
         return builder(RegexPattern.literal(name));
     }
@@ -61,7 +57,6 @@ public record EntryItemPredicate(RegexPattern name) implements LootModifierPredi
      * @param name the {@link RegexPattern} to match the item id with
      * @return a new {@link EntryItemPredicate.Builder}
      */
-    @Contract("_->new")
     public static EntryItemPredicate.Builder builder(RegexPattern name) {
         return () -> new EntryItemPredicate(name);
     }

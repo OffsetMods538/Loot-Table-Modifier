@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricCodecDataProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.LootModifier;
 
 import java.util.concurrent.CompletableFuture;
@@ -59,7 +59,7 @@ public abstract class LootModifierProvider extends FabricCodecDataProvider<LootM
     }
 
     @Override
-    public @NotNull String getName() {
+    public @NonNull String getName() {
         return "Loot Table Modifiers";
     }
 
@@ -76,7 +76,7 @@ public abstract class LootModifierProvider extends FabricCodecDataProvider<LootM
      * @param name the identifier of the modifier
      * @param builder the builder to generate the loot modifier from
      *//*
-    protected void addModifier(@NotNull ResourceLocation name, @NotNull LootModifier.Builder builder) {
+    protected void addModifier(@NonNull ResourceLocation name, @NonNull LootModifier.Builder builder) {
         provider.accept(name, builder.build());
     }
 }

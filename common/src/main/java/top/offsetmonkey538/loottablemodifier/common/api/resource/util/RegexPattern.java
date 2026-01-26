@@ -3,8 +3,6 @@ package top.offsetmonkey538.loottablemodifier.common.api.resource.util;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.monkeylib538.common.api.wrapper.Identifier;
 
 import java.util.regex.Pattern;
@@ -18,7 +16,7 @@ import java.util.regex.Pattern;
  * @param patternString the pattern as a plain string
  * @param pattern the compiled pattern
  */
-public record RegexPattern(boolean isRegex, @NotNull String patternString, @NotNull Pattern pattern) {
+public record RegexPattern(boolean isRegex, String patternString, Pattern pattern) {
     private static final Codec<RegexPattern> INLINE_CODEC = Identifier.CODEC.xmap(identifier -> RegexPattern.literal(identifier.toString()), instance -> Identifier.of(instance.patternString()));
     private static final Codec<RegexPattern> FULL_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("regexPattern").forGetter(RegexPattern::patternString)
@@ -37,7 +35,6 @@ public record RegexPattern(boolean isRegex, @NotNull String patternString, @NotN
      * @param literal the literal String to match
      * @return a new {@link RegexPattern} matching the provided string
      */
-    @Contract("_->new")
     public static RegexPattern literal(final String literal) {
         return new RegexPattern(
                 false,

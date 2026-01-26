@@ -3,8 +3,6 @@ package top.offsetmonkey538.loottablemodifier.common.api.resource.action.entry;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierActionType;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierActionTypes;
@@ -31,7 +29,7 @@ public record EntryAddAction(List<LootPoolEntry> entries) implements LootModifie
     }
 
     @Override
-    public int apply(@NotNull LootModifierContext context) {
+    public int apply(LootModifierContext context) {
         if (context.poolAlreadyModified()) return MODIFIED_NONE;
 
         final LootPool pool = context.pool();
@@ -49,7 +47,6 @@ public record EntryAddAction(List<LootPoolEntry> entries) implements LootModifie
      *
      * @return a new {@link EntryAddAction.Builder}
      */
-    @Contract("->new")
     public static EntryAddAction.Builder builder() {
         return new EntryAddAction.Builder();
     }
@@ -70,7 +67,6 @@ public record EntryAddAction(List<LootPoolEntry> entries) implements LootModifie
          * @param entry The entry to add
          * @return this
          */
-        @Contract("_->this")
         public EntryAddAction.Builder entry(LootPoolEntry entry) {
             this.entries.add(entry);
             return this;

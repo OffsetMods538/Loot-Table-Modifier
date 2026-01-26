@@ -2,7 +2,6 @@ package top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.op;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicateType;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicateTypes;
@@ -24,7 +23,7 @@ public record InvertedPredicate(LootModifierPredicate term) implements LootModif
     }
 
     @Override
-    public boolean test(@NotNull LootModifierContext context) {
+    public boolean test(LootModifierContext context) {
         return !term.test(context);
     }
 

@@ -1,7 +1,6 @@
 package top.offsetmonkey538.loottablemodifier.modded.v1201.mixin;
 
 import com.google.common.collect.BiMap;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import org.spongepowered.asm.mixin.Mixin;

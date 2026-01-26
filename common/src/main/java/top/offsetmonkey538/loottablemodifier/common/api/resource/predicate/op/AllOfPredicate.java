@@ -1,8 +1,6 @@
 package top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.op;
 
 import com.mojang.serialization.MapCodec;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicate;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicateType;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicateTypes;
@@ -46,8 +44,7 @@ public class AllOfPredicate extends TermsPredicate {
         }
 
         @Override
-        @Contract("_->this")
-        public AllOfPredicate.Builder and(LootModifierPredicate.@NotNull Builder builder) {
+        public AllOfPredicate.Builder and(LootModifierPredicate.Builder builder) {
             this.add(builder);
             return this;
         }

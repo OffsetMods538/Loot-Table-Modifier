@@ -1,12 +1,12 @@
 package top.offsetmonkey538.loottablemodifier.common.api.resource.action;
 
-import org.jetbrains.annotations.ApiStatus;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.condition.ConditionAddAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.entry.EntryAddAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.entry.EntryItemSetAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.entry.EntryRemoveAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.pool.PoolAddAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.pool.PoolRemoveAction;
+import top.offsetmonkey538.offsetutils538.api.annotation.Internal;
 
 import static top.offsetmonkey538.loottablemodifier.common.LootTableModifierCommon.id;
 
@@ -53,7 +53,7 @@ public final class LootModifierActionTypes {
      * <br />
      * Only for the loot table modifier initializer to call, NO TOUCHY >:(
      */
-    @ApiStatus.Internal
+    @Internal
     public static void register() {
         // Registers action types by loading the class
     }

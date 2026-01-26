@@ -3,8 +3,6 @@ package top.offsetmonkey538.loottablemodifier.common.api.resource.action.pool;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierActionType;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierActionTypes;
@@ -30,7 +28,7 @@ public record PoolAddAction(List<LootPool> pools) implements LootModifierAction 
     }
 
     @Override
-    public int apply(@NotNull LootModifierContext context) {
+    public int apply(LootModifierContext context) {
         if (context.tableAlreadyModified()) return MODIFIED_NONE;
 
         final ArrayList<LootPool> tablePools = context.table().getPools();
@@ -45,7 +43,6 @@ public record PoolAddAction(List<LootPool> pools) implements LootModifierAction 
      *
      * @return a new {@link PoolAddAction.Builder}
      */
-    @Contract("->new")
     public static PoolAddAction.Builder builder() {
         return new PoolAddAction.Builder();
     }
@@ -66,7 +63,6 @@ public record PoolAddAction(List<LootPool> pools) implements LootModifierAction 
          * @param poolBuilder The pool to add
          * @return this
          */
-        @Contract("_->this")
         public PoolAddAction.Builder pool(LootPool poolBuilder) {
             this.pools.add(poolBuilder);
             return this;

@@ -1,8 +1,8 @@
 package top.offsetmonkey538.loottablemodifier.modded.impl.wrapper;
 
 import it.unimi.dsi.fastutil.Pair;
-import top.offsetmonkey538.monkeylib538.common.api.wrapper.Identifier;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.ResourceManager;
+import top.offsetmonkey538.monkeylib538.common.api.wrapper.Identifier;
 
 import java.io.BufferedReader;
 import java.io.IOException;

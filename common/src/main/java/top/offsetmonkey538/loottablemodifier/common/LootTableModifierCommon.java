@@ -9,7 +9,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import it.unimi.dsi.fastutil.Pair;
 import org.apache.commons.io.file.PathUtils;
-import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.Nullable;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.LootModifier;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierActionTypes;
@@ -28,6 +28,7 @@ import top.offsetmonkey538.monkeylib538.common.api.telemetry.TelemetryRegistry;
 import top.offsetmonkey538.monkeylib538.common.api.text.MonkeyLibStyle;
 import top.offsetmonkey538.monkeylib538.common.api.text.MonkeyLibText;
 import top.offsetmonkey538.monkeylib538.common.api.wrapper.Identifier;
+import top.offsetmonkey538.offsetutils538.api.annotation.Unmodifiable;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -59,7 +60,7 @@ public final class LootTableModifierCommon {
     }
 
     // Only used when IS_DEV is true
-    private static final List<Identifier> MODIFIED_TABLE_IDs;
+    private static final @Nullable List<Identifier> MODIFIED_TABLE_IDs;
     static {
         if (IS_DEV) MODIFIED_TABLE_IDs = Collections.synchronizedList(new ArrayList<>(0));
         else MODIFIED_TABLE_IDs = null;
@@ -171,6 +172,7 @@ public final class LootTableModifierCommon {
         if (!IS_DEV) return;
 
         LOGGER.warn("Dev mode enabled, modified loot tables can be exported using the '/loot-table-modifier debug export' command");
+        assert MODIFIED_TABLE_IDs != null;
         synchronized (MODIFIED_TABLE_IDs) {
             MODIFIED_TABLE_IDs.clear();
             MODIFIED_TABLE_IDs.addAll(modifiedTableIds);
@@ -193,6 +195,7 @@ public final class LootTableModifierCommon {
     }
 
     private static int executeExportCommand(CommandContext<Object> context) {
+        assert MODIFIED_TABLE_IDs != null;
         synchronized (MODIFIED_TABLE_IDs) {
             final DynamicOps<JsonElement> ops = PlatformCommandUtils.getRegistryOps(context);
 

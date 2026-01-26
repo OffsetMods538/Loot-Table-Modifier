@@ -2,9 +2,8 @@ package top.offsetmonkey538.loottablemodifier.common.api.resource.predicate;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.monkeylib538.common.api.wrapper.Identifier;
+import top.offsetmonkey538.offsetutils538.api.annotation.Internal;
 
 import java.util.function.Supplier;
 
@@ -15,7 +14,7 @@ import static top.offsetmonkey538.loottablemodifier.common.LootTableModifierComm
  *
  * @param codec the codec for this predicate
  */
-public record LootModifierPredicateType(@NotNull MapCodec<? extends LootModifierPredicate> codec) {
+public record LootModifierPredicateType(MapCodec<? extends LootModifierPredicate> codec) {
     /**
      * Provides codec for {@link LootModifierPredicate}
      */
@@ -28,18 +27,18 @@ public record LootModifierPredicateType(@NotNull MapCodec<? extends LootModifier
      * @param codec the codec for the loot modifier predicate type
      * @return a loot modifier predicate type for the provided codec
      */
-    public static LootModifierPredicateType register(final @NotNull Identifier id, final @NotNull MapCodec<? extends LootModifierPredicate> codec) {
+    public static LootModifierPredicateType register(final Identifier id, final MapCodec<? extends LootModifierPredicate> codec) {
         return Registry.INSTANCE.register(id, new LootModifierPredicateType(codec));
     }
 
-    @ApiStatus.Internal
+    @Internal
     public interface Registry {
         Registry INSTANCE = load(Registry.class);
 
-        LootModifierPredicateType register(final @NotNull Identifier id, final @NotNull LootModifierPredicateType type);
+        LootModifierPredicateType register(final Identifier id, final LootModifierPredicateType type);
     }
 
-    @ApiStatus.Internal
+    @Internal
     public interface CodecProvider extends Supplier<Codec<LootModifierPredicate>> {
 
     }

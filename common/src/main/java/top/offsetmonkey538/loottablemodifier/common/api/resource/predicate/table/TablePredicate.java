@@ -3,14 +3,12 @@ package top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.tabl
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
+import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicate;
+import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicateType;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicateTypes;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.util.LootModifierContext;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.util.RegexPattern;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicate;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicateType;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +26,7 @@ public record TablePredicate(@Nullable List<RegexPattern> identifiers, @Nullable
     ).apply(instance, TablePredicate::new));
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // Codec gib it to me
-    private TablePredicate(@NotNull Optional<List<RegexPattern>> optionalIdentifier, @NotNull Optional<List<RegexPattern>> optionalType) {
+    private TablePredicate(Optional<List<RegexPattern>> optionalIdentifier, Optional<List<RegexPattern>> optionalType) {
         this(
                 optionalIdentifier.orElse(null),
                 optionalType.orElse(null)
@@ -52,7 +50,7 @@ public record TablePredicate(@Nullable List<RegexPattern> identifiers, @Nullable
     }
 
     @Override
-    public boolean test(@NotNull LootModifierContext context) {
+    public boolean test(LootModifierContext context) {
         boolean result = true;
 
         if (identifiers != null && !identifiers.isEmpty()) {
@@ -77,7 +75,6 @@ public record TablePredicate(@Nullable List<RegexPattern> identifiers, @Nullable
      *
      * @return a new {@link TablePredicate.Builder}
      */
-    @Contract("->new")
     public static TablePredicate.Builder builder() {
         return new TablePredicate.Builder();
     }
@@ -99,8 +96,8 @@ public record TablePredicate(@Nullable List<RegexPattern> identifiers, @Nullable
          * @param name the identifier of the loot table to match
          * @return this
          */
-        @Contract("_->this") //TODO: these methods shoulöd prolly also take identigfiers?
-        public TablePredicate.Builder name(@NotNull String name) {
+        //TODO: these methods shoulöd prolly also take identigfiers?
+        public TablePredicate.Builder name(String name) {
             name(RegexPattern.literal(name));
             return this;
         }
@@ -110,8 +107,7 @@ public record TablePredicate(@Nullable List<RegexPattern> identifiers, @Nullable
          * @param name the {@link RegexPattern} to match
          * @return this
          */
-        @Contract("_->this")
-        public TablePredicate.Builder name(@NotNull RegexPattern name) {
+        public TablePredicate.Builder name(RegexPattern name) {
             this.names.add(name);
             return this;
         }
@@ -122,8 +118,7 @@ public record TablePredicate(@Nullable List<RegexPattern> identifiers, @Nullable
          * @param type the identifier of the type to match
          * @return this
          */
-        @Contract("_->this")
-        public TablePredicate.Builder type(@NotNull String type) {
+        public TablePredicate.Builder type(String type) {
             type(RegexPattern.literal(type));
             return this;
         }
@@ -133,8 +128,7 @@ public record TablePredicate(@Nullable List<RegexPattern> identifiers, @Nullable
          * @param type the {@link RegexPattern} of the type to match
          * @return this
          */
-        @Contract("_->this")
-        public TablePredicate.Builder type(@NotNull RegexPattern type) {
+        public TablePredicate.Builder type(RegexPattern type) {
             this.types.add(type);
             return this;
         }

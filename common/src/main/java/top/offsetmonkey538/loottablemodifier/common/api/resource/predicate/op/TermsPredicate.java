@@ -3,9 +3,8 @@ package top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.op;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.jetbrains.annotations.NotNull;
-import top.offsetmonkey538.loottablemodifier.common.api.resource.util.LootModifierContext;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.predicate.LootModifierPredicate;
+import top.offsetmonkey538.loottablemodifier.common.api.resource.util.LootModifierContext;
 
 import java.util.List;
 import java.util.function.Function;
@@ -44,7 +43,7 @@ abstract class TermsPredicate implements LootModifierPredicate {
     }
 
     @Override
-    public boolean test(final @NotNull LootModifierContext context) {
+    public boolean test(final LootModifierContext context) {
         return builtPredicate.test(context);
     }
 

@@ -8,7 +8,6 @@ import top.offsetmonkey538.loottablemodifier.modded.duck.LootTableDuck;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static top.offsetmonkey538.loottablemodifier.common.LootTableModifierCommon.load;

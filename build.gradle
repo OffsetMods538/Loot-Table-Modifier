@@ -30,8 +30,7 @@ allprojects {
     }
 
     dependencies {
-        // TODO: jspecify: compileOnlyApi "org.jspecify:jspecify:${rootProject.jspecify_version}"
-        compileOnlyApi "org.jetbrains:annotations:${rootProject.jetbrainsannotations_version}"
+        compileOnlyApi "org.jspecify:jspecify:${rootProject.jspecify_version}"
     }
 }
 

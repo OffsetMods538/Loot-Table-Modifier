@@ -1,8 +1,8 @@
 package top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.entry;
 
 import com.mojang.serialization.Codec;
-import org.jetbrains.annotations.ApiStatus;
 import top.offsetmonkey538.loottablemodifier.common.api.wrapper.loot.LootCondition;
+import top.offsetmonkey538.offsetutils538.api.annotation.Internal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ public interface LootPoolEntry {
     ArrayList<LootCondition> getConditions();
     void setConditions(List<LootCondition> conditions);
 
-    @ApiStatus.Internal
+    @Internal
     interface CodecProvider extends Supplier<Codec<LootPoolEntry>> {
 
     }

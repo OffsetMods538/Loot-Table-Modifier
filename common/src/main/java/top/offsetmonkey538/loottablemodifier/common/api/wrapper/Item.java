@@ -1,7 +1,7 @@
 package top.offsetmonkey538.loottablemodifier.common.api.wrapper;
 
 import com.mojang.serialization.Codec;
-import org.jetbrains.annotations.ApiStatus;
+import top.offsetmonkey538.offsetutils538.api.annotation.Internal;
 
 import java.util.function.Supplier;
 
@@ -12,7 +12,7 @@ public interface Item {
 
     String getId();
 
-    @ApiStatus.Internal
+    @Internal
     interface CodecProvider extends Supplier<Codec<Item>> {
 
     }

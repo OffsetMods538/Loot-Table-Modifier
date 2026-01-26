@@ -4,8 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierAction;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierActionType;
 import top.offsetmonkey538.loottablemodifier.common.api.resource.action.LootModifierActionTypes;
@@ -37,7 +35,7 @@ public record ConditionAddAction(List<LootCondition> conditions, boolean include
     }
 
     @Override
-    public int apply(@NotNull LootModifierContext context) {
+    public int apply(LootModifierContext context) {
         final LootPool pool = context.pool();
         if (pool == null) return MODIFIED_NONE;
 
@@ -69,7 +67,6 @@ public record ConditionAddAction(List<LootCondition> conditions, boolean include
      *
      * @return a new {@link ConditionAddAction.Builder}
      */
-    @Contract("->new")
     public static ConditionAddAction.Builder builder() {
         return new ConditionAddAction.Builder();
     }
@@ -92,7 +89,6 @@ public record ConditionAddAction(List<LootCondition> conditions, boolean include
          * @param condition The condition to add
          * @return this
          */
-        @Contract("_->this")
         public ConditionAddAction.Builder condition(LootCondition condition) {
             this.conditions.add(condition);
             return this;
@@ -103,7 +99,6 @@ public record ConditionAddAction(List<LootCondition> conditions, boolean include
          *
          * @return this
          */
-        @Contract("->this")
         public ConditionAddAction.Builder onlyPools() {
             includePools = true;
             includeEntries = false;
@@ -115,7 +110,6 @@ public record ConditionAddAction(List<LootCondition> conditions, boolean include
          *
          * @return this
          */
-        @Contract("->this")
         public ConditionAddAction.Builder onlyEntries() {
             includeEntries = true;
             includePools = false;
